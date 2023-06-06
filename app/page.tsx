@@ -1,9 +1,85 @@
-import Image from 'next/image'
-
+import Paragraph from "@/components/ui/Paragraph";
+import Image from "next/image";
+import { GrReactjs } from "react-icons/gr";
+import { TbBrandJavascript } from "react-icons/tb";
+import { AiFillGithub } from "react-icons/ai";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+      <Paragraph size={"sm"}>same text</Paragraph>
+      <div className="bg-white">
+        <div className="mx-auto  px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            Dostępne kursy:
+          </h2>
+
+          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+            <div className="group relative">
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                <AiFillGithub className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+              </div>
+              <div className="mt-4 flex justify-between">
+                <div>
+                  <h3 className="text-sm text-gray-700">
+                    <a href="#">
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0"
+                      ></span>
+                      Courses GitHub
+                    </a>
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500">Programing</p>
+                </div>
+                <p className="text-sm font-medium text-gray-900">$35</p>
+              </div>
+            </div>
+            <div className="group relative">
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                <TbBrandJavascript className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+              </div>
+              <div className="mt-4 flex justify-between">
+                <div>
+                  <h3 className="text-sm text-gray-700">
+                    <a href="#">
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0"
+                      ></span>
+                      Courses Java Script
+                    </a>
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500 ">Programing</p>
+                </div>
+                <p className="text-sm font-medium text-gray-900">$35</p>
+              </div>
+            </div>
+            <div className="group relative">
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+              </div>
+              <div className="mt-4 flex justify-between">
+                <div>
+                  <h3 className="text-sm text-gray-700">
+                    <a href="#">
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0"
+                      ></span>
+                      Courses React
+                    </a>
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500">Programing</p>
+                </div>
+                <p className="text-sm font-medium text-gray-900">$35</p>
+              </div>
+            </div>
+
+            {/* <!-- More products... --> */}
+          </div>
+        </div>
+      </div>
+      {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
           <code className="font-mono font-bold">app/page.tsx</code>
@@ -107,7 +183,7 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
-      </div>
+      </div> */}
     </main>
-  )
+  );
 }
