@@ -4,186 +4,821 @@ import { GrReactjs } from "react-icons/gr";
 import { TbBrandJavascript } from "react-icons/tb";
 import { AiFillGithub } from "react-icons/ai";
 export default function Home() {
+  const courses = [
+    {
+      icon: (
+        <AiFillGithub className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+      ),
+      title: "Courses GitHub",
+      category: "Programming",
+      price: "$35",
+    },
+    {
+      icon: (
+        <TbBrandJavascript className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+      ),
+      title: "Courses JavaScript",
+      category: "Programming",
+      price: "$35",
+    },
+    {
+      icon: (
+        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+      ),
+      title: "Courses React",
+      category: "Programming",
+      price: "$35",
+    },
+  ];
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Paragraph size={"sm"}>same text</Paragraph>
-      <div className="bg-white">
-        <div className="mx-auto  px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Dostępne kursy:
-          </h2>
+    <main className="flex flex-col min-h-screen mt-24  items-center justify-between p-2  ">
+      {/* start  */}
+      <div className="bg-white container">
+        <div>
+          {/* <!--
+      Mobile filter dialog
 
-          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            <div className="group relative">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                <AiFillGithub className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-              </div>
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <h3 className="text-sm text-gray-700">
-                    <a href="#">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0"
-                      ></span>
-                      Courses GitHub
-                    </a>
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">Programing</p>
-                </div>
-                <p className="text-sm font-medium text-gray-900">$35</p>
-              </div>
-            </div>
-            <div className="group relative">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                <TbBrandJavascript className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-              </div>
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <h3 className="text-sm text-gray-700">
-                    <a href="#">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0"
-                      ></span>
-                      Courses Java Script
-                    </a>
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500 ">Programing</p>
-                </div>
-                <p className="text-sm font-medium text-gray-900">$35</p>
-              </div>
-            </div>
-            <div className="group relative">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-              </div>
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <h3 className="text-sm text-gray-700">
-                    <a href="#">
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-0"
-                      ></span>
-                      Courses React
-                    </a>
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">Programing</p>
-                </div>
-                <p className="text-sm font-medium text-gray-900">$35</p>
-              </div>
-            </div>
-
-            {/* <!-- More products... --> */}
-          </div>
-        </div>
-      </div>
-      {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      Off-canvas filters htmlFor mobile, show/hide based on off-canvas filters state.
+    --> */}
+          <div
+            className="relative z-40 top-20  lg:hidden"
+            role="dialog"
+            aria-modal="true"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            {/* <!--
+        Off-canvas menu backdrop, show/hide based on off-canvas menu state.
+
+        Entering: "transition-opacity ease-linear duration-300"
+          From: "opacity-0"
+          To: "opacity-100"
+        Leaving: "transition-opacity ease-linear duration-300"
+          From: "opacity-100"
+          To: "opacity-0"
+      --> */}
+            <div className="fixed inset-0 bg-black bg-opacity-25"></div>
+
+            <div className="fixed inset-0 z-40 flex">
+              {/* <!--
+          Off-canvas menu, show/hide based on off-canvas menu state.
+
+          Entering: "transition ease-in-out duration-300 transhtmlForm"
+            From: "translate-x-full"
+            To: "translate-x-0"
+          Leaving: "transition ease-in-out duration-300 transhtmlForm"
+            From: "translate-x-0"
+            To: "translate-x-full"
+        --> */}
+              <div className="mt-20 relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
+                <div className="flex items-center justify-between px-4">
+                  <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+                  <button
+                    type="button"
+                    className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
+                  >
+                    <span className="sr-only">Close menu</span>
+                    <svg
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* <!-- Filters --> */}
+                <form className="mt-4 border-t border-gray-200">
+                  <h3 className="sr-only">kategorie</h3>
+                  <ul
+                    role="list"
+                    className="px-2 py-3 font-medium text-gray-900"
+                  >
+                    <li>
+                      <a href="#" className="block px-2 py-3">
+                        Frontend
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="block px-2 py-3">
+                        Backend
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="block px-2 py-3">
+                        Travel Bags
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="block px-2 py-3">
+                        Bazy danych
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="block px-2 py-3">
+                        Zarządzanie kotrolą wersji
+                      </a>
+                    </li>
+                  </ul>
+
+                  <div className="border-t border-gray-200 px-4 py-6">
+                    <h3 className="-mx-2 -my-3 flow-root">
+                      {/* <!-- Expand/collapse section button --> */}
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                        aria-controls="filter-section-mobile-0"
+                        aria-expanded="false"
+                      >
+                        <span className="font-medium text-gray-900">Język</span>
+                        <span className="ml-6 flex items-center">
+                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                          </svg>
+                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                    {/* <!-- Filter section, show/hide based on section state. -->  */}
+                    {false && (
+                      <div className="pt-6" id="filter-section-mobile-0">
+                        <div className="space-y-6">
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-color-0"
+                              name="color[]"
+                              value="white"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-color-0"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Java Script
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-color-1"
+                              name="color[]"
+                              value="beige"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-color-1"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Java
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-color-2"
+                              name="color[]"
+                              value="blue"
+                              type="checkbox"
+                              checked
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-color-2"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Puthon
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="border-t border-gray-200 px-4 py-6">
+                    <h3 className="-mx-2 -my-3 flow-root">
+                      {/* <!-- Expand/collapse section button --> */}
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                        aria-controls="filter-section-mobile-1"
+                        aria-expanded="false"
+                      >
+                        <span className="font-medium text-gray-900">
+                          Category
+                        </span>
+                        <span className="ml-6 flex items-center">
+                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                          </svg>
+                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                    {/* <!-- Filter section, show/hide based on section state. --> */}
+                    {false && (
+                      <div className="pt-6" id="filter-section-mobile-1">
+                        <div className="space-y-6">
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-category-0"
+                              name="category[]"
+                              value="new-arrivals"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-category-0"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              New Arrivals
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-category-1"
+                              name="category[]"
+                              value="sale"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-category-1"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Sale
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-category-2"
+                              name="category[]"
+                              value="travel"
+                              type="checkbox"
+                              checked
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-category-2"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Travel
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-category-3"
+                              name="category[]"
+                              value="organization"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-category-3"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Organization
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-mobile-category-4"
+                              name="category[]"
+                              value="accessories"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-mobile-category-4"
+                              className="ml-3 min-w-0 flex-1 text-gray-500"
+                            >
+                              Accessories
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+                New Arrivals
+              </h1>
+
+              <div className="flex items-center">
+                <div className="relative inline-block text-left">
+                  <div>
+                    <button
+                      type="button"
+                      className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                      id="menu-button"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                    >
+                      Sort
+                      <svg
+                        className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* <!--
+              Dropdown menu, show/hide based on menu state.
+
+              Entering: "transition ease-out duration-100"
+                From: "transhtmlForm opacity-0 scale-95"
+                To: "transhtmlForm opacity-100 scale-100"
+              Leaving: "transition ease-in duration-75"
+                From: "transhtmlForm opacity-100 scale-100"
+                To: "transhtmlForm opacity-0 scale-95"
+            --> */}
+                  {false && (
+                    <div
+                      className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="menu-button"
+                    >
+                      <div className="py-1" role="none">
+                        {/* <!--
+                  Active: "bg-gray-100", Not Active: ""
+
+                  Selected: "font-medium text-gray-900", Not Selected: "text-gray-500"
+                --> */}
+                        <a
+                          href="#"
+                          className="font-medium text-gray-900 block px-4 py-2 text-sm"
+                          role="menuitem"
+                          id="menu-item-0"
+                        >
+                          Most Popular
+                        </a>
+                        <a
+                          href="#"
+                          className="text-gray-500 block px-4 py-2 text-sm"
+                          role="menuitem"
+                          id="menu-item-1"
+                        >
+                          Best Rating
+                        </a>
+                        <a
+                          href="#"
+                          className="text-gray-500 block px-4 py-2 text-sm"
+                          role="menuitem"
+                          id="menu-item-2"
+                        >
+                          Newest
+                        </a>
+                        <a
+                          href="#"
+                          className="text-gray-500 block px-4 py-2 text-sm"
+                          role="menuitem"
+                          id="menu-item-3"
+                        >
+                          Price: Low to High
+                        </a>
+                        <a
+                          href="#"
+                          className="text-gray-500 block px-4 py-2 text-sm"
+                          role="menuitem"
+                          id="menu-item-4"
+                        >
+                          Price: High to Low
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+                >
+                  <span className="sr-only">View grid</span>
+                  <svg
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.25 2A2.25 2.25 0 002 4.25v2.5A2.25 2.25 0 004.25 9h2.5A2.25 2.25 0 009 6.75v-2.5A2.25 2.25 0 006.75 2h-2.5zm0 9A2.25 2.25 0 002 13.25v2.5A2.25 2.25 0 004.25 18h2.5A2.25 2.25 0 009 15.75v-2.5A2.25 2.25 0 006.75 11h-2.5zm9-9A2.25 2.25 0 0011 4.25v2.5A2.25 2.25 0 0013.25 9h2.5A2.25 2.25 0 0018 6.75v-2.5A2.25 2.25 0 0015.75 2h-2.5zm0 9A2.25 2.25 0 0011 13.25v2.5A2.25 2.25 0 0013.25 18h2.5A2.25 2.25 0 0018 15.75v-2.5A2.25 2.25 0 0015.75 11h-2.5z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                >
+                  <span className="sr-only">Filters</span>
+                  <svg
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <section aria-labelledby="products-heading" className="pb-24 pt-6">
+              <h2 id="products-heading" className="sr-only">
+                Products
+              </h2>
+
+              <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                {/* <!-- Filters --> */}
+                <form className="hidden lg:block">
+                  <h3 className="sr-only">Categories</h3>
+                  <ul
+                    role="list"
+                    className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
+                  >
+                    <li>
+                      <a href="#">Totes</a>
+                    </li>
+                    <li>
+                      <a href="#">Backpacks</a>
+                    </li>
+                    <li>
+                      <a href="#">Travel Bags</a>
+                    </li>
+                    <li>
+                      <a href="#">Hip Bags</a>
+                    </li>
+                    <li>
+                      <a href="#">Laptop Sleeves</a>
+                    </li>
+                  </ul>
+
+                  <div className="border-b border-gray-200 py-6">
+                    <h3 className="-my-3 flow-root">
+                      {/* <!-- Expand/collapse section button --> */}
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+                        aria-controls="filter-section-0"
+                        aria-expanded="false"
+                      >
+                        <span className="font-medium text-gray-900">Color</span>
+                        <span className="ml-6 flex items-center">
+                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                          </svg>
+                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                    {/* <!-- Filter section, show/hide based on section state. --> */}
+                    {false && (
+                      <div className="pt-6" id="filter-section-0">
+                        <div className="space-y-4">
+                          <div className="flex items-center">
+                            <input
+                              id="filter-color-0"
+                              name="color[]"
+                              value="white"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-color-0"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              White
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-color-1"
+                              name="color[]"
+                              value="beige"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-color-1"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Beige
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-color-2"
+                              name="color[]"
+                              value="blue"
+                              type="checkbox"
+                              checked
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-color-2"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Blue
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-color-3"
+                              name="color[]"
+                              value="brown"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-color-3"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Brown
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-color-4"
+                              name="color[]"
+                              value="green"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-color-4"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Green
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-color-5"
+                              name="color[]"
+                              value="purple"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-color-5"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Purple
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="border-b border-gray-200 py-6">
+                    <h3 className="-my-3 flow-root">
+                      {/* <!-- Expand/collapse section button --> */}
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+                        aria-controls="filter-section-1"
+                        aria-expanded="false"
+                      >
+                        <span className="font-medium text-gray-900">
+                          Category
+                        </span>
+                        <span className="ml-6 flex items-center">
+                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                          </svg>
+                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
+                          <svg
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </h3>
+                    {/* <!-- Filter section, show/hide based on section state. --> */}
+                    {false && (
+                      <div className="pt-6" id="filter-section-1">
+                        <div className="space-y-4">
+                          <div className="flex items-center">
+                            <input
+                              id="filter-category-0"
+                              name="category[]"
+                              value="new-arrivals"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-category-0"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              New Arrivals
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-category-1"
+                              name="category[]"
+                              value="sale"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-category-1"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Sale
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-category-2"
+                              name="category[]"
+                              value="travel"
+                              type="checkbox"
+                              checked
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-category-2"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Travel
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-category-3"
+                              name="category[]"
+                              value="organization"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-category-3"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Organization
+                            </label>
+                          </div>
+                          <div className="flex items-center">
+                            <input
+                              id="filter-category-4"
+                              name="category[]"
+                              value="accessories"
+                              type="checkbox"
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <label
+                              htmlFor="filter-category-4"
+                              className="ml-3 text-sm text-gray-600"
+                            >
+                              Accessories
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </form>
+
+                {/* <!-- Product grid --> */}
+                <div className="lg:col-span-3">
+                  <div className="container ">
+                    <div className="mx-auto  px-4 py-2 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                        Dostępne kursy:
+                      </h2>
+
+                      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+                        {/* products */}
+                        {courses.map((course, index) => (
+                          <div key={index} className="group relative">
+                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                              {course.icon}
+                            </div>
+                            <div className="mt-4 flex justify-between">
+                              <div>
+                                <h3 className="text-sm text-gray-700">
+                                  <a href="#">
+                                    <span
+                                      aria-hidden="true"
+                                      className="absolute inset-0"
+                                    ></span>
+                                    {course.title}
+                                  </a>
+                                </h3>
+                                <p className="mt-1 text-sm text-gray-500">
+                                  {course.category}
+                                </p>
+                              </div>
+                              <p className="text-sm font-medium text-gray-900">
+                                {course.price}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                        {/* product */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div> */}
     </main>
   );
 }

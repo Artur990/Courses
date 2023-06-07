@@ -7,9 +7,7 @@ import SignOutButton from "./SignOutButton";
 import SingInButton from "./SignInButton";
 import { getServerSession } from "next-auth";
 import { AiFillGithub } from "react-icons/ai";
-import { TbBrandJavascript } from "react-icons/tb";
-import { GrReactjs } from "react-icons/gr";
-import NavbarMobile from "./NavbarMobile";
+// import NavbarMobile from "./NavbarMobile";
 import Courses from "./Courses";
 import CoursesMobile from "./CoursesMobile";
 
@@ -18,14 +16,14 @@ interface NavProps {}
 const Navbar = ({}) => {
   // const session = await getServerSession(); // Get the user's session based on the request
   const [isOpen, setIsOpen] = useState(false);
-  const [isOpenMySchool, setIsOpenMySchool] = useState(false);
+  const [isOpenMyCourses, setIsOpenMyCourses] = useState(false);
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-  const toggleMenuMySchool = () => {
-    setIsOpenMySchool(!isOpenMySchool);
+  const toggleMenuMyCourses = () => {
+    setIsOpenMyCourses(!isOpenMyCourses);
   };
   const toggleMenuMobile = () => {
     setIsOpenMobile(!isOpenMobile);
@@ -33,7 +31,7 @@ const Navbar = ({}) => {
   return (
     <header className="fixed z-50 top-0 left-0 right-0">
       <nav
-        className="mx-auto flex  backdrop-blur-sm  border-b border-white dark:border-slate-700 shadow-sm bg-white/80 max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex  backdrop-blur-sm  border-b border-white dark:border-slate-700 shadow-sm bg-white/80 max-w-8xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -50,19 +48,22 @@ const Navbar = ({}) => {
             onClick={toggleMenuMobile}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
           >
+            Menu
             <span className="sr-only">Open main menu</span>
             <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
+              className="h-5 w-5 flex-none text-gray-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
               aria-hidden="true"
+              style={{
+                transform: isOpen ? "rotate(180deg)" : "rotate(0)",
+                transition: "transform 0.3s ease-in-out",
+              }}
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clipRule="evenodd"
               />
             </svg>
           </button>
@@ -81,11 +82,15 @@ const Navbar = ({}) => {
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 aria-hidden="true"
+                style={{
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0)",
+                  transition: "transform 0.3s ease-in-out",
+                }}
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
             </button>
@@ -104,12 +109,12 @@ const Navbar = ({}) => {
             Nowości
           </Link>
         </div>
-        {true ? (
+        {false ? (
           <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center lg:gap-x-8">
             <div className="relative">
               <button
                 type="button"
-                onClick={toggleMenuMySchool}
+                onClick={toggleMenuMyCourses}
                 className={buttonVariants({ variant: "ghost", size: "sm" })}
                 aria-expanded="false"
               >
@@ -119,15 +124,19 @@ const Navbar = ({}) => {
                   viewBox="0 0 20 20"
                   fill="currentColor"
                   aria-hidden="true"
+                  style={{
+                    transform: isOpenMyCourses ? "rotate(180deg)" : "rotate(0)",
+                    transition: "transform 0.3s ease-in-out",
+                  }}
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </button>
-              {isOpenMySchool && (
+              {isOpenMyCourses && (
                 <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
                   <div className="p-4">
                     <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
