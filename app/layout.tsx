@@ -2,6 +2,8 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Food from "@/components/Food";
+import Courses from "@/components/Courses";
+import { menuItems } from "@/data/courses";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +23,13 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Food />
+        {menuItems.map((item, i) => {
+          return (
+            <div key={i}>
+              <Courses {...item} />
+            </div>
+          );
+        })}
       </body>
     </html>
   );

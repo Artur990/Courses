@@ -273,10 +273,16 @@ export default function Home() {
                     >
                       Sort
                       <svg
-                        className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                        className="h-5 w-5 flex-none text-gray-400"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                         aria-hidden="true"
+                        style={{
+                          transform: isOpenSort
+                            ? "rotate(180deg)"
+                            : "rotate(0)",
+                          transition: "transform 0.3s ease-in-out",
+                        }}
                       >
                         <path
                           fill-rule="evenodd"
@@ -639,7 +645,7 @@ export default function Home() {
                             <div className="mt-4 flex justify-between">
                               <div>
                                 <h3 className="text-sm text-gray-700">
-                                  <a href="#">
+                                  <a href={`courses/${course.title}`}>
                                     <span
                                       aria-hidden="true"
                                       className="absolute inset-0"
