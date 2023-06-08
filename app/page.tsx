@@ -1,9 +1,21 @@
+"use client";
 import Paragraph from "@/components/ui/Paragraph";
+
+import { useState } from "react";
 import Image from "next/image";
 import { GrReactjs } from "react-icons/gr";
 import { TbBrandJavascript } from "react-icons/tb";
 import { AiFillGithub } from "react-icons/ai";
+import { tr } from "date-fns/locale";
 export default function Home() {
+  const [isOpenLanguage, setIsOpenLanguage] = useState(false);
+  const [isOpenCategory, setIsOpenCategory] = useState(false);
+  const [isOpenSort, setIsOpenSort] = useState(false);
+  const [isOpenMenu, setIsOpenMenu] = useState(true);
+  const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
+  const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
+  const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
+  const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
   const courses = [
     {
       icon: (
@@ -29,20 +41,45 @@ export default function Home() {
       category: "Programming",
       price: "$35",
     },
+    {
+      icon: (
+        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+      ),
+      title: "Courses React",
+      category: "Programming",
+      price: "$35",
+    },
+    {
+      icon: (
+        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+      ),
+      title: "Courses React",
+      category: "Programming",
+      price: "$35",
+    },
+    {
+      icon: (
+        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
+      ),
+      title: "Courses React",
+      category: "Programming",
+      price: "$35",
+    },
   ];
 
   return (
-    <main className="flex flex-col min-h-screen mt-24  items-center justify-between p-2  ">
+    <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
       {/* start  */}
       <div className="bg-white container">
         <div>
           {/* <!--
       Mobile filter dialog
-
+      
       Off-canvas filters htmlFor mobile, show/hide based on off-canvas filters state.
     --> */}
+
           <div
-            className="relative z-40 top-20  lg:hidden"
+            className="relative z-40 top-10  mt-1 right-3   lg:hidden"
             role="dialog"
             aria-modal="true"
           >
@@ -56,9 +93,9 @@ export default function Home() {
           From: "opacity-100"
           To: "opacity-0"
       --> */}
-            <div className="fixed inset-0 bg-black bg-opacity-25"></div>
+            {/* <div className="fixed inset-0 bg-black bg-opacity-25"></div>s */}
 
-            <div className="fixed inset-0 z-40 flex">
+            <div className="relative inset-0 z-40 flex">
               {/* <!--
           Off-canvas menu, show/hide based on off-canvas menu state.
 
@@ -69,292 +106,165 @@ export default function Home() {
             From: "translate-x-0"
             To: "translate-x-full"
         --> */}
-              <div className="mt-20 relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
-                <div className="flex items-center justify-between px-4">
-                  <h2 className="text-lg font-medium text-gray-900">Filters</h2>
-                  <button
-                    type="button"
-                    className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
-                  >
-                    <span className="sr-only">Close menu</span>
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      aria-hidden="true"
+              {isOpenMenu && (
+                <div className="mt-10  fixed z-50 top-20 right-0 ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-gray-200 py-4 pb-12 shadow-xl">
+                  <div className="flex items-center justify-between px-4">
+                    <h2 className="text-lg font-medium text-gray-900">
+                      Flitruj
+                    </h2>
+                    <button
+                      type="button"
+                      onClick={toggleIsOpenMenu}
+                      className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      <span className="sr-only">Close menu</span>
+                      <svg
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* <!-- Filters --> */}
+                  <form className="mt-4 border-t border-gray-200">
+                    <h3 className="sr-only">kategorie</h3>
+                    <ul
+                      role="list"
+                      className="px-2 py-3 font-medium text-gray-900"
+                    >
+                      <li>
+                        <a href="#" className="block px-2 py-3">
+                          Programowanie
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="block px-2 py-3">
+                          Inne
+                        </a>
+                      </li>
+                      {/* <li></li> */}
+                    </ul>
+
+                    <div className="border-t border-gray-200 px-4 py-6">
+                      <h3 className="-mx-2 -my-3 flow-root">
+                        {/* <!-- Expand/collapse section button --> */}
+                        <button
+                          type="button"
+                          onClick={toggleIsOpenLanguage}
+                          className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                          aria-controls="filter-section-mobile-0"
+                          aria-expanded="false"
+                        >
+                          <span className="font-medium text-gray-900">
+                            Język
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {/* <!-- Expand icon, show/hide based on section open state. --> */}
+                            <svg
+                              className="h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                            </svg>
+                            {/* <!-- Collapse icon, show/hide based on section open state. --> */}
+                            <svg
+                              className="h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </h3>
+                      {/* <!-- Filter section, show/hide based on section state. -->  */}
+                      {isOpenLanguage && (
+                        <div className="pt-6" id="filter-section-mobile-0">
+                          <div className="space-y-6">
+                            <div className="flex items-center">
+                              <input
+                                id="filter-mobile-color-0"
+                                name="color[]"
+                                value="white"
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label
+                                htmlFor="filter-mobile-color-0"
+                                className="ml-3 min-w-0 flex-1 text-gray-500"
+                              >
+                                Java Script
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                id="filter-mobile-color-1"
+                                name="color[]"
+                                value="beige"
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label
+                                htmlFor="filter-mobile-color-1"
+                                className="ml-3 min-w-0 flex-1 text-gray-500"
+                              >
+                                Java
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                id="filter-mobile-color-2"
+                                name="color[]"
+                                value="blue"
+                                type="checkbox"
+                                checked
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label
+                                htmlFor="filter-mobile-color-2"
+                                className="ml-3 min-w-0 flex-1 text-gray-500"
+                              >
+                                Puthon
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </form>
                 </div>
-
-                {/* <!-- Filters --> */}
-                <form className="mt-4 border-t border-gray-200">
-                  <h3 className="sr-only">kategorie</h3>
-                  <ul
-                    role="list"
-                    className="px-2 py-3 font-medium text-gray-900"
-                  >
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        Frontend
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        Backend
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        Travel Bags
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        Bazy danych
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        Zarządzanie kotrolą wersji
-                      </a>
-                    </li>
-                  </ul>
-
-                  <div className="border-t border-gray-200 px-4 py-6">
-                    <h3 className="-mx-2 -my-3 flow-root">
-                      {/* <!-- Expand/collapse section button --> */}
-                      <button
-                        type="button"
-                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
-                        aria-controls="filter-section-mobile-0"
-                        aria-expanded="false"
-                      >
-                        <span className="font-medium text-gray-900">Język</span>
-                        <span className="ml-6 flex items-center">
-                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
-                          <svg
-                            className="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                          </svg>
-                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
-                          <svg
-                            className="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </h3>
-                    {/* <!-- Filter section, show/hide based on section state. -->  */}
-                    {false && (
-                      <div className="pt-6" id="filter-section-mobile-0">
-                        <div className="space-y-6">
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-color-0"
-                              name="color[]"
-                              value="white"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-color-0"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Java Script
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-color-1"
-                              name="color[]"
-                              value="beige"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-color-1"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Java
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-color-2"
-                              name="color[]"
-                              value="blue"
-                              type="checkbox"
-                              checked
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-color-2"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Puthon
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="border-t border-gray-200 px-4 py-6">
-                    <h3 className="-mx-2 -my-3 flow-root">
-                      {/* <!-- Expand/collapse section button --> */}
-                      <button
-                        type="button"
-                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
-                        aria-controls="filter-section-mobile-1"
-                        aria-expanded="false"
-                      >
-                        <span className="font-medium text-gray-900">
-                          Category
-                        </span>
-                        <span className="ml-6 flex items-center">
-                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
-                          <svg
-                            className="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                          </svg>
-                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
-                          <svg
-                            className="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </h3>
-                    {/* <!-- Filter section, show/hide based on section state. --> */}
-                    {false && (
-                      <div className="pt-6" id="filter-section-mobile-1">
-                        <div className="space-y-6">
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-category-0"
-                              name="category[]"
-                              value="new-arrivals"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-category-0"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              New Arrivals
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-category-1"
-                              name="category[]"
-                              value="sale"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-category-1"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Sale
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-category-2"
-                              name="category[]"
-                              value="travel"
-                              type="checkbox"
-                              checked
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-category-2"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Travel
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-category-3"
-                              name="category[]"
-                              value="organization"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-category-3"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Organization
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-mobile-category-4"
-                              name="category[]"
-                              value="accessories"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-mobile-category-4"
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              Accessories
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </form>
-              </div>
+              )}
             </div>
           </div>
-
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
+            {/* panel start  */}
+            <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 mt-24">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                New Arrivals
+                Nowe kursy
               </h1>
 
               <div className="flex items-center">
                 <div className="relative inline-block text-left">
                   <div>
                     <button
+                      onClick={toggleIsOpenSort}
                       type="button"
                       className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
                       id="menu-button"
@@ -376,18 +286,7 @@ export default function Home() {
                       </svg>
                     </button>
                   </div>
-
-                  {/* <!--
-              Dropdown menu, show/hide based on menu state.
-
-              Entering: "transition ease-out duration-100"
-                From: "transhtmlForm opacity-0 scale-95"
-                To: "transhtmlForm opacity-100 scale-100"
-              Leaving: "transition ease-in duration-75"
-                From: "transhtmlForm opacity-100 scale-100"
-                To: "transhtmlForm opacity-0 scale-95"
-            --> */}
-                  {false && (
+                  {isOpenSort && (
                     <div
                       className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                       role="menu"
@@ -406,7 +305,7 @@ export default function Home() {
                           role="menuitem"
                           id="menu-item-0"
                         >
-                          Most Popular
+                          Njabradziej Popularne
                         </a>
                         <a
                           href="#"
@@ -414,7 +313,7 @@ export default function Home() {
                           role="menuitem"
                           id="menu-item-1"
                         >
-                          Best Rating
+                          Najwyżej Oceniane
                         </a>
                         <a
                           href="#"
@@ -422,7 +321,7 @@ export default function Home() {
                           role="menuitem"
                           id="menu-item-2"
                         >
-                          Newest
+                          Najnowsze
                         </a>
                         <a
                           href="#"
@@ -430,7 +329,7 @@ export default function Home() {
                           role="menuitem"
                           id="menu-item-3"
                         >
-                          Price: Low to High
+                          Cena: rosnąca
                         </a>
                         <a
                           href="#"
@@ -438,7 +337,7 @@ export default function Home() {
                           role="menuitem"
                           id="menu-item-4"
                         >
-                          Price: High to Low
+                          Cena: malejąca
                         </a>
                       </div>
                     </div>
@@ -465,6 +364,7 @@ export default function Home() {
                 </button>
                 <button
                   type="button"
+                  onClick={toggleIsOpenMenu}
                   className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
                 >
                   <span className="sr-only">Filters</span>
@@ -483,7 +383,7 @@ export default function Home() {
                 </button>
               </div>
             </div>
-
+            {/* paneel */}
             <section aria-labelledby="products-heading" className="pb-24 pt-6">
               <h2 id="products-heading" className="sr-only">
                 Products
@@ -498,32 +398,26 @@ export default function Home() {
                     className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
                   >
                     <li>
-                      <a href="#">Totes</a>
+                      <a href="#">Prgramowanie</a>
                     </li>
                     <li>
-                      <a href="#">Backpacks</a>
-                    </li>
-                    <li>
-                      <a href="#">Travel Bags</a>
-                    </li>
-                    <li>
-                      <a href="#">Hip Bags</a>
-                    </li>
-                    <li>
-                      <a href="#">Laptop Sleeves</a>
+                      <a href="#">inne</a>
                     </li>
                   </ul>
-
+                  {/* Start Opinions */}
                   <div className="border-b border-gray-200 py-6">
                     <h3 className="-my-3 flow-root">
                       {/* <!-- Expand/collapse section button --> */}
                       <button
+                        onClick={toggleIsOpenLanguage}
                         type="button"
                         className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
                         aria-controls="filter-section-0"
                         aria-expanded="false"
                       >
-                        <span className="font-medium text-gray-900">Color</span>
+                        <span className="font-medium text-gray-900">
+                          Języki Programowania
+                        </span>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
@@ -551,7 +445,7 @@ export default function Home() {
                       </button>
                     </h3>
                     {/* <!-- Filter section, show/hide based on section state. --> */}
-                    {false && (
+                    {isOpenLanguage && (
                       <div className="pt-6" id="filter-section-0">
                         <div className="space-y-4">
                           <div className="flex items-center">
@@ -566,7 +460,7 @@ export default function Home() {
                               htmlFor="filter-color-0"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              White
+                              JavaScript
                             </label>
                           </div>
                           <div className="flex items-center">
@@ -581,79 +475,51 @@ export default function Home() {
                               htmlFor="filter-color-1"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              Beige
+                              Java
                             </label>
                           </div>
                           <div className="flex items-center">
                             <input
-                              id="filter-color-2"
+                              id="filter-color-1"
                               name="color[]"
-                              value="blue"
+                              value="beige"
                               type="checkbox"
-                              checked
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
                             <label
-                              htmlFor="filter-color-2"
+                              htmlFor="filter-color-1"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              Blue
+                              Python
                             </label>
                           </div>
                           <div className="flex items-center">
                             <input
-                              id="filter-color-3"
+                              id="filter-color-1"
                               name="color[]"
-                              value="brown"
+                              value="beige"
                               type="checkbox"
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
                             <label
-                              htmlFor="filter-color-3"
+                              htmlFor="filter-color-1"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              Brown
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-color-4"
-                              name="color[]"
-                              value="green"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-color-4"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Green
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-color-5"
-                              name="color[]"
-                              value="purple"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-color-5"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Purple
+                              C++
                             </label>
                           </div>
                         </div>
                       </div>
                     )}
                   </div>
+
+                  {/* Start Category  */}
                   <div className="border-b border-gray-200 py-6">
                     <h3 className="-my-3 flow-root">
                       {/* <!-- Expand/collapse section button --> */}
                       <button
                         type="button"
+                        onClick={toggleIsOpenCategory}
                         className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
                         aria-controls="filter-section-1"
                         aria-expanded="false"
@@ -687,8 +553,7 @@ export default function Home() {
                         </span>
                       </button>
                     </h3>
-                    {/* <!-- Filter section, show/hide based on section state. --> */}
-                    {false && (
+                    {isOpenCategory && (
                       <div className="pt-6" id="filter-section-1">
                         <div className="space-y-4">
                           <div className="flex items-center">
@@ -703,7 +568,7 @@ export default function Home() {
                               htmlFor="filter-category-0"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              New Arrivals
+                              Forntend
                             </label>
                           </div>
                           <div className="flex items-center">
@@ -718,7 +583,7 @@ export default function Home() {
                               htmlFor="filter-category-1"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              Sale
+                              Backend
                             </label>
                           </div>
                           <div className="flex items-center">
@@ -734,7 +599,7 @@ export default function Home() {
                               htmlFor="filter-category-2"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              Travel
+                              System kontroli wersji
                             </label>
                           </div>
                           <div className="flex items-center">
@@ -749,22 +614,7 @@ export default function Home() {
                               htmlFor="filter-category-3"
                               className="ml-3 text-sm text-gray-600"
                             >
-                              Organization
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-category-4"
-                              name="category[]"
-                              value="accessories"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-category-4"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Accessories
+                              Bazy danych
                             </label>
                           </div>
                         </div>
@@ -780,9 +630,7 @@ export default function Home() {
                       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
                         Dostępne kursy:
                       </h2>
-
                       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-                        {/* products */}
                         {courses.map((course, index) => (
                           <div key={index} className="group relative">
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
@@ -809,11 +657,11 @@ export default function Home() {
                             </div>
                           </div>
                         ))}
-                        {/* product */}
                       </div>
                     </div>
                   </div>
                 </div>
+                {/* products */}
               </div>
             </section>
           </main>
