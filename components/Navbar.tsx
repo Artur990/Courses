@@ -8,7 +8,7 @@ import SingInButton from "./SignInButton";
 import { getServerSession } from "next-auth";
 import { AiFillGithub } from "react-icons/ai";
 // import NavbarMobile from "./NavbarMobile";
-import Courses from "./Courses";
+import Courses from "./CoursesMenu";
 import CoursesMobile from "./CoursesMobile";
 
 interface NavProps {}

@@ -3,12 +3,14 @@ import { type VariantProps, cva } from "class-variance-authority";
 import React, { FC, forwardRef, HTMLAttributes } from "react";
 
 export const paragraphVariants = cva(
-  "max-w-prose text-slate-700 dark:text-slate-300 mb-2 text-center",
+  "max-w-prose text-slate-700  mb-2 text-center",
   {
     variants: {
       size: {
         default: "text-base sm:text-lg",
         sm: "text-sm sm:text-base",
+        lg: "text-lg sm:text-xl",
+        xl: "text-xl sm:text-2xl",
       },
     },
     defaultVariants: {

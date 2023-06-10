@@ -5,6 +5,9 @@ import { FC } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { GrReactjs } from "react-icons/gr";
 import { TbBrandJavascript } from "react-icons/tb";
+import LargeHeading from "./ui/LargeHeading";
+import Paragraph from "./ui/Paragraph";
+import { buttonVariants } from "./ui/Button";
 interface CoursesProps {
   category: string[];
 }
@@ -13,7 +16,7 @@ const Courses: FC<MenuItem> = ({
   icon,
   title,
   name,
-  future,
+  feature,
   link,
   description,
   descriptionCourses,
@@ -29,7 +32,7 @@ const Courses: FC<MenuItem> = ({
         <nav aria-label="Breadcrumb">
           <ol
             role="list"
-            className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+            className="mx-auto flex max-w-2xl items-center space-x-0 px-2 sm:px-6 lg:max-w-7xl lg:px-8"
           >
             {category.map((item) => {
               return (
@@ -37,7 +40,7 @@ const Courses: FC<MenuItem> = ({
                   <div className="flex items-center">
                     <Link
                       href="#"
-                      className="mr-2 text-sm font-medium text-gray-900"
+                      className={buttonVariants({ variant: "link" })}
                     >
                       {item}
                     </Link>
@@ -47,7 +50,7 @@ const Courses: FC<MenuItem> = ({
                       viewBox="0 0 16 20"
                       fill="currentColor"
                       aria-hidden="true"
-                      className="h-5 w-4 text-gray-300"
+                      className="h-5 w-4 text-gray-600"
                     >
                       <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
                     </svg>
@@ -59,7 +62,7 @@ const Courses: FC<MenuItem> = ({
               <div className="flex items-center">
                 <Link
                   href="JavaScript"
-                  className="mr-2 text-sm font-medium text-gray-900"
+                  className={buttonVariants({ variant: "link" })}
                 >
                   {title}
                 </Link>
@@ -81,19 +84,21 @@ const Courses: FC<MenuItem> = ({
         {/*  Courses info  */}
         <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
           <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            <LargeHeading size="lg" className="tracking-tight text-gray-900">
               {name}
-            </h1>
+            </LargeHeading>
           </div>
 
           {/*  Options  */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
-            <h2 className="sr-only">Product information</h2>
+            <LargeHeading className="sr-only">Product information</LargeHeading>
             <TbBrandJavascript className="h-full w-full object-cover object-center lg:h-1/2 lg:w-full" />
-            <p className="text-3xl tracking-tight text-gray-900">{price}</p>
+            <Paragraph size="xl" className="text-start tracking-tight ">
+              {price}
+            </Paragraph>
             {/*  Reviews */}
             <div className="mt-6">
-              <h3 className="sr-only">Reviews</h3>
+              <LargeHeading className="sr-only">Reviews</LargeHeading>
               <div className="flex items-center">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, index) => {
@@ -116,20 +121,23 @@ const Courses: FC<MenuItem> = ({
                     );
                   })}
                 </div>
-                <p className="sr-only">{stars} gwiazdek </p>
-                <a
+                <Paragraph className="sr-only">{stars} gwiazdek </Paragraph>
+                <Link
                   href="#"
                   className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   {review} recenzji
-                </a>
+                </Link>
               </div>
             </div>
 
             <form className="mt-10">
               <button
                 type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "full",
+                })}
               >
                 Dodaj do koszyka
               </button>
@@ -138,22 +146,24 @@ const Courses: FC<MenuItem> = ({
 
           <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
             <div>
-              <h3 className="sr-only">Opis</h3>
+              <LargeHeading className="sr-only">Opis</LargeHeading>
 
               <div className="space-y-6">
-                <p className="text-base text-gray-900">{descriptionCourses}</p>
+                <Paragraph>{descriptionCourses}</Paragraph>
               </div>
             </div>
 
             <div className="mt-10">
-              <h3 className="text-sm font-medium text-gray-900">cechy</h3>
+              <LargeHeading size="sm" className=" text-gray-900">
+                cechy
+              </LargeHeading>
 
               <div className="mt-4">
                 <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {future?.map((item) => {
+                  {feature?.map((item) => {
                     return (
                       <li key={item} className="text-gray-400">
-                        {item}
+                        <Paragraph className="text-start">{item}</Paragraph>
                       </li>
                     );
                   })}
@@ -162,11 +172,13 @@ const Courses: FC<MenuItem> = ({
             </div>
 
             <div className="mt-10">
-              <h2 className="text-sm font-medium text-gray-900">
+              <LargeHeading size="sm" className="f text-gray-900">
                 co jeszcze ?
-              </h2>
+              </LargeHeading>
               <div className="mt-4 space-y-6">
-                <p className="text-sm text-gray-600">{details}</p>
+                <Paragraph className="text-sm text-gray-600">
+                  {details}
+                </Paragraph>
               </div>
             </div>
           </div>

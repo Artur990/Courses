@@ -1,83 +1,111 @@
 "use client";
-import Paragraph from "@/components/ui/Paragraph";
 
+import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
-import Image from "next/image";
-import { GrReactjs } from "react-icons/gr";
-import { TbBrandJavascript } from "react-icons/tb";
-import { AiFillGithub } from "react-icons/ai";
-import { tr } from "date-fns/locale";
+import { menuItems } from "@/data/courses";
+import CoursesPage from "@/components/CoursesPage";
+// import { useRouter } from "next/router";
+import ReactPaginate from "react-paginate";
+
 export default function Home() {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
-  const [isOpenMenu, setIsOpenMenu] = useState(true);
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
-  const courses = [
-    {
-      icon: (
-        <AiFillGithub className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-      ),
-      title: "Courses GitHub",
-      category: "Programming",
-      price: "$35",
-    },
-    {
-      icon: (
-        <TbBrandJavascript className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-      ),
-      title: "Courses JavaScript",
-      category: "Programming",
-      price: "$35",
-    },
-    {
-      icon: (
-        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-      ),
-      title: "Courses React",
-      category: "Programming",
-      price: "$35",
-    },
-    {
-      icon: (
-        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-      ),
-      title: "Courses React",
-      category: "Programming",
-      price: "$35",
-    },
-    {
-      icon: (
-        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-      ),
-      title: "Courses React",
-      category: "Programming",
-      price: "$35",
-    },
-    {
-      icon: (
-        <GrReactjs className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-      ),
-      title: "Courses React",
-      category: "Programming",
-      price: "$35",
-    },
-  ];
 
+  const [sortedItems, setSortedItems] = useState(menuItems);
+
+  const handleSort = (sortType: string) => {
+    let sorted = [...menuItems];
+    switch (sortType) {
+      case "popular":
+        sorted.sort((a, b) => b.review - a.review);
+        toggleIsOpenSort();
+        break;
+      case "rated":
+        sorted.sort((a, b) => b.stars - a.stars);
+        toggleIsOpenSort();
+        break;
+      case "newest":
+        sorted.sort((a, b) => b.dataPremiery - a.dataPremiery);
+        toggleIsOpenSort();
+
+        break;
+      case "priceAsc":
+        sorted.sort((a, b) => a.price - b.price);
+        toggleIsOpenSort();
+        break;
+      case "priceDesc":
+        sorted.sort((a, b) => b.price - a.price);
+        toggleIsOpenSort();
+        break;
+      default:
+        sorted = menuItems;
+    }
+    setSortedItems(sorted);
+  };
+  const productsPerPage = 3; // Ilość produktów na stronę
+
+  // const router = useRouter();
+  // const { page } = router.query;
+  const page1 = "1";
+
+  const pageCount = Math.ceil(sortedItems.length / productsPerPage);
+  const offset = (parseInt(page1) - 1) * productsPerPage;
+  const currentPageProducts = sortedItems.slice(
+    offset,
+    offset + productsPerPage
+  );
+
+  const handlePageChange = (selected: any) => {
+    const page = selected.selected + 1;
+    console.log(1);
+    // router.push(`/products?page=${page}`);
+  };
+
+  const generatePageLinks = () => {
+    const links = [];
+
+    for (let i = 0; i < pageCount; i++) {
+      links.push(
+        <a
+          key={i}
+          href="#"
+          className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          onClick={() => handlePageChange(i)}
+        >
+          {i + 1}
+        </a>
+      );
+    }
+
+    return links;
+  };
+
+  const getUniqueTitles = (menuItems: any[]) => {
+    const uniqueTitles = menuItems.reduce((titles, course) => {
+      if (!titles.includes(course.title)) {
+        titles.push(course.title);
+      }
+      return titles;
+    }, []);
+    return uniqueTitles;
+  };
+
+  // Wewnątrz komponentu
+  const uniqueTitles = getUniqueTitles(menuItems);
+
+  const uniqueCategories = [...new Set(menuItems.map((item) => item.category))];
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
       {/* start  */}
       <div className="bg-white container">
         <div>
-          {/* <!--
-      Mobile filter dialog
-      
-      Off-canvas filters htmlFor mobile, show/hide based on off-canvas filters state.
-    --> */}
-
+          {/* <!--Mobile filter dialog */}
           <div
             className="relative z-40 top-10  mt-1 right-3   lg:hidden"
             role="dialog"
@@ -135,7 +163,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  {/* <!-- Filters --> */}
+                  {/* <!-- Filters  mobile--> */}
                   <form className="mt-4 border-t border-gray-200">
                     <h3 className="sr-only">kategorie</h3>
                     <ul
@@ -152,7 +180,6 @@ export default function Home() {
                           Inne
                         </a>
                       </li>
-                      {/* <li></li> */}
                     </ul>
 
                     <div className="border-t border-gray-200 px-4 py-6">
@@ -166,7 +193,7 @@ export default function Home() {
                           aria-expanded="false"
                         >
                           <span className="font-medium text-gray-900">
-                            Język
+                            Język Programowania
                           </span>
                           <span className="ml-6 flex items-center">
                             {/* <!-- Expand icon, show/hide based on section open state. --> */}
@@ -198,52 +225,95 @@ export default function Home() {
                       {isOpenLanguage && (
                         <div className="pt-6" id="filter-section-mobile-0">
                           <div className="space-y-6">
-                            <div className="flex items-center">
-                              <input
-                                id="filter-mobile-color-0"
-                                name="color[]"
-                                value="white"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            {uniqueTitles.map((title: any, index: any) => {
+                              return (
+                                <div key={index} className="flex items-center">
+                                  <input
+                                    id="filter-mobile-color-0"
+                                    name="title[]"
+                                    value="white"
+                                    type="checkbox"
+                                    onChange={() => handleTitleFilter(title)}
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                  />
+                                  <label
+                                    htmlFor="filter-mobile-color-0"
+                                    className="ml-3 min-w-0 flex-1 text-gray-500"
+                                  >
+                                    {title}
+                                  </label>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="border-t border-gray-200 px-4 py-6">
+                      <h3 className="-mx-2 -my-3 flow-root">
+                        {/* <!-- Expand/collapse section button --> */}
+                        <button
+                          type="button"
+                          onClick={toggleIsOpenLanguage}
+                          className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                          aria-controls="filter-section-mobile-0"
+                          aria-expanded="false"
+                        >
+                          <span className="font-medium text-gray-900">
+                            Category
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            {/* <!-- Expand icon, show/hide based on section open state. --> */}
+                            <svg
+                              className="h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                            </svg>
+                            {/* <!-- Collapse icon, show/hide based on section open state. --> */}
+                            <svg
+                              className="h-5 w-5"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                                clip-rule="evenodd"
                               />
-                              <label
-                                htmlFor="filter-mobile-color-0"
-                                className="ml-3 min-w-0 flex-1 text-gray-500"
-                              >
-                                Java Script
-                              </label>
-                            </div>
-                            <div className="flex items-center">
-                              <input
-                                id="filter-mobile-color-1"
-                                name="color[]"
-                                value="beige"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <label
-                                htmlFor="filter-mobile-color-1"
-                                className="ml-3 min-w-0 flex-1 text-gray-500"
-                              >
-                                Java
-                              </label>
-                            </div>
-                            <div className="flex items-center">
-                              <input
-                                id="filter-mobile-color-2"
-                                name="color[]"
-                                value="blue"
-                                type="checkbox"
-                                checked
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <label
-                                htmlFor="filter-mobile-color-2"
-                                className="ml-3 min-w-0 flex-1 text-gray-500"
-                              >
-                                Puthon
-                              </label>
-                            </div>
+                            </svg>
+                          </span>
+                        </button>
+                      </h3>
+                      {/* <!-- Filter section, show/hide based on section state. -->  */}
+                      {isOpenCategory && (
+                        <div className="pt-6" id="filter-section-mobile-0">
+                          <div className="space-y-6">
+                            {uniqueCategories.map((item: any, index: any) => {
+                              return (
+                                <div key={index} className="flex items-center">
+                                  <input
+                                    id="filter-mobile-color-0"
+                                    name="category[]"
+                                    value="white"
+                                    type="checkbox"
+                                    onChange={() =>
+                                      handleCategoryFilter(category)
+                                    }
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                  />
+                                  <label
+                                    htmlFor="filter-mobile-color-0"
+                                    className="ml-3 min-w-0 flex-1 text-gray-500"
+                                  >
+                                    {item}
+                                  </label>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
@@ -254,7 +324,7 @@ export default function Home() {
             </div>
           </div>
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {/* panel start  */}
+            {/* panel sort start  */}
             <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 mt-24">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
                 Nowe kursy
@@ -294,57 +364,52 @@ export default function Home() {
                   </div>
                   {isOpenSort && (
                     <div
-                      className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                       role="menu"
                       aria-orientation="vertical"
                       aria-labelledby="menu-button"
                     >
-                      <div className="py-1" role="none">
-                        {/* <!--
-                  Active: "bg-gray-100", Not Active: ""
-
-                  Selected: "font-medium text-gray-900", Not Selected: "text-gray-500"
-                --> */}
-                        <a
-                          href="#"
-                          className="font-medium text-gray-900 block px-4 py-2 text-sm"
+                      <div className="py-1 bg-gray-200" role="none">
+                        <button
+                          // href="#"
+                          className="text-gray-500 block px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
                           role="menuitem"
-                          id="menu-item-0"
+                          onClick={() => handleSort("popular")}
                         >
                           Njabradziej Popularne
-                        </a>
-                        <a
-                          href="#"
-                          className="text-gray-500 block px-4 py-2 text-sm"
+                        </button>
+                        <button
+                          // href="#"
+                          className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                           role="menuitem"
-                          id="menu-item-1"
+                          onClick={() => handleSort("rated")}
                         >
                           Najwyżej Oceniane
-                        </a>
-                        <a
-                          href="#"
-                          className="text-gray-500 block px-4 py-2 text-sm"
+                        </button>
+                        <button
+                          // href="#"
+                          className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                           role="menuitem"
-                          id="menu-item-2"
+                          onClick={() => handleSort("newest")}
                         >
                           Najnowsze
-                        </a>
-                        <a
-                          href="#"
-                          className="text-gray-500 block px-4 py-2 text-sm"
+                        </button>
+                        <button
+                          // href="#"
+                          className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                           role="menuitem"
-                          id="menu-item-3"
+                          onClick={() => handleSort("priceAsc")}
                         >
                           Cena: rosnąca
-                        </a>
-                        <a
-                          href="#"
-                          className="text-gray-500 block px-4 py-2 text-sm"
+                        </button>
+                        <button
+                          // href="#"
+                          className="text-gray-500 w-full text-start  block px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                           role="menuitem"
-                          id="menu-item-4"
+                          onClick={() => handleSort("priceDesc")}
                         >
                           Cena: malejąca
-                        </a>
+                        </button>
                       </div>
                     </div>
                   )}
@@ -389,6 +454,8 @@ export default function Home() {
                 </button>
               </div>
             </div>
+
+            {/* sort end */}
             {/* paneel */}
             <section aria-labelledby="products-heading" className="pb-24 pt-6">
               <h2 id="products-heading" className="sr-only">
@@ -396,7 +463,7 @@ export default function Home() {
               </h2>
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-                {/* <!-- Filters --> */}
+                {/* <!-- Filters  deskopt--> */}
                 <form className="hidden lg:block">
                   <h3 className="sr-only">Categories</h3>
                   <ul
@@ -454,66 +521,25 @@ export default function Home() {
                     {isOpenLanguage && (
                       <div className="pt-6" id="filter-section-0">
                         <div className="space-y-4">
-                          <div className="flex items-center">
-                            <input
-                              id="filter-color-0"
-                              name="color[]"
-                              value="white"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-color-0"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              JavaScript
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-color-1"
-                              name="color[]"
-                              value="beige"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-color-1"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Java
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-color-1"
-                              name="color[]"
-                              value="beige"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-color-1"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Python
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-color-1"
-                              name="color[]"
-                              value="beige"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-color-1"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              C++
-                            </label>
-                          </div>
+                          {uniqueTitles.map((title: any, index: any) => {
+                            return (
+                              <div key={index} className="flex items-center">
+                                <input
+                                  id="filter-mobile-color-0"
+                                  name="title[]"
+                                  value="white"
+                                  type="checkbox"
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label
+                                  htmlFor="filter-mobile-color-0"
+                                  className="ml-3 min-w-0 flex-1 text-gray-500"
+                                >
+                                  {title}
+                                </label>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -562,67 +588,25 @@ export default function Home() {
                     {isOpenCategory && (
                       <div className="pt-6" id="filter-section-1">
                         <div className="space-y-4">
-                          <div className="flex items-center">
-                            <input
-                              id="filter-category-0"
-                              name="category[]"
-                              value="new-arrivals"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-category-0"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Forntend
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-category-1"
-                              name="category[]"
-                              value="sale"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-category-1"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Backend
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-category-2"
-                              name="category[]"
-                              value="travel"
-                              type="checkbox"
-                              checked
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-category-2"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              System kontroli wersji
-                            </label>
-                          </div>
-                          <div className="flex items-center">
-                            <input
-                              id="filter-category-3"
-                              name="category[]"
-                              value="organization"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor="filter-category-3"
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              Bazy danych
-                            </label>
-                          </div>
+                          {uniqueCategories.map((item: any, index: any) => {
+                            return (
+                              <div key={index} className="flex items-center">
+                                <input
+                                  id="filter-category-0"
+                                  name="category[]"
+                                  value="new-arrivals"
+                                  type="checkbox"
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label
+                                  htmlFor="filter-category-0"
+                                  className="ml-3 text-sm text-gray-600"
+                                >
+                                  {item}
+                                </label>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -630,47 +614,72 @@ export default function Home() {
                 </form>
 
                 {/* <!-- Product grid --> */}
-                <div className="lg:col-span-3">
-                  <div className="container ">
-                    <div className="mx-auto  px-4 py-2 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-                        Dostępne kursy:
-                      </h2>
-                      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-                        {courses.map((course, index) => (
-                          <div key={index} className="group relative">
-                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                              {course.icon}
-                            </div>
-                            <div className="mt-4 flex justify-between">
-                              <div>
-                                <h3 className="text-sm text-gray-700">
-                                  <a href={`courses/${course.title}`}>
-                                    <span
-                                      aria-hidden="true"
-                                      className="absolute inset-0"
-                                    ></span>
-                                    {course.title}
-                                  </a>
-                                </h3>
-                                <p className="mt-1 text-sm text-gray-500">
-                                  {course.category}
-                                </p>
-                              </div>
-                              <p className="text-sm font-medium text-gray-900">
-                                {course.price}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <CoursesPage menuItems={currentPageProducts} />
                 {/* products */}
+                {/* <ReactPaginate
+                  previousLabel={"Poprzednia"}
+                  nextLabel={"Następna"}
+                  breakLabel={"..."}
+                  pageCount={pageCount}
+                  onPageChange={handlePageChange}
+                  containerClassName={"pagination"}
+                  activeClassName={"active"}
+                /> */}
               </div>
             </section>
           </main>
+          <div className="flex items-center justify-center border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+            {/* Reszta kodu */}
+            <div>
+              <nav
+                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
+              >
+                {/* Poprzednie strony */}
+                <a
+                  href="#"
+                  className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600"
+                >
+                  <span className="sr-only">Previous</span>
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </a>
+
+                {/* Strony */}
+                {generatePageLinks()}
+
+                {/* Następne strony */}
+                <a
+                  href="#"
+                  className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                >
+                  <span className="sr-only">Next</span>
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </a>
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </main>
