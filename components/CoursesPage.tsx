@@ -14,7 +14,7 @@ const CoursesPage = ({ menuItems }: any) => {
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
             {menuItems.map((course: any, index: any) => (
               <div key={index} className="group relative">
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80 flex justify-center items-center">
+                <div className="aspect-h-1 aspect-w-1 w-full h-80 overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80 flex justify-center items-center">
                   <h1 className="text-6xl font-extrabold">{course.icon}</h1>
                 </div>
                 <div className="mt-4 flex justify-between">

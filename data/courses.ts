@@ -14,7 +14,7 @@ export interface MenuItem {
   review: number;
   stars: number;
   category: string;
-  dataPremiery: Date;
+  dataPremiery: any;
 }
 
 export const menuItems: MenuItem[] = [
@@ -138,7 +138,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 32,
+    price: 35,
     review: 92,
     stars: 4,
     category: "Bazy danych",
