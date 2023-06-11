@@ -1,4 +1,4 @@
-import { menuItems } from "@/data/courses";
+import { menuItems } from "../../data/courses";
 import Link from "next/link";
 import { FC } from "react";
 

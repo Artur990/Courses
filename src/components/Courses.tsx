@@ -1,4 +1,4 @@
-import { MenuItem, menuItems } from "@/data/courses";
+import { MenuItem, menuItems } from "../../data/courses";
 import { tr } from "date-fns/locale";
 import Link from "next/link";
 import { FC } from "react";
@@ -8,11 +8,8 @@ import { TbBrandJavascript } from "react-icons/tb";
 import LargeHeading from "./ui/LargeHeading";
 import Paragraph from "./ui/Paragraph";
 import { buttonVariants } from "./ui/Button";
-interface CoursesProps {
-  category: string[];
-}
 
-const Courses: FC<MenuItem> = ({
+const Courses: FC<any> = ({
   icon,
   title,
   name,
@@ -34,30 +31,27 @@ const Courses: FC<MenuItem> = ({
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-0 px-2 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {category.map((item) => {
-              return (
-                <li key={item}>
-                  <div className="flex items-center">
-                    <Link
-                      href="#"
-                      className={buttonVariants({ variant: "link" })}
-                    >
-                      {item}
-                    </Link>
-                    <svg
-                      width="16"
-                      height="20"
-                      viewBox="0 0 16 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                      className="h-5 w-4 text-gray-600"
-                    >
-                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                    </svg>
-                  </div>
-                </li>
-              );
-            })}
+            {/* {category.map((item) => {
+              return ( */}
+            <li>
+              <div className="flex items-center">
+                <Link href="#" className={buttonVariants({ variant: "link" })}>
+                  {category}
+                </Link>
+                <svg
+                  width="16"
+                  height="20"
+                  viewBox="0 0 16 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="h-5 w-4 text-gray-600"
+                >
+                  <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                </svg>
+              </div>
+            </li>
+            {/* ); */}
+            {/* })} */}
             <li>
               <div className="flex items-center">
                 <Link
@@ -92,9 +86,12 @@ const Courses: FC<MenuItem> = ({
           {/*  Options  */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <LargeHeading className="sr-only">Product information</LargeHeading>
-            <TbBrandJavascript className="h-full w-full object-cover object-center lg:h-1/2 lg:w-full" />
+            <h1 className="h-full w-full object-cover object-center lg:h-1/2 lg:w-full">
+              {icon}
+            </h1>
+            {/* // ???? */}
             <Paragraph size="xl" className="text-start tracking-tight ">
-              {price}
+              {price} zł
             </Paragraph>
             {/*  Reviews */}
             <div className="mt-6">
@@ -149,7 +146,9 @@ const Courses: FC<MenuItem> = ({
               <LargeHeading className="sr-only">Opis</LargeHeading>
 
               <div className="space-y-6">
-                <Paragraph>{descriptionCourses}</Paragraph>
+                <Paragraph className="text-start">
+                  {descriptionCourses}
+                </Paragraph>
               </div>
             </div>
 
@@ -160,13 +159,13 @@ const Courses: FC<MenuItem> = ({
 
               <div className="mt-4">
                 <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {feature?.map((item) => {
-                    return (
-                      <li key={item} className="text-gray-400">
-                        <Paragraph className="text-start">{item}</Paragraph>
-                      </li>
-                    );
-                  })}
+                  {/* {feature.map((item: any) => { */}
+                  {/* return ( */}
+                  <li className="text-gray-400">
+                    <Paragraph className="text-start">{feature}</Paragraph>
+                  </li>
+                  {/* ); */}
+                  {/* })} */}
                 </ul>
               </div>
             </div>
@@ -176,7 +175,7 @@ const Courses: FC<MenuItem> = ({
                 co jeszcze ?
               </LargeHeading>
               <div className="mt-4 space-y-6">
-                <Paragraph className="text-sm text-gray-600">
+                <Paragraph className="text-sm text-start text-gray-600">
                   {details}
                 </Paragraph>
               </div>

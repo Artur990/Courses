@@ -23,7 +23,7 @@ export const menuItems: MenuItem[] = [
     title: "GitHub",
     name: "Git - System kontroli wersji",
     feature: ["Tworzenie i zarządzanie repozytoriami", "Współpraca zespołowa"],
-    link: "github",
+    link: "gitHub",
     description: "System kontroli wersji",
     descriptionCourses:
       "Kurs dotyczący narzędzia Git, które jest powszechnie stosowane do zarządzania kodem źródłowym i współpracy programistów.",
@@ -45,7 +45,7 @@ export const menuItems: MenuItem[] = [
       "Asynchroniczność",
       "Manipulacja DOM",
     ],
-    link: "javascript",
+    link: "javaScript",
     description: "Język programowania",
     descriptionCourses:
       "Kurs JavaScript to kompleksowe szkolenie, które zapewnia pełen przegląd tego popularnego skryptowego języka programowania.",
@@ -110,7 +110,7 @@ export const menuItems: MenuItem[] = [
       "Relacje między tabelami",
       "Indeksy, widoki i procedury składowane",
     ],
-    link: "sql",
+    link: "SQL",
     description: "Język zapytań do baz danych",
     descriptionCourses:
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
@@ -132,7 +132,7 @@ export const menuItems: MenuItem[] = [
       "Relacje między tabelami",
       "Indeksy, widoki i procedury składowane",
     ],
-    link: "sql",
+    link: "SQL",
     description: "Język zapytań do baz danych",
     descriptionCourses:
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",

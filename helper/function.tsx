@@ -2,7 +2,7 @@ export const generatePageLinks = ({ pageCount }: any) => {
   const links = [];
   console.log(pageCount);
   // pageCount = 2;
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < pageCount; i++) {
     links.push(
       <a
         key={i}

@@ -1,4 +1,4 @@
-import { menuItems } from "@/data/courses";
+import { menuItems } from "../../data/courses";
 import { FC } from "react";
 
 type CoursesPageProps = typeof menuItems;
@@ -20,7 +20,7 @@ const CoursesPage = ({ menuItems }: any) => {
                 <div className="mt-4 flex justify-between">
                   <div>
                     <h3 className="text-sm text-gray-700">
-                      <a href={`courses/${course.title}`}>
+                      <a href={`courses/${course.link}`}>
                         <span
                           aria-hidden="true"
                           className="absolute inset-0"

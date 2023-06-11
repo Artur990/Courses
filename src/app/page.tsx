@@ -2,13 +2,14 @@
 import React from "react";
 import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
-import { menuItems } from "@/data/courses";
+import { menuItems } from "../../data/courses";
 import CoursesPage from "@/components/CoursesPage";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import ReactPaginate from "react-paginate";
-import { generatePageLinks } from "@/helper/function";
+import { generatePageLinks } from "../../helper/function";
 import { set } from "date-fns";
 import { buttonVariants } from "@/components/ui/Button";
+import Link from "next/link";
 
 export default function Home() {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
@@ -187,7 +188,7 @@ export default function Home() {
 
   // section pagestation
   const productsPerPage = 3; // Ilość produktów na stronę
-  // const router = useRouter();
+  const router = useRouter();
   // const { page } = router.query;
   const page1 = "1";
 
@@ -244,7 +245,7 @@ export default function Home() {
                     role="list"
                     className="px-2 py-3 font-medium text-gray-900"
                   >
-                    <h2>Twoje Filtry:</h2>
+                    <Link href="/Mam">Twoje Filtry:</Link>
                     <li>
                       <a href="#" className="block px-2 py-3">
                         {filterOptions.categoryFilter}
