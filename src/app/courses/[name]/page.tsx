@@ -20,15 +20,9 @@ const Page = ({ params }: any) => {
   );
   console.log(menuItem1);
   return (
-    <>
-      {/* {menuItems.map((item, i) => {
-        return (
-          <div key={i}> */}
+    <section className="mt-20">
       <Courses {...menuItem1} />
-      {/* </div> */}
-      {/* ); */}
-      {/* })} */}
-    </>
+    </section>
   );
 };
 

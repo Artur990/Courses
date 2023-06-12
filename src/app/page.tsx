@@ -1,22 +1,24 @@
 "use client";
+
 import React from "react";
-import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
 import { menuItems } from "../../data/courses";
 import CoursesPage from "@/components/CoursesPage";
 import { useRouter } from "next/navigation";
-import ReactPaginate from "react-paginate";
 import { generatePageLinks } from "../../helper/function";
-import { set } from "date-fns";
-import { buttonVariants } from "@/components/ui/Button";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/Button";
+import { AiOutlineCheck } from "react-icons/ai";
 
-export default function Home() {
+export default function Home({ params }: any) {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [sortedItems, setSortedItems] = useState(menuItems);
+  const [sortType, setSortType] = useState("forYou");
+  const [checkedTitle, setCheckedTitle] = useState("");
+  const [checkedCategory, setCheckedCategory] = useState("");
   const [filterOptions, setFilterOptions] = useState({
     sortType: "",
     titleFilter: "",
@@ -31,24 +33,32 @@ export default function Home() {
   const handleSort = (sortType: string) => {
     let sorted = [...menuItems];
     switch (sortType) {
+      case "forYou":
+        sorted = [...menuItems];
+        break;
       case "popular":
         sorted.sort((a, b) => b.review - a.review);
+        setSortType("popular");
         setIsOpenSort(!isOpenSort);
         break;
       case "rated":
         sorted.sort((a, b) => b.stars - a.stars);
+        setSortType("rated");
         setIsOpenSort(!isOpenSort);
         break;
       case "newest":
         sorted.sort((a, b) => b.dataPremiery - a.dataPremiery);
+        setSortType("newest");
         setIsOpenSort(!isOpenSort);
         break;
       case "priceAsc":
         sorted.sort((a, b) => a.price - b.price);
+        setSortType("priceAsc");
         setIsOpenSort(!isOpenSort);
         break;
       case "priceDesc":
         sorted.sort((a, b) => b.price - a.price);
+        setSortType("priceDesc");
         setIsOpenSort(!isOpenSort);
         break;
       default:
@@ -82,11 +92,13 @@ export default function Home() {
     }
 
     if (isChecked) {
+      setCheckedTitle(selectedTitle);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: selectedTitle,
       }));
     } else {
+      setCheckedTitle("");
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: "",
@@ -111,11 +123,13 @@ export default function Home() {
     }
 
     if (isChecked) {
+      setCheckedCategory(selectedCategory);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         categoryFilter: selectedCategory,
       }));
     } else {
+      setCheckedCategory("");
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         categoryFilter: "",
@@ -181,6 +195,17 @@ export default function Home() {
     }, []);
     return uniqueTitles;
   };
+  // function cleaer sorts
+  const clearFunction = () => {
+    setFilterOptions({
+      sortType: "",
+      titleFilter: "",
+      categoryFilter: "",
+    });
+    setCheckedCategory("");
+    setCheckedTitle("");
+  };
+
   // function to get unique values end
   // wyświetlanie stron
   const uniqueCategories = getUniquatCategories(menuItems);
@@ -188,18 +213,39 @@ export default function Home() {
 
   // section pagestation
   const productsPerPage = 3; // Ilość produktów na stronę
-  const router = useRouter();
-  // const { page } = router.query;
-  const page1 = "1";
 
   const pageCount = Math.ceil(sortedItems.length / productsPerPage);
-  console.log(pageCount);
-  const offset = (parseInt(page1) - 1) * productsPerPage;
+  const offset = (parseInt(params.page) - 1) * productsPerPage;
   const currentPageProducts = sortedItems.slice(
     offset,
     offset + productsPerPage
   );
-  // section pagestation end
+  const [currentPage, setCurrentPage] = useState(+params.page || 1);
+
+  const router = useRouter();
+  React.useEffect(() => {
+    if (pageCount === 1) {
+      setCurrentPage(1);
+      router.replace("/1");
+    }
+  }, [sortedItems, filterOptions, menuItems]);
+
+  const handlePageClickNext = () => {
+    if (currentPage >= pageCount) return;
+    const nextPage = currentPage + 1;
+    const newPath = `/${nextPage}`;
+    setCurrentPage(nextPage);
+    router.replace(newPath);
+  };
+
+  const handlePageClickPrevious = () => {
+    if (currentPage > 1) {
+      const previousPage = currentPage - 1;
+      const newPath = `/${previousPage}`;
+      setCurrentPage(previousPage);
+      router.replace(newPath);
+    }
+  };
 
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
@@ -245,7 +291,7 @@ export default function Home() {
                     role="list"
                     className="px-2 py-3 font-medium text-gray-900"
                   >
-                    <Link href="/Mam">Twoje Filtry:</Link>
+                    {/* <Link href="/Mam">Twoje Filtry:</Link>
                     <li>
                       <a href="#" className="block px-2 py-3">
                         {filterOptions.categoryFilter}
@@ -260,20 +306,14 @@ export default function Home() {
                       <a href="#" className="block px-2 py-3">
                         {filterOptions.sortType}
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <button
                         className={buttonVariants({
                           size: "sm",
                           variant: "outline",
                         })}
-                        onClick={() =>
-                          setFilterOptions({
-                            sortType: "",
-                            titleFilter: "",
-                            categoryFilter: "",
-                          })
-                        }
+                        onClick={clearFunction}
                       >
                         Wyczyść
                       </button>
@@ -290,9 +330,12 @@ export default function Home() {
                         aria-controls="filter-section-mobile-0"
                         aria-expanded="false"
                       >
-                        <span className="font-medium text-gray-900">
-                          Język Programowania
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900 text-start">
+                            Języki Programowania
+                          </span>
+                          <span className="text-start">{checkedTitle}</span>
+                        </div>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
@@ -327,16 +370,16 @@ export default function Home() {
                             return (
                               <div key={index} className="flex items-center">
                                 <input
-                                  id="filter-mobile-color-0"
+                                  id={`filter-mobile-color-${index}`}
                                   name="title[]"
                                   value={title}
                                   type="checkbox"
-                                  // checked={isChecked} // Dodaj to
+                                  checked={title === checkedTitle}
                                   onChange={handleTitleFilter}
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
-                                  htmlFor="filter-mobile-color-0"
+                                  htmlFor={`filter-mobile-color-${index}`}
                                   className="ml-3 min-w-0 flex-1 text-gray-500"
                                 >
                                   {title}
@@ -358,9 +401,12 @@ export default function Home() {
                         aria-controls="filter-section-mobile-0"
                         aria-expanded="false"
                       >
-                        <span className="font-medium text-gray-900">
-                          Category
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900 text-start">
+                            Kategorie
+                          </span>
+                          <span className="text-start">{checkedCategory}</span>
+                        </div>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
@@ -398,6 +444,7 @@ export default function Home() {
                                 name="category[]"
                                 value={category}
                                 type="checkbox"
+                                checked={category === checkedCategory}
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 onChange={handleTitleCategory}
                               />
@@ -457,7 +504,7 @@ export default function Home() {
                 </div>
                 {isOpenSort && (
                   <div
-                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
@@ -465,43 +512,69 @@ export default function Home() {
                     <div className="py-1 bg-gray-200" role="none">
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 flex justify-between px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("popular")}
                       >
-                        Njabradziej Popularne
+                        <span>Njabradziej Popularne</span>
+                        {sortType === "popular" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className=" text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("rated")}
                       >
-                        Najwyżej Oceniane
+                        <span>Najwyżej Oceniane</span>
+                        {sortType === "rated" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("newest")}
                       >
-                        Najnowsze
+                        <span>Najnowższe</span>
+                        {sortType === "newest" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("priceAsc")}
                       >
-                        Cena: rosnąca
+                        <span>Cena: rosnąca</span>
+                        {sortType === "priceAsc" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 w-full text-start  block px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("priceDesc")}
                       >
-                        Cena: malejąca
+                        <span>Cena: malejąca</span>
+                        {sortType === "priceDesc" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
+                      </button>
+                      <button
+                        // href="#"
+                        className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        role="menuitem"
+                        onClick={() => handleSort("forYou")}
+                      >
+                        <span>Wybrane dla Ciebie</span>
+                        {sortType === "forYou" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -559,33 +632,18 @@ export default function Home() {
               {/* <!-- Filters  deskopt--> */}
               <aside className="hidden lg:block">
                 <h3 className="sr-only">Categories</h3>
-                <h2>Twoje Filtry:</h2>
+                {/* <h2>Twoje Filtry:</h2> */}
                 <ul
                   role="list"
                   className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
                 >
-                  <li>
-                    <a href="#">{filterOptions.categoryFilter}</a>
-                  </li>
-                  <li>
-                    <a href="#">{filterOptions.titleFilter}</a>
-                  </li>
-                  <li>
-                    <a href="#">{filterOptions.sortType}</a>
-                  </li>
                   <li>
                     <button
                       className={buttonVariants({
                         size: "sm",
                         variant: "outline",
                       })}
-                      onClick={() =>
-                        setFilterOptions({
-                          sortType: "",
-                          titleFilter: "",
-                          categoryFilter: "",
-                        })
-                      }
+                      onClick={clearFunction}
                     >
                       Wyczyść
                     </button>
@@ -598,13 +656,16 @@ export default function Home() {
                     <button
                       onClick={toggleIsOpenLanguage}
                       type="button"
-                      className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+                      className="flex w-full items-center  justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
                       aria-controls="filter-section-0"
                       aria-expanded="false"
                     >
-                      <span className="font-medium text-gray-900">
-                        Języki Programowania
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900 text-start">
+                          Języki Programowania
+                        </span>
+                        <span className="text-start">{checkedTitle}</span>
+                      </div>
                       <span className="ml-6 flex items-center">
                         {/* <!-- Expand icon, show/hide based on section open state. --> */}
                         <svg
@@ -633,21 +694,22 @@ export default function Home() {
                   </h3>
                   {/* <!-- Filter section, show/hide based on section state. --> */}
                   {isOpenLanguage && (
-                    <div className="pt-6" id="filter-section-0">
-                      <div className="space-y-4">
+                    <div className="pt-6" id="filter-section-mobile-0">
+                      <div className="space-y-6">
                         {uniqueTitles.map((title: any, index: any) => {
                           return (
                             <div key={index} className="flex items-center">
                               <input
-                                id="filter-mobile-color-0"
+                                id={`filter-mobile-color-${index}`}
                                 name="title[]"
                                 value={title}
                                 type="checkbox"
+                                checked={title === checkedTitle}
                                 onChange={handleTitleFilter}
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               />
                               <label
-                                htmlFor="filter-mobile-color-0"
+                                htmlFor={`filter-mobile-color-${index}`}
                                 className="ml-3 min-w-0 flex-1 text-gray-500"
                               >
                                 {title}
@@ -672,7 +734,14 @@ export default function Home() {
                       aria-expanded="false"
                     >
                       <span className="font-medium text-gray-900">
-                        Category
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900 text-start">
+                            Kategorie
+                          </span>
+                          <span className="text-start text-gray-400">
+                            {checkedCategory}
+                          </span>
+                        </div>
                       </span>
                       <span className="ml-6 flex items-center">
                         {/* <!-- Expand icon, show/hide based on section open state. --> */}
@@ -711,6 +780,7 @@ export default function Home() {
                               name="category[]"
                               value={category}
                               type="checkbox"
+                              checked={category === checkedCategory}
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               onChange={handleTitleCategory}
                             />
@@ -741,8 +811,8 @@ export default function Home() {
               aria-label="Pagination"
             >
               {/* Poprzednie strony */}
-              <a
-                href="#"
+              <button
+                onClick={handlePageClickPrevious}
                 className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600"
               >
                 <span className="sr-only">Previous</span>
@@ -758,14 +828,15 @@ export default function Home() {
                     clip-rule="evenodd"
                   />
                 </svg>
-              </a>
+              </button>
 
               {/* Strony */}
-              {generatePageLinks(pageCount)}
+              {generatePageLinks(pageCount, router)}
 
               {/* Następne strony */}
-              <a
-                href="#"
+              <button
+                // href={`/${params.pagt} + 1`}
+                onClick={handlePageClickNext}
                 className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
                 <span className="sr-only">Next</span>
@@ -781,7 +852,7 @@ export default function Home() {
                     clip-rule="evenodd"
                   />
                 </svg>
-              </a>
+              </button>
             </nav>
           </div>
         </div>

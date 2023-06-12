@@ -1,28 +1,54 @@
 "use client";
-import React from "react";
+import React, { use } from "react";
 import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
 import { menuItems } from "../../../data/courses";
 import CoursesPage from "@/components/CoursesPage";
 // import { useRouter } from "next/router";
 import ReactPaginate from "react-paginate";
-import { generatePageLinks } from "../../../helper/function";
+// import { generatePageLinks } from "../../../helper/function";
 import { set } from "date-fns";
 import { buttonVariants } from "@/components/ui/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { fi } from "date-fns/locale";
+import { AiOutlineCheck } from "react-icons/ai";
+// import { useRouter } from 'next/router';
+import { useFilterOptions, useSortedItems } from "../../hooks/useFilters";
+import { getUniqueCategories, getUniqueTitles } from "../../helper/helpers";
 
-const Home = ({ params }: any) => {
+export default function Home({ params }: any) {
+  const router = useRouter();
+
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [sortedItems, setSortedItems] = useState(menuItems);
-  const [filterOptions, setFilterOptions] = useState({
-    sortType: "",
-    titleFilter: "",
-    categoryFilter: "",
-  });
+  // const [sortedItems, setSortedItems] = useState(menuItems);
+  // const [sortType, setSortType] = useState("forYou");
+  const [checkedTitle, setCheckedTitle] = useState("");
+  const [checkedCategory, setCheckedCategory] = useState("");
+  // const [filterOptions, setFilterOptions] = useState({
+  //   sortType: "",
+  //   titleFilter: "",
+  //   categoryFilter: "",
+  // });
+
+  // const router = useRouter();
+  // const menuItems = []; // Twoja tablica menuItems
+
+  const {
+    filterOptions,
+    setSortType,
+    setTitleFilter,
+    setCategoryFilter,
+    setFilterOptions,
+  } = useFilterOptions();
+
+  const sortedItems = useSortedItems(menuItems, filterOptions);
+
+  const uniqueCategories = getUniqueCategories(menuItems);
+  const uniqueTitles = getUniqueTitles(menuItems);
 
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
@@ -32,24 +58,32 @@ const Home = ({ params }: any) => {
   const handleSort = (sortType: string) => {
     let sorted = [...menuItems];
     switch (sortType) {
+      case "forYou":
+        sorted = [...menuItems];
+        break;
       case "popular":
         sorted.sort((a, b) => b.review - a.review);
+        setSortType("popular");
         setIsOpenSort(!isOpenSort);
         break;
       case "rated":
         sorted.sort((a, b) => b.stars - a.stars);
+        setSortType("rated");
         setIsOpenSort(!isOpenSort);
         break;
       case "newest":
         sorted.sort((a, b) => b.dataPremiery - a.dataPremiery);
+        setSortType("newest");
         setIsOpenSort(!isOpenSort);
         break;
       case "priceAsc":
         sorted.sort((a, b) => a.price - b.price);
+        setSortType("priceAsc");
         setIsOpenSort(!isOpenSort);
         break;
       case "priceDesc":
         sorted.sort((a, b) => b.price - a.price);
+        setSortType("priceDesc");
         setIsOpenSort(!isOpenSort);
         break;
       default:
@@ -67,6 +101,7 @@ const Home = ({ params }: any) => {
 
   // function to get unique values
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // router.back();
     const isChecked = event.target.checked;
     const selectedTitle = event.target.value;
 
@@ -83,11 +118,13 @@ const Home = ({ params }: any) => {
     }
 
     if (isChecked) {
+      setCheckedTitle(selectedTitle);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: selectedTitle,
       }));
     } else {
+      setCheckedTitle("");
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: "",
@@ -96,6 +133,7 @@ const Home = ({ params }: any) => {
   };
 
   const handleTitleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // router.back();
     const isChecked = event.target.checked;
     const selectedCategory = event.target.value;
 
@@ -112,11 +150,13 @@ const Home = ({ params }: any) => {
     }
 
     if (isChecked) {
+      setCheckedCategory(selectedCategory);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         categoryFilter: selectedCategory,
       }));
     } else {
+      setCheckedCategory("");
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         categoryFilter: "",
@@ -173,19 +213,30 @@ const Home = ({ params }: any) => {
     return uniqueCategories;
   };
 
-  const getUniqueTitles = (menuItems: any[]) => {
-    const uniqueTitles = menuItems.reduce((titles, course) => {
-      if (!titles.includes(course.title)) {
-        titles.push(course.title);
-      }
-      return titles;
-    }, []);
-    return uniqueTitles;
+  // const getUniqueTitles = (menuItems: any[]) => {
+  //   const uniqueTitles = menuItems.reduce((titles, course) => {
+  //     if (!titles.includes(course.title)) {
+  //       titles.push(course.title);
+  //     }
+  //     return titles;
+  //   }, []);
+  //   return uniqueTitles;
+  // };
+  // function cleaer sorts
+  const clearFunction = () => {
+    // setFilterOptions({
+    //   sortType: "",
+    //   titleFilter: "",
+    //   categoryFilter: "",
+    // });
+    setCheckedCategory("");
+    setCheckedTitle("");
   };
+
   // function to get unique values end
   // wyświetlanie stron
-  const uniqueCategories = getUniquatCategories(menuItems);
-  const uniqueTitles = getUniqueTitles(menuItems);
+  // const uniqueCategories = getUniquatCategories(menuItems);
+  // const uniqueTitles = getUniqueTitles(menuItems);
 
   // section pagestation
   const productsPerPage = 3; // Ilość produktów na stronę
@@ -198,8 +249,13 @@ const Home = ({ params }: any) => {
   );
   const [currentPage, setCurrentPage] = useState(+params.page || 1);
 
-  // function to next page with curren params.page + 1
-  const router = useRouter();
+  React.useEffect(() => {
+    if (pageCount === 1) {
+      setCurrentPage(1);
+      router.replace("/1");
+    }
+  }, [sortedItems, filterOptions, menuItems]);
+
   const handlePageClickNext = () => {
     if (currentPage >= pageCount) return;
     const nextPage = currentPage + 1;
@@ -216,8 +272,25 @@ const Home = ({ params }: any) => {
       router.push(newPath);
     }
   };
+  const generatePageLinks = (pageCount: number, router: any) => {
+    // const router = useRouter()
+    const links = [];
 
-  // section pagestation end
+    for (let i = 0; i < pageCount; i++) {
+      links.push(
+        <button
+          key={i}
+          onClick={() => router.replace(`/${i + 1}`)}
+          className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          // onClick={() => handlePageChange(i)}
+        >
+          {i + 1}
+        </button>
+      );
+    }
+
+    return links;
+  };
 
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
@@ -263,7 +336,7 @@ const Home = ({ params }: any) => {
                     role="list"
                     className="px-2 py-3 font-medium text-gray-900"
                   >
-                    <Link href="/Mam">Twoje Filtry:</Link>
+                    {/* <Link href="/Mam">Twoje Filtry:</Link>
                     <li>
                       <a href="#" className="block px-2 py-3">
                         {filterOptions.categoryFilter}
@@ -278,20 +351,14 @@ const Home = ({ params }: any) => {
                       <a href="#" className="block px-2 py-3">
                         {filterOptions.sortType}
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <button
                         className={buttonVariants({
                           size: "sm",
                           variant: "outline",
                         })}
-                        onClick={() =>
-                          setFilterOptions({
-                            sortType: "",
-                            titleFilter: "",
-                            categoryFilter: "",
-                          })
-                        }
+                        onClick={clearFunction}
                       >
                         Wyczyść
                       </button>
@@ -304,13 +371,16 @@ const Home = ({ params }: any) => {
                       <button
                         type="button"
                         onClick={toggleIsOpenLanguage}
-                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                        className="flex w-full itereplacenoems-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
                         aria-controls="filter-section-mobile-0"
                         aria-expanded="false"
                       >
-                        <span className="font-medium text-gray-900">
-                          Język Programowania
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900 text-start">
+                            Języki Programowania
+                          </span>
+                          <span className="text-start">{checkedTitle}</span>
+                        </div>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
@@ -345,16 +415,16 @@ const Home = ({ params }: any) => {
                             return (
                               <div key={index} className="flex items-center">
                                 <input
-                                  id="filter-mobile-color-0"
+                                  id={`filter-mobile-color-${index}`}
                                   name="title[]"
                                   value={title}
                                   type="checkbox"
-                                  // checked={isChecked} // Dodaj to
+                                  checked={title === checkedTitle}
                                   onChange={handleTitleFilter}
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
-                                  htmlFor="filter-mobile-color-0"
+                                  htmlFor={`filter-mobile-color-${index}`}
                                   className="ml-3 min-w-0 flex-1 text-gray-500"
                                 >
                                   {title}
@@ -376,9 +446,12 @@ const Home = ({ params }: any) => {
                         aria-controls="filter-section-mobile-0"
                         aria-expanded="false"
                       >
-                        <span className="font-medium text-gray-900">
-                          Category
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900 text-start">
+                            Kategorie
+                          </span>
+                          <span className="text-start">{checkedCategory}</span>
+                        </div>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
@@ -416,6 +489,7 @@ const Home = ({ params }: any) => {
                                 name="category[]"
                                 value={category}
                                 type="checkbox"
+                                checked={category === checkedCategory}
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 onChange={handleTitleCategory}
                               />
@@ -440,7 +514,7 @@ const Home = ({ params }: any) => {
           {/* panel sort start  */}
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 mt-24">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              Nowe kursy
+              Nowe kursy[]
             </h1>
 
             <div className="flex items-center">
@@ -475,7 +549,7 @@ const Home = ({ params }: any) => {
                 </div>
                 {isOpenSort && (
                   <div
-                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
@@ -483,43 +557,69 @@ const Home = ({ params }: any) => {
                     <div className="py-1 bg-gray-200" role="none">
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 flex justify-between px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("popular")}
                       >
-                        Njabradziej Popularne
+                        <span>Njabradziej Popularne</span>
+                        {sortType === "popular" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className=" text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("rated")}
                       >
-                        Najwyżej Oceniane
+                        <span>Najwyżej Oceniane</span>
+                        {sortType === "rated" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("newest")}
                       >
-                        Najnowsze
+                        <span>Najnowższe</span>
+                        {sortType === "newest" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 block px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("priceAsc")}
                       >
-                        Cena: rosnąca
+                        <span>Cena: rosnąca</span>
+                        {sortType === "priceAsc" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                       <button
                         // href="#"
-                        className="text-gray-500 w-full text-start  block px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
                         onClick={() => handleSort("priceDesc")}
                       >
-                        Cena: malejąca
+                        <span>Cena: malejąca</span>
+                        {sortType === "priceDesc" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
+                      </button>
+                      <button
+                        // href="#"
+                        className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
+                        role="menuitem"
+                        onClick={() => handleSort("forYou")}
+                      >
+                        <span>Wybrane dla Ciebie</span>
+                        {sortType === "forYou" && (
+                          <AiOutlineCheck className="text-gray-700 w-6 h-6" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -577,33 +677,18 @@ const Home = ({ params }: any) => {
               {/* <!-- Filters  deskopt--> */}
               <aside className="hidden lg:block">
                 <h3 className="sr-only">Categories</h3>
-                <h2>Twoje Filtry:</h2>
+                {/* <h2>Twoje Filtry:</h2> */}
                 <ul
                   role="list"
                   className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
                 >
-                  <li>
-                    <a href="#">{filterOptions.categoryFilter}</a>
-                  </li>
-                  <li>
-                    <a href="#">{filterOptions.titleFilter}</a>
-                  </li>
-                  <li>
-                    <a href="#">{filterOptions.sortType}</a>
-                  </li>
                   <li>
                     <button
                       className={buttonVariants({
                         size: "sm",
                         variant: "outline",
                       })}
-                      onClick={() =>
-                        setFilterOptions({
-                          sortType: "",
-                          titleFilter: "",
-                          categoryFilter: "",
-                        })
-                      }
+                      onClick={clearFunction}
                     >
                       Wyczyść
                     </button>
@@ -616,13 +701,16 @@ const Home = ({ params }: any) => {
                     <button
                       onClick={toggleIsOpenLanguage}
                       type="button"
-                      className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
+                      className="flex w-full items-center  justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
                       aria-controls="filter-section-0"
                       aria-expanded="false"
                     >
-                      <span className="font-medium text-gray-900">
-                        Języki Programowania
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900 text-start">
+                          Języki Programowania
+                        </span>
+                        <span className="text-start">{checkedTitle}</span>
+                      </div>
                       <span className="ml-6 flex items-center">
                         {/* <!-- Expand icon, show/hide based on section open state. --> */}
                         <svg
@@ -651,21 +739,22 @@ const Home = ({ params }: any) => {
                   </h3>
                   {/* <!-- Filter section, show/hide based on section state. --> */}
                   {isOpenLanguage && (
-                    <div className="pt-6" id="filter-section-0">
-                      <div className="space-y-4">
+                    <div className="pt-6" id="filter-section-mobile-0">
+                      <div className="space-y-6">
                         {uniqueTitles.map((title: any, index: any) => {
                           return (
                             <div key={index} className="flex items-center">
                               <input
-                                id="filter-mobile-color-0"
+                                id={`filter-mobile-color-${index}`}
                                 name="title[]"
                                 value={title}
                                 type="checkbox"
+                                checked={title === checkedTitle}
                                 onChange={handleTitleFilter}
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               />
                               <label
-                                htmlFor="filter-mobile-color-0"
+                                htmlFor={`filter-mobile-color-${index}`}
                                 className="ml-3 min-w-0 flex-1 text-gray-500"
                               >
                                 {title}
@@ -690,7 +779,14 @@ const Home = ({ params }: any) => {
                       aria-expanded="false"
                     >
                       <span className="font-medium text-gray-900">
-                        Category
+                        <div className="flex flex-col">
+                          <span className="font-medium text-gray-900 text-start">
+                            Kategorie
+                          </span>
+                          <span className="text-start text-gray-400">
+                            {checkedCategory}
+                          </span>
+                        </div>
                       </span>
                       <span className="ml-6 flex items-center">
                         {/* <!-- Expand icon, show/hide based on section open state. --> */}
@@ -722,13 +818,13 @@ const Home = ({ params }: any) => {
                     <div className="pt-6" id="filter-section-1">
                       <div className="space-y-4">
                         {uniqueCategories.map((category: any, index: any) => (
-                          // {uniqueTitles.map((item: any, index: any) => (
                           <div key={index} className="flex items-center">
                             <input
                               id={`filter-category-${index}`}
                               name="category[]"
                               value={category}
                               type="checkbox"
+                              checked={category === checkedCategory}
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               onChange={handleTitleCategory}
                             />
@@ -739,8 +835,7 @@ const Home = ({ params }: any) => {
                               {category}
                             </label>
                           </div>
-                        ))}{" "}
-                        -
+                        ))}
                       </div>
                     </div>
                   )}
@@ -779,7 +874,7 @@ const Home = ({ params }: any) => {
               </button>
 
               {/* Strony */}
-              {generatePageLinks(pageCount)}
+              {generatePageLinks(pageCount, router)}
 
               {/* Następne strony */}
               <button
@@ -808,5 +903,4 @@ const Home = ({ params }: any) => {
       </div>
     </main>
   );
-};
-export default Home;
+}

@@ -19,7 +19,7 @@ const Navbar = ({}) => {
   const [isOpenMyCourses, setIsOpenMyCourses] = useState(false);
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
-  const toggleMenu = () => {
+  const toggleMenu = (): void => {
     setIsOpen(!isOpen);
   };
   const toggleMenuMyCourses = () => {
@@ -94,16 +94,16 @@ const Navbar = ({}) => {
                 />
               </svg>
             </button>
-            {isOpen && <Courses />}
+            {isOpen && <Courses toggleMenu={toggleMenu} />}
           </div>
           <Link
-            href="#"
+            href="blog"
             className={buttonVariants({ variant: "ghost", size: "sm" })}
           >
             Blog
           </Link>
           <Link
-            href="#"
+            href="nowosci"
             className={buttonVariants({ variant: "ghost", size: "sm" })}
           >
             Nowości

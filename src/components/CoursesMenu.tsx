@@ -5,14 +5,19 @@ import { AiFillGithub } from "react-icons/ai";
 import { GrReactjs } from "react-icons/gr";
 import { TbBrandJavascript } from "react-icons/tb";
 
-interface CoursesProps {}
+type CoursesProps = {
+  // Inne właściwości CoursesProps...
+  toggleMenu: () => void;
+};
 
-const CoursesMenu: FC<CoursesProps> = ({}) => {
+const CoursesMenu: FC<CoursesProps> = ({ toggleMenu }: CoursesProps) => {
   return (
     <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
       <div className="p-4">
         {menuItems.map((item, index) => (
-          <div
+          <Link
+            href={`courses/${item.link}`}
+            onClick={() => toggleMenu()}
             key={index}
             className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-300"
           >
@@ -20,15 +25,12 @@ const CoursesMenu: FC<CoursesProps> = ({}) => {
               {item.icon}
             </div>
             <div className="flex-auto">
-              <Link
-                href={item.link}
-                className="block font-semibold text-gray-900"
-              >
+              <h3 className="block font-semibold text-gray-900">
                 {item.title}
-              </Link>
+              </h3>
               <p className="mt-1 text-gray-600">{item.description}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

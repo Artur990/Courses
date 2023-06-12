@@ -86,9 +86,11 @@ const Courses: FC<any> = ({
           {/*  Options  */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <LargeHeading className="sr-only">Product information</LargeHeading>
-            <h1 className="h-full w-full object-cover object-center lg:h-1/2 lg:w-full">
-              {icon}
-            </h1>
+            <div className="flex h-full w-full justify-center items-center lg:h-1/2 lg:w-full">
+              <h1 className="h-full text-center w-full object-cover object-center text-7xl lg:h-1/2 lg:w-full">
+                {icon}
+              </h1>
+            </div>
             {/* // ???? */}
             <Paragraph size="xl" className="text-start tracking-tight ">
               {price} zł
