@@ -9,6 +9,7 @@ import { generatePageLinks } from "../../helper/function";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/Button";
 import { AiOutlineCheck } from "react-icons/ai";
+import page from "./courses/page";
 
 export default function Home({ params }: any) {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
@@ -215,12 +216,16 @@ export default function Home({ params }: any) {
   const productsPerPage = 3; // Ilość produktów na stronę
 
   const pageCount = Math.ceil(sortedItems.length / productsPerPage);
-  const offset = (parseInt(params.page) - 1) * productsPerPage;
+  const offset =
+    (parseInt(params.page === undefined ? 1 : params.page) - 1) *
+    productsPerPage;
   const currentPageProducts = sortedItems.slice(
     offset,
     offset + productsPerPage
   );
-  const [currentPage, setCurrentPage] = useState(+params.page || 1);
+  const [currentPage, setCurrentPage] = useState(
+    +params.page === undefined ? 1 : +params.page
+  );
 
   const router = useRouter();
   React.useEffect(() => {

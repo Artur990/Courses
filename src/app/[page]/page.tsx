@@ -10,42 +10,29 @@ import ReactPaginate from "react-paginate";
 import { set } from "date-fns";
 import { buttonVariants } from "@/components/ui/Button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { fi } from "date-fns/locale";
 import { AiOutlineCheck } from "react-icons/ai";
-// import { useRouter } from 'next/router';
-import { useFilterOptions, useSortedItems } from "../../hooks/useFilters";
-import { getUniqueCategories, getUniqueTitles } from "../../helper/helpers";
+import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
 
 export default function Home({ params }: any) {
   const router = useRouter();
-
+  // state open
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  // const [sortedItems, setSortedItems] = useState(menuItems);
-  // const [sortType, setSortType] = useState("forYou");
+  // state sort
+  const [sortedItems, setSortedItems] = useState(menuItems);
+  const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
-  // const [filterOptions, setFilterOptions] = useState({
-  //   sortType: "",
-  //   titleFilter: "",
-  //   categoryFilter: "",
-  // });
-
-  // const router = useRouter();
-  // const menuItems = []; // Twoja tablica menuItems
-
-  const {
-    filterOptions,
-    setSortType,
-    setTitleFilter,
-    setCategoryFilter,
-    setFilterOptions,
-  } = useFilterOptions();
-
-  const sortedItems = useSortedItems(menuItems, filterOptions);
+  const [filterOptions, setFilterOptions] = useState({
+    sortType: "",
+    titleFilter: "",
+    categoryFilter: "",
+  });
+  const [currentPage, setCurrentPage] = useState(+params.page || 1);
 
   const uniqueCategories = getUniqueCategories(menuItems);
   const uniqueTitles = getUniqueTitles(menuItems);
@@ -202,41 +189,16 @@ export default function Home({ params }: any) {
     setSortedItems(filteredItems);
   }, [filterOptions, menuItems]);
 
-  // function to get unique values
-  const getUniquatCategories = (menuItems: any[]) => {
-    const uniqueCategories = menuItems.reduce((categories, course) => {
-      if (!categories.includes(course.category)) {
-        categories.push(course.category);
-      }
-      return categories;
-    }, []);
-    return uniqueCategories;
-  };
-
-  // const getUniqueTitles = (menuItems: any[]) => {
-  //   const uniqueTitles = menuItems.reduce((titles, course) => {
-  //     if (!titles.includes(course.title)) {
-  //       titles.push(course.title);
-  //     }
-  //     return titles;
-  //   }, []);
-  //   return uniqueTitles;
-  // };
   // function cleaer sorts
   const clearFunction = () => {
-    // setFilterOptions({
-    //   sortType: "",
-    //   titleFilter: "",
-    //   categoryFilter: "",
-    // });
+    setFilterOptions({
+      sortType: "",
+      titleFilter: "",
+      categoryFilter: "",
+    });
     setCheckedCategory("");
     setCheckedTitle("");
   };
-
-  // function to get unique values end
-  // wyświetlanie stron
-  // const uniqueCategories = getUniquatCategories(menuItems);
-  // const uniqueTitles = getUniqueTitles(menuItems);
 
   // section pagestation
   const productsPerPage = 3; // Ilość produktów na stronę
@@ -247,7 +209,6 @@ export default function Home({ params }: any) {
     offset,
     offset + productsPerPage
   );
-  const [currentPage, setCurrentPage] = useState(+params.page || 1);
 
   React.useEffect(() => {
     if (pageCount === 1) {
