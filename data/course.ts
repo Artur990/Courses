@@ -12,15 +12,18 @@ export const materials: TMaterial = {
     sections: [
       {
         title: "Witamy w kursie",
-        content: "Wprowadzenie do kursu o języku JavaScript.",
+        content:
+          "Wprowadzenie do kursu o języku JavaScript. Kurs składa się z 5 sekcji, które zawierają łącznie 20 materiałów. Każdy materiał zawiera krótki opis oraz przykładowy kod. W niektórych materiałach znajdują się również zadania, które pomogą Ci utrwalić zdobytą wiedzę.",
       },
       {
         title: "Wymagania",
-        content: "Przegląd narzędzi i środowiska potrzebnych do nauki.",
+        content:
+          "Przegląd narzędzi i środowiska potrzebnych do nauki. Wymagania techniczne oraz zasoby pomocne w nauce JavaScriptu",
       },
       {
         title: "Visual Studio Code",
-        content: "Omówienie środowiska Visual Studio Code.",
+        content:
+          "Omówienie środowiska Visual Studio Code. Instalacja i konfiguracja. Przegląd przydatnych wtyczek. Przykładowe ustawienia.",
       },
       {
         title: "Podstawy kodowania w HTML i CSS",
