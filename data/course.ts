@@ -13,12 +13,12 @@ export const materials: TMaterial = {
       {
         title: "Witamy w kursie",
         content:
-          "Wprowadzenie do kursu o języku JavaScript. Kurs składa się z 5 sekcji, które zawierają łącznie 20 materiałów. Każdy materiał zawiera krótki opis oraz przykładowy kod. W niektórych materiałach znajdują się również zadania, które pomogą Ci utrwalić zdobytą wiedzę.",
+          "Wprowadzenie do kursu o języku JavaScript. Kurs składa się z 5 sekcji, które zawierają łącznie 20 materiałów. Każdy materiał zawiera krótki opis oraz przykładowy kod. W niektórych materiałach znajdują się również zadania, które pomogą Ci utrwalić zdobytą wiedzę. Nie mart się jeżeli nigdy nie miałeś stycznośc z tym jeżykime nauczym czię od nowas",
       },
       {
         title: "Wymagania",
         content:
-          "Przegląd narzędzi i środowiska potrzebnych do nauki. Wymagania techniczne oraz zasoby pomocne w nauce JavaScriptu",
+          "Przegląd narzędzi i środowiska potrzebnych do nauki. Wymagania techniczne oraz zasoby pomocne w nauce JavaScriptu, HTML i CSS. JavaScript w środowisku przeglądarki oraz na serwerze Node.js.",
       },
       {
         title: "Visual Studio Code",
