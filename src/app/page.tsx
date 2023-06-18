@@ -1,22 +1,28 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
-import { menuItems } from "../../data/courses";
-import CoursesPage from "@/components/CoursesPage";
-import { useRouter } from "next/navigation";
-import { generatePageLinks } from "../../helper/function";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/Button";
+import React, { useEffect, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
-import page from "./courses/page";
+import { useRouter } from "next/navigation";
+
+import { generatePageLinks } from "../../helper/function";
+import { menuItems } from "../../data/courses";
+
+import CoursesPage from "@/components/CoursesPage";
+import { buttonVariants } from "@/components/ui/Button";
+import { ca } from "date-fns/locale";
+import { set } from "date-fns";
 
 export default function Home({ params }: any) {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [sortedItems, setSortedItems] = useState(menuItems);
+  const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
+  const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
+  const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
+  const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
+
+  const [sortedItems, setSortedItems] = useState<any>([]);
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
@@ -26,52 +32,25 @@ export default function Home({ params }: any) {
     categoryFilter: "",
   });
 
-  const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
-  const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
-  const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
-  const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
+  const fetchFilteredData = async () => {
+    const response = await fetch(
+      `/api/data?sortType=${sortType}&titleFilter=${checkedTitle}&categoryFilter=${checkedCategory}`
+    );
+    const data = await response.json();
+    setSortedItems(data);
+  };
+  useEffect(() => {
+    fetchFilteredData();
+  }, [filterOptions]);
   // function to get sort values
   const handleSort = (sortType: string) => {
-    let sorted = [...menuItems];
-    switch (sortType) {
-      case "forYou":
-        sorted = [...menuItems];
-        break;
-      case "popular":
-        sorted.sort((a, b) => b.review - a.review);
-        setSortType("popular");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "rated":
-        sorted.sort((a, b) => b.stars - a.stars);
-        setSortType("rated");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "newest":
-        sorted.sort((a, b) => b.dataPremiery - a.dataPremiery);
-        setSortType("newest");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "priceAsc":
-        sorted.sort((a, b) => a.price - b.price);
-        setSortType("priceAsc");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "priceDesc":
-        sorted.sort((a, b) => b.price - a.price);
-        setSortType("priceDesc");
-        setIsOpenSort(!isOpenSort);
-        break;
-      default:
-        sorted = [...menuItems];
-    }
-
+    setSortType(sortType);
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       sortType: sortType,
     }));
-
-    setSortedItems(sorted);
+    fetchFilteredData();
+    console.log(filterOptions);
   };
   // function to get sort values end
 
@@ -141,15 +120,13 @@ export default function Home({ params }: any) {
   React.useEffect(() => {
     const { sortType, titleFilter, categoryFilter } = filterOptions;
 
-    let filteredItems = [...menuItems];
+    let filteredItems = [sortedItems];
     if (categoryFilter) {
       filteredItems = filteredItems.filter(
         (cat) => cat.category === categoryFilter
       );
     }
-
     if (titleFilter) {
-      console.log(titleFilter);
       filteredItems = filteredItems.filter((cat) => cat.title === titleFilter);
     }
 
@@ -209,8 +186,8 @@ export default function Home({ params }: any) {
 
   // function to get unique values end
   // wyświetlanie stron
-  const uniqueCategories = getUniquatCategories(menuItems);
-  const uniqueTitles = getUniqueTitles(menuItems);
+  const uniqueCategories = getUniquatCategories(sortedItems);
+  const uniqueTitles = getUniqueTitles(sortedItems);
 
   // section pagestation
   const productsPerPage = 3; // Ilość produktów na stronę
@@ -373,7 +350,11 @@ export default function Home({ params }: any) {
                         <div className="space-y-6">
                           {uniqueTitles.map((title: any, index: any) => {
                             return (
-                              <div key={index} className="flex items-center">
+                              <div
+                                onClick={() => toggleIsOpenLanguage()}
+                                key={index}
+                                className="flex items-center"
+                              >
                                 <input
                                   id={`filter-mobile-color-${index}`}
                                   name="title[]"
@@ -509,6 +490,7 @@ export default function Home({ params }: any) {
                 </div>
                 {isOpenSort && (
                   <div
+                    onClick={toggleIsOpenSort}
                     className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"

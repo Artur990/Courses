@@ -10,6 +10,7 @@ import { AiFillGithub } from "react-icons/ai";
 // import NavbarMobile from "./NavbarMobile";
 import Courses from "./CoursesMenu";
 import CoursesMobile from "./CoursesMobile";
+import CoursesMenu from "./CoursesMenu";
 
 interface NavProps {}
 
@@ -94,7 +95,7 @@ const Navbar = ({}) => {
                 />
               </svg>
             </button>
-            {isOpen && <Courses toggleMenu={toggleMenu} />}
+            {isOpen && <CoursesMenu toggleMenu={toggleMenu} />}
           </div>
           <Link
             href="blog"

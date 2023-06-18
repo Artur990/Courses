@@ -1,4 +1,4 @@
-import { menuItems } from "../../data/courses";
+import { MenuItem, menuItems } from "../../data/courses";
 import Link from "next/link";
 import { FC } from "react";
 import { AiFillGithub } from "react-icons/ai";
@@ -6,15 +6,29 @@ import { GrReactjs } from "react-icons/gr";
 import { TbBrandJavascript } from "react-icons/tb";
 
 type CoursesProps = {
-  // Inne właściwości CoursesProps...
   toggleMenu: () => void;
 };
 
 const CoursesMenu: FC<CoursesProps> = ({ toggleMenu }: CoursesProps) => {
+  function getUniqueItems(menuItems: MenuItem[]) {
+    const uniqueItems = [];
+    const titles = new Set();
+
+    for (const menuItem of menuItems) {
+      if (!titles.has(menuItem.title)) {
+        titles.add(menuItem.title);
+        uniqueItems.push(menuItem);
+      }
+    }
+
+    return uniqueItems;
+  }
+  const uniqueItems = getUniqueItems(menuItems);
+
   return (
     <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
       <div className="p-4">
-        {menuItems.map((item, index) => (
+        {uniqueItems.map((item, index) => (
           <Link
             href={`courses/${item.link}`}
             onClick={() => toggleMenu()}

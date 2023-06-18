@@ -1,3 +1,4 @@
+"use client";
 import { MenuItem, menuItems } from "../../data/courses";
 import { tr } from "date-fns/locale";
 import Link from "next/link";
@@ -8,6 +9,7 @@ import { TbBrandJavascript } from "react-icons/tb";
 import LargeHeading from "./ui/LargeHeading";
 import Paragraph from "./ui/Paragraph";
 import { buttonVariants } from "./ui/Button";
+import { useRouter } from "next/navigation";
 
 const Courses: FC<any> = ({
   icon,
@@ -23,6 +25,7 @@ const Courses: FC<any> = ({
   stars,
   category,
 }) => {
+  const route = useRouter();
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -131,15 +134,17 @@ const Courses: FC<any> = ({
             </div>
 
             <form className="mt-10">
-              <button
+              <Link
+                href={`/course/${title}`}
                 type="submit"
                 className={buttonVariants({
                   variant: "outline",
                   size: "full",
                 })}
+                // onClick={() => route.push(`/course/${title}`)}
               >
-                Dodaj do koszyka
-              </button>
+                Przejdz do kursu
+              </Link>
             </form>
           </div>
 
