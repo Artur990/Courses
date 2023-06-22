@@ -11,7 +11,11 @@ import CoursesPage from "@/components/CoursesPage";
 import { buttonVariants } from "@/components/ui/Button";
 import { ca } from "date-fns/locale";
 import { set } from "date-fns";
-
+interface SearchParams {
+  category?: string;
+  sort?: string;
+  language?: string;
+}
 export default function Home({ params }: any) {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
@@ -21,6 +25,35 @@ export default function Home({ params }: any) {
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
+  const [selectedOptions, setSelectedOptions] = useState<SearchParams>({});
+
+  const handleOptionClick = (optionName: string, optionValue: string) => {
+    setSelectedOptions((prevOptions) => ({
+      ...prevOptions,
+      [optionName]: optionValue,
+    }));
+    updateUrl();
+  };
+  console.log(params);
+
+  // const updateUrl = () => {
+  //   const urlParams = new URLSearchParams();
+
+  //   if (selectedOptions.category) {
+  //     urlParams.set("category", selectedOptions.category);
+  //   }
+
+  //   if (selectedOptions.sort) {
+  //     urlParams.set("sort", selectedOptions.sort);
+  //   }
+
+  //   if (selectedOptions.language) {
+  //     urlParams.set("language", selectedOptions.language);
+  //   }
+
+  //   const url = `/blog?${urlParams.toString()}`;
+  //   router.push(url);
+  // };
 
   const [sortedItems, setSortedItems] = useState<any>([]);
   const [sortType, setSortType] = useState("forYou");
@@ -32,16 +65,43 @@ export default function Home({ params }: any) {
     categoryFilter: "",
   });
 
-  const fetchFilteredData = async () => {
-    const response = await fetch(
-      `/api/data?sortType=${sortType}&titleFilter=${checkedTitle}&categoryFilter=${checkedCategory}`
-    );
-    const data = await response.json();
-    setSortedItems(data);
+  // const fetchFilteredData = async () => {
+  //   const response = await fetch(
+  //     `/api/data?sortType=${sortType}&titleFilter=${checkedTitle}&categoryFilter=${checkedCategory}`
+  //   );
+  //   const data = await response.json();
+  //   setSortedItems(data);
+  // };
+  // useEffect(() => {
+  //   fetchFilteredData();
+  // }, [filterOptions]);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSortOption, setSelectedSortOption] = useState("");
+
+  const handleCategoryClick = (category: any) => {
+    setSelectedCategory(category);
+    updateUrl();
   };
-  useEffect(() => {
-    fetchFilteredData();
-  }, [filterOptions]);
+
+  const handleSortClick = (sortOption: any) => {
+    setSelectedSortOption(sortOption);
+    updateUrl();
+  };
+
+  const updateUrl = () => {
+    let url = "/blog";
+
+    if (selectedCategory) {
+      url += `?category=${selectedCategory}`;
+    }
+
+    if (selectedSortOption) {
+      url += `&sort=${selectedSortOption}`;
+    }
+
+    router.push(url);
+  };
   // function to get sort values
   const handleSort = (sortType: string) => {
     setSortType(sortType);
@@ -49,7 +109,7 @@ export default function Home({ params }: any) {
       ...prevOptions,
       sortType: sortType,
     }));
-    fetchFilteredData();
+    // fetchFilteredData();
     console.log(filterOptions);
   };
   // function to get sort values end
@@ -210,7 +270,7 @@ export default function Home({ params }: any) {
       setCurrentPage(1);
       router.replace("/1");
     }
-  }, [sortedItems, filterOptions, menuItems]);
+  }, [sortedItems, filterOptions]);
 
   const handlePageClickNext = () => {
     if (currentPage >= pageCount) return;
@@ -273,22 +333,6 @@ export default function Home({ params }: any) {
                     role="list"
                     className="px-2 py-3 font-medium text-gray-900"
                   >
-                    {/* <Link href="/Mam">Twoje Filtry:</Link>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        {filterOptions.categoryFilter}
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        {filterOptions.titleFilter}
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        {filterOptions.sortType}
-                      </a>
-                    </li> */}
                     <li>
                       <button
                         className={buttonVariants({
@@ -844,6 +888,78 @@ export default function Home({ params }: any) {
           </div>
         </div>
         {/* Pages end*/}
+      </div>
+      <div className="mt-28">
+        <p>Wybierz kategorię:</p>
+        {/* <h1>{params.searchParams.category}</h1> */}
+        {/* <h1>{params.searchParams.sort}</h1> */}
+        {/* <h1>{params.searchParams.language}</h1> */}
+        <div className="flex flex-col">
+          <button
+            onClick={() => handleOptionClick("category", "rowery")}
+            className={selectedOptions.category === "rowery" ? "active" : ""}
+          >
+            Rowery
+          </button>
+          <button
+            onClick={() => handleOptionClick("category", "wrotki")}
+            className={selectedOptions.category === "wrotki" ? "active" : ""}
+          >
+            Wrotki
+          </button>
+
+          <button
+            onClick={() => handleOptionClick("sort", "popularne")}
+            className={selectedOptions.sort === "popularne" ? "active" : ""}
+          >
+            Najbardziej Popularne
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "oceniane")}
+            className={selectedOptions.sort === "oceniane" ? "active" : ""}
+          >
+            Najwyżej Oceniane
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "najnowsze")}
+            className={selectedOptions.sort === "najnowsze" ? "active" : ""}
+          >
+            Najnowsze
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "cena-rosnaca")}
+            className={selectedOptions.sort === "cena-rosnaca" ? "active" : ""}
+          >
+            Cena: rosnąca
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "cena-malejaca")}
+            className={selectedOptions.sort === "cena-malejaca" ? "active" : ""}
+          >
+            Cena: malejąca
+          </button>
+          {/* //  */}
+          <button
+            onClick={() => handleOptionClick("language", "JavaScript")}
+            className={
+              selectedOptions.language === "JavaScript" ? "active" : ""
+            }
+          >
+            JavaScript
+          </button>
+          <button
+            onClick={() => handleOptionClick("language", "React")}
+            className={selectedOptions.language === "React" ? "active" : ""}
+          >
+            React
+          </button>
+          <button
+            onClick={() => handleOptionClick("language", "Git")}
+            className={selectedOptions.language === "Git" ? "active" : ""}
+          >
+            Git
+          </button>
+        </div>
       </div>
     </main>
   );

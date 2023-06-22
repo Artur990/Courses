@@ -4,20 +4,35 @@ import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
 import { menuItems } from "../../../data/courses";
 import CoursesPage from "@/components/CoursesPage";
-// import { useRouter } from "next/router";
-import ReactPaginate from "react-paginate";
-// import { generatePageLinks } from "../../../helper/function";
-import { set } from "date-fns";
 import { buttonVariants } from "@/components/ui/Button";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { fi } from "date-fns/locale";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { AiOutlineCheck } from "react-icons/ai";
 import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
+import { type } from "os";
 
-export default function Home({ params }: any) {
+type Tparams = {
+  params: {
+    page?: any;
+  };
+  searchParams: {
+    category?: string;
+    sort?: string;
+    language?: string;
+  };
+};
+type TselectedOptions = {
+  category?: string;
+  sort?: string;
+  language?: string;
+};
+
+export default function Home(params: Tparams) {
   const router = useRouter();
-  // state open
+
+  const [selectedOptions, setSelectedOptions] = useState<TselectedOptions>(
+    {} as TselectedOptions
+  );
+
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
@@ -32,7 +47,9 @@ export default function Home({ params }: any) {
     titleFilter: "",
     categoryFilter: "",
   });
-  const [currentPage, setCurrentPage] = useState(+params.page || 1);
+  const [currentPage, setCurrentPage] = useState<number>(
+    parseInt(params.params.page) || 1
+  );
 
   const uniqueCategories = getUniqueCategories(menuItems);
   const uniqueTitles = getUniqueTitles(menuItems);
@@ -42,41 +59,36 @@ export default function Home({ params }: any) {
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
   // function to get sort values
-  const handleSort = (sortType: string) => {
-    let sorted = [...menuItems];
-    switch (sortType) {
-      case "forYou":
-        sorted = [...menuItems];
-        break;
-      case "popular":
-        sorted.sort((a, b) => b.review - a.review);
-        setSortType("popular");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "rated":
-        sorted.sort((a, b) => b.stars - a.stars);
-        setSortType("rated");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "newest":
-        sorted.sort((a, b) => b.dataPremiery - a.dataPremiery);
-        setSortType("newest");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "priceAsc":
-        sorted.sort((a, b) => a.price - b.price);
-        setSortType("priceAsc");
-        setIsOpenSort(!isOpenSort);
-        break;
-      case "priceDesc":
-        sorted.sort((a, b) => b.price - a.price);
-        setSortType("priceDesc");
-        setIsOpenSort(!isOpenSort);
-        break;
-      default:
-        sorted = [...menuItems];
-    }
+  const searchParams = useSearchParams();
+  // const pathname = usePathname();
+  // const category = searchParams.get("category");
+  React.useEffect(() => {
+    const { sort, language, category } = params.searchParams;
+    console.log(searchParams, "searchParams funkacia łapiąca parametry url");
+    console.log(
+      category,
+      "category funkacia łapiąca parametry url category = bla bla"
+    );
+    setSelectedOptions({
+      category: category as string,
+      sort: sort as string,
+      language: language as string,
+    });
+    setFilterOptions({
+      categoryFilter: language as string,
+      sortType: sort as string,
+      titleFilter: category as string,
+    });
+    setSortType(sort as string);
+    console.log(filterOptions);
+  }, [params, setSelectedOptions]);
 
+  const handleSort = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const sortType = event.currentTarget.name;
+    // console.log(sortType, "handle sort");
+    let sorted = [...menuItems];
+    setSortType(sortType);
+    handleOptionClick("sort", sortType);
     setFilterOptions((prevOptions) => ({
       ...prevOptions,
       sortType: sortType,
@@ -88,7 +100,6 @@ export default function Home({ params }: any) {
 
   // function to get unique values
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // router.back();
     const isChecked = event.target.checked;
     const selectedTitle = event.target.value;
 
@@ -106,12 +117,14 @@ export default function Home({ params }: any) {
 
     if (isChecked) {
       setCheckedTitle(selectedTitle);
+      handleOptionClick("category", selectedTitle);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: selectedTitle,
       }));
     } else {
       setCheckedTitle("");
+      handleOptionClick("category", ""); // Resetowanie selectedOptions.category
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: "",
@@ -150,23 +163,76 @@ export default function Home({ params }: any) {
       }));
     }
   };
+
+  const handleOptionClick = (
+    optionName: string,
+    optionValue: string | undefined
+  ) => {
+    console.log(
+      optionName,
+      optionValue,
+      "to jest przekazywane to funkacji clciked"
+    );
+    setSelectedOptions((prevOptions) => ({
+      ...prevOptions,
+      [optionName]: optionValue,
+    }));
+    const urlParams = new URLSearchParams();
+
+    if (selectedOptions.category) {
+      urlParams.set("category", selectedOptions.category);
+    }
+
+    if (selectedOptions.sort) {
+      urlParams.set("sort", selectedOptions.sort);
+    }
+
+    if (selectedOptions.language) {
+      urlParams.set("language", selectedOptions.language);
+    }
+
+    const url = `/1?${urlParams.toString()}`;
+    console.log(url, "taki link idzie do router.push");
+    router.push(url);
+  };
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams();
+    // console.log("useEfect 1", selectedOptions.category);
+    if (selectedOptions.category) {
+      urlParams.set("category", selectedOptions.category);
+    }
+
+    if (selectedOptions.sort) {
+      urlParams.set("sort", selectedOptions.sort);
+    }
+
+    if (selectedOptions.language) {
+      urlParams.set("language", selectedOptions.language);
+    }
+
+    const url = `/${params.params.page}?${urlParams.toString()}`;
+    router.push(url);
+  }, [selectedOptions]);
   // function to get unique values end
   React.useEffect(() => {
     const { sortType, titleFilter, categoryFilter } = filterOptions;
 
     let filteredItems = [...menuItems];
-    if (categoryFilter) {
+
+    // if (categoryFilter) {
+    //   filteredItems = filteredItems.filter(
+    //     (cat) => cat.title === categoryFilter
+    //   );
+    // }
+
+    if (filterOptions.titleFilter) {
+      console.log(titleFilter, "titleFilter");
       filteredItems = filteredItems.filter(
-        (cat) => cat.category === categoryFilter
+        (cat) => cat.title !== filterOptions.titleFilter
       );
     }
 
-    if (titleFilter) {
-      console.log(titleFilter);
-      filteredItems = filteredItems.filter((cat) => cat.title === titleFilter);
-    }
-
-    switch (sortType) {
+    switch (filterOptions.sortType) {
       case "popular":
         filteredItems.sort((a, b) => b.review - a.review);
         break;
@@ -187,7 +253,7 @@ export default function Home({ params }: any) {
     }
 
     setSortedItems(filteredItems);
-  }, [filterOptions, menuItems]);
+  }, [filterOptions]);
 
   // function cleaer sorts
   const clearFunction = () => {
@@ -204,7 +270,7 @@ export default function Home({ params }: any) {
   const productsPerPage = 3; // Ilość produktów na stronę
 
   const pageCount = Math.ceil(sortedItems.length / productsPerPage);
-  const offset = (parseInt(params.page) - 1) * productsPerPage;
+  const offset = (parseInt(params.params.page) - 1) * productsPerPage;
   const currentPageProducts = sortedItems.slice(
     offset,
     offset + productsPerPage
@@ -220,30 +286,39 @@ export default function Home({ params }: any) {
   const handlePageClickNext = () => {
     if (currentPage >= pageCount) return;
     const nextPage = currentPage + 1;
-    const newPath = `/${nextPage}`;
     setCurrentPage(nextPage);
-    router.push(newPath);
+    router.push(`/${nextPage}`);
   };
 
   const handlePageClickPrevious = () => {
     if (currentPage > 1) {
       const previousPage = currentPage - 1;
-      const newPath = `/${previousPage}`;
       setCurrentPage(previousPage);
-      router.push(newPath);
+      router.push(`/${previousPage}`);
     }
   };
   const generatePageLinks = (pageCount: number, router: any) => {
-    // const router = useRouter()
     const links = [];
+    const urlParams = new URLSearchParams();
+
+    if (selectedOptions.category) {
+      urlParams.set("category", selectedOptions.category);
+    }
+
+    if (selectedOptions.sort) {
+      urlParams.set("sort", selectedOptions.sort);
+    }
+
+    if (selectedOptions.language) {
+      urlParams.set("language", selectedOptions.language);
+    }
 
     for (let i = 0; i < pageCount; i++) {
       links.push(
         <button
           key={i}
-          onClick={() => router.replace(`/${i + 1}`)}
+          onClick={() => router.push(`/${i + 1}?${urlParams.toString()}`)}
           className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-          // onClick={() => handlePageChange(i)}
         >
           {i + 1}
         </button>
@@ -297,22 +372,6 @@ export default function Home({ params }: any) {
                     role="list"
                     className="px-2 py-3 font-medium text-gray-900"
                   >
-                    {/* <Link href="/Mam">Twoje Filtry:</Link>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        {filterOptions.categoryFilter}
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        {filterOptions.titleFilter}
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-2 py-3">
-                        {filterOptions.sortType}
-                      </a>
-                    </li> */}
                     <li>
                       <button
                         className={buttonVariants({
@@ -475,7 +534,7 @@ export default function Home({ params }: any) {
           {/* panel sort start  */}
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 mt-24">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              Nowe kursy[]
+              Nowe kursy
             </h1>
 
             <div className="flex items-center">
@@ -515,12 +574,16 @@ export default function Home({ params }: any) {
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
                   >
-                    <div className="py-1 bg-gray-200" role="none">
+                    <div
+                      onClick={toggleIsOpenSort}
+                      className="py-1 bg-gray-200"
+                      role="none"
+                    >
                       <button
-                        // href="#"
+                        name="popular"
                         className="text-gray-500 flex justify-between px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("popular")}
+                        onClick={handleSort}
                       >
                         <span>Njabradziej Popularne</span>
                         {sortType === "popular" && (
@@ -528,10 +591,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="rated"
                         className=" text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("rated")}
+                        onClick={handleSort}
                       >
                         <span>Najwyżej Oceniane</span>
                         {sortType === "rated" && (
@@ -539,10 +602,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="newest"
                         className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("newest")}
+                        onClick={handleSort}
                       >
                         <span>Najnowższe</span>
                         {sortType === "newest" && (
@@ -550,10 +613,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="priceAsc"
                         className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("priceAsc")}
+                        onClick={handleSort}
                       >
                         <span>Cena: rosnąca</span>
                         {sortType === "priceAsc" && (
@@ -561,10 +624,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="priceDesc"
                         className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("priceDesc")}
+                        onClick={handleSort}
                       >
                         <span>Cena: malejąca</span>
                         {sortType === "priceDesc" && (
@@ -572,10 +635,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="forYou"
                         className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("forYou")}
+                        onClick={handleSort}
                       >
                         <span>Wybrane dla Ciebie</span>
                         {sortType === "forYou" && (
@@ -861,6 +924,13 @@ export default function Home({ params }: any) {
           </div>
         </div>
         {/* Pages end*/}
+        <div className="mt-28">
+          <p>Wybierz kategorię:</p>
+          <h1>{params.params.page}</h1>
+          {/* <h1>{params.searchParams.category}</h1> */}
+          {/* <h1>{params.searchParams.sort}</h1> */}
+          {/* <h1>{params.searchParams.language}</h1> */}
+        </div>
       </div>
     </main>
   );

@@ -72,7 +72,7 @@ export const menuItems: MenuItem[] = [
       "Kurs React zapewnia solidne podstawy do tworzenia nowoczesnych interfejsów użytkownika w oparciu o tę popularną bibliotekę JavaScript.",
     details:
       "React jest jedną z najpopularniejszych bibliotek JavaScript do tworzenia interfejsów użytkownika. Wykorzystuje innowacyjne podejście oparte na komponentach i wirtualnym DOM, co pozwala na efektywne zarządzanie dynamicznymi interakcjami i aktualizacjami widoku.",
-    price: 35,
+    price: 40,
     review: 98,
     stars: 2,
     category: "Programowanie",
@@ -116,7 +116,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 32,
+    price: 20,
     review: 92,
     stars: 4,
     category: "Bazy danych",
@@ -138,7 +138,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 35,
+    price: 22,
     review: 92,
     stars: 4,
     category: "Bazy danych",
@@ -177,7 +177,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 32,
+    price: 23,
     review: 92,
     stars: 4,
     category: "Bazy danych",
@@ -199,7 +199,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 35,
+    price: 24,
     review: 92,
     stars: 4,
     category: "Bazy danych",
@@ -221,7 +221,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 35,
+    price: 25,
     review: 92,
     stars: 4,
     category: "Bazy danych",
@@ -243,7 +243,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 35,
+    price: 26,
     review: 92,
     stars: 4,
     category: "Bazy danych",
@@ -265,7 +265,7 @@ export const menuItems: MenuItem[] = [
       "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
     details:
       "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 35,
+    price: 27,
     review: 92,
     stars: 4,
     category: "Bazy danych",

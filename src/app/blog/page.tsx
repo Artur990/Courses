@@ -1,36 +1,44 @@
 "use client";
-
 import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ro } from "date-fns/locale";
+
 interface pagesProps {}
 
-const Pages = (params: any) => {
-  const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSortOption, setSelectedSortOption] = useState("");
-  console.log(params.searchParams.category);
-  const handleCategoryClick = (category: any) => {
-    setSelectedCategory(category);
-    updateUrl();
-  };
+interface SearchParams {
+  category?: string;
+  sort?: string;
+  language?: string;
+}
 
-  const handleSortClick = (sortOption: any) => {
-    setSelectedSortOption(sortOption);
+const Pages = (params: { searchParams: SearchParams }) => {
+  const router = useRouter();
+  const [selectedOptions, setSelectedOptions] = useState<SearchParams>({});
+
+  const handleOptionClick = (optionName: string, optionValue: string) => {
+    setSelectedOptions((prevOptions) => ({
+      ...prevOptions,
+      [optionName]: optionValue,
+    }));
     updateUrl();
   };
 
   const updateUrl = () => {
-    let url = "/blog";
+    const urlParams = new URLSearchParams();
 
-    if (selectedCategory) {
-      url += `?category=${selectedCategory}`;
+    if (selectedOptions.category) {
+      urlParams.set("category", selectedOptions.category);
     }
 
-    if (selectedSortOption) {
-      url += `&sort=${selectedSortOption}`;
+    if (selectedOptions.sort) {
+      urlParams.set("sort", selectedOptions.sort);
     }
 
+    if (selectedOptions.language) {
+      urlParams.set("language", selectedOptions.language);
+    }
+
+    const url = `/blog?${urlParams.toString()}`;
     router.push(url);
   };
 
@@ -39,49 +47,69 @@ const Pages = (params: any) => {
       <p>Wybierz kategorię:</p>
       <h1>{params.searchParams.category}</h1>
       <h1>{params.searchParams.sort}</h1>
+      <h1>{params.searchParams.language}</h1>
       <div className="flex flex-col">
         <button
-          onClick={() => handleCategoryClick("rowery")}
-          className={selectedCategory === "rowery" ? "active" : ""}
+          onClick={() => handleOptionClick("category", "rowery")}
+          className={selectedOptions.category === "rowery" ? "active" : ""}
         >
           Rowery
         </button>
         <button
-          onClick={() => handleCategoryClick("wrotki")}
-          className={selectedCategory === "wrotki" ? "active" : ""}
+          onClick={() => handleOptionClick("category", "wrotki")}
+          className={selectedOptions.category === "wrotki" ? "active" : ""}
         >
           Wrotki
         </button>
 
         <button
-          onClick={() => handleSortClick("popularne")}
-          className={selectedSortOption === "popularne" ? "active" : ""}
+          onClick={() => handleOptionClick("sort", "popularne")}
+          className={selectedOptions.sort === "popularne" ? "active" : ""}
         >
           Najbardziej Popularne
         </button>
         <button
-          onClick={() => handleSortClick("oceniane")}
-          className={selectedSortOption === "oceniane" ? "active" : ""}
+          onClick={() => handleOptionClick("sort", "oceniane")}
+          className={selectedOptions.sort === "oceniane" ? "active" : ""}
         >
           Najwyżej Oceniane
         </button>
         <button
-          onClick={() => handleSortClick("najnowsze")}
-          className={selectedSortOption === "najnowsze" ? "active" : ""}
+          onClick={() => handleOptionClick("sort", "najnowsze")}
+          className={selectedOptions.sort === "najnowsze" ? "active" : ""}
         >
           Najnowsze
         </button>
         <button
-          onClick={() => handleSortClick("cena-rosnaca")}
-          className={selectedSortOption === "cena-rosnaca" ? "active" : ""}
+          onClick={() => handleOptionClick("sort", "cena-rosnaca")}
+          className={selectedOptions.sort === "cena-rosnaca" ? "active" : ""}
         >
           Cena: rosnąca
         </button>
         <button
-          onClick={() => handleSortClick("cena-malejaca")}
-          className={selectedSortOption === "cena-malejaca" ? "active" : ""}
+          onClick={() => handleOptionClick("sort", "cena-malejaca")}
+          className={selectedOptions.sort === "cena-malejaca" ? "active" : ""}
         >
           Cena: malejąca
+        </button>
+        {/* //  */}
+        <button
+          onClick={() => handleOptionClick("language", "JavaScript")}
+          className={selectedOptions.language === "JavaScript" ? "active" : ""}
+        >
+          JavaScript
+        </button>
+        <button
+          onClick={() => handleOptionClick("language", "React")}
+          className={selectedOptions.language === "React" ? "active" : ""}
+        >
+          React
+        </button>
+        <button
+          onClick={() => handleOptionClick("language", "Git")}
+          className={selectedOptions.language === "Git" ? "active" : ""}
+        >
+          Git
         </button>
       </div>
     </div>
