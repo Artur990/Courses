@@ -42,6 +42,7 @@ export default function Home(params: Tparams) {
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
+  const [grid, setGrid] = useState(false);
   const [filterOptions, setFilterOptions] = useState({
     sortType: "",
     titleFilter: "",
@@ -55,9 +56,11 @@ export default function Home(params: Tparams) {
   const uniqueTitles = getUniqueTitles(menuItems);
 
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
+
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
+  const toggleGrid = () => setGrid(!grid);
   // function to get sort values
   const searchParams = useSearchParams();
 
@@ -656,6 +659,7 @@ export default function Home(params: Tparams) {
 
               <button
                 type="button"
+                onClick={toggleGrid}
                 className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
               >
                 <span className="sr-only">View grid</span>
@@ -870,7 +874,7 @@ export default function Home(params: Tparams) {
                 </div>
               </aside>
               {/* <!-- Product grid --> */}
-              <CoursesPage menuItems={currentPageProducts} />
+              <CoursesPage menuItems={currentPageProducts} grid={grid} />
             </div>
           </section>
         </main>
@@ -928,13 +932,6 @@ export default function Home(params: Tparams) {
           </div>
         </div>
         {/* Pages end*/}
-        <div className="mt-28">
-          <p>Wybierz kategorię:</p>
-          <h1>{params.params.page}</h1>
-          {/* <h1>{params.searchParams.category}</h1> */}
-          {/* <h1>{params.searchParams.sort}</h1> */}
-          {/* <h1>{params.searchParams.language}</h1> */}
-        </div>
       </div>
     </main>
   );
