@@ -30,7 +30,7 @@ const CoursesMenu: FC<CoursesProps> = ({ toggleMenu }: CoursesProps) => {
       <div className="p-4">
         {uniqueItems.map((item, index) => (
           <Link
-            href={`courses/${item.link}`}
+            href={`/1?language=${item.title}`}
             onClick={() => toggleMenu()}
             key={index}
             className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-300"

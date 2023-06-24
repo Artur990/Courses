@@ -1,5 +1,5 @@
 "use client";
-import React, { use } from "react";
+import React, { use, useEffect } from "react";
 import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
 import { menuItems } from "../../../data/courses";
@@ -60,24 +60,18 @@ export default function Home(params: Tparams) {
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
   // function to get sort values
   const searchParams = useSearchParams();
-  // const pathname = usePathname();
-  // const category = searchParams.get("category");
+
   React.useEffect(() => {
     const { sort, language, category } = params.searchParams;
-    console.log(searchParams, "searchParams funkacia łapiąca parametry url");
-    console.log(
-      category,
-      "category funkacia łapiąca parametry url category = bla bla"
-    );
     setSelectedOptions({
       category: category as string,
       sort: sort as string,
       language: language as string,
     });
     setFilterOptions({
-      categoryFilter: language as string,
+      categoryFilter: category as string,
       sortType: sort as string,
-      titleFilter: category as string,
+      titleFilter: language as string,
     });
     setSortType(sort as string);
     console.log(filterOptions);
@@ -97,6 +91,17 @@ export default function Home(params: Tparams) {
     setSortedItems(sorted);
   };
   // function to get sort values end
+  // useEffect(() => {
+  //   if (filterOptions.categoryFilter) {
+  //     const otherCheckedInputs = Array.from(
+  //       document.querySelectorAll('input[name="title[]"]')
+  //     ) as HTMLInputElement[];
+
+  //     otherCheckedInputs.forEach((input) => {
+  //       input.checked = input.value === filterOptions.categoryFilter;
+  //     });
+  //   }
+  // }, [filterOptions.categoryFilter]);
 
   // function to get unique values
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,14 +122,14 @@ export default function Home(params: Tparams) {
 
     if (isChecked) {
       setCheckedTitle(selectedTitle);
-      handleOptionClick("category", selectedTitle);
+      handleOptionClick("language", selectedTitle);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: selectedTitle,
       }));
     } else {
       setCheckedTitle("");
-      handleOptionClick("category", ""); // Resetowanie selectedOptions.category
+      handleOptionClick("language", "");
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         titleFilter: "",
@@ -151,12 +156,14 @@ export default function Home(params: Tparams) {
 
     if (isChecked) {
       setCheckedCategory(selectedCategory);
+      handleOptionClick("category", selectedCategory);
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         categoryFilter: selectedCategory,
       }));
     } else {
       setCheckedCategory("");
+      handleOptionClick("category", "");
       setFilterOptions((prevOptions) => ({
         ...prevOptions,
         categoryFilter: "",
@@ -219,20 +226,17 @@ export default function Home(params: Tparams) {
 
     let filteredItems = [...menuItems];
 
-    // if (categoryFilter) {
-    //   filteredItems = filteredItems.filter(
-    //     (cat) => cat.title === categoryFilter
-    //   );
-    // }
+    if (titleFilter) {
+      filteredItems = filteredItems.filter((cat) => cat.title !== titleFilter);
+    }
 
-    if (filterOptions.titleFilter) {
-      console.log(titleFilter, "titleFilter");
+    if (categoryFilter) {
       filteredItems = filteredItems.filter(
-        (cat) => cat.title !== filterOptions.titleFilter
+        (cat) => cat.category === categoryFilter
       );
     }
 
-    switch (filterOptions.sortType) {
+    switch (sortType) {
       case "popular":
         filteredItems.sort((a, b) => b.review - a.review);
         break;
@@ -249,7 +253,7 @@ export default function Home(params: Tparams) {
         filteredItems.sort((a, b) => b.price - a.price);
         break;
       default:
-      // No sorting
+        filterOptions;
     }
 
     setSortedItems(filteredItems);
