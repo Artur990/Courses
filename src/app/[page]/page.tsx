@@ -42,7 +42,7 @@ export default function Home(params: Tparams) {
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
-  const [grid, setGrid] = useState(false);
+  const [grid, setGrid] = useState(true);
   const [filterOptions, setFilterOptions] = useState({
     sortType: "",
     titleFilter: "",
@@ -271,6 +271,7 @@ export default function Home(params: Tparams) {
     });
     setCheckedCategory("");
     setCheckedTitle("");
+    router.push("/1");
   };
 
   // section pagestation
