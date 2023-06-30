@@ -1,5 +1,4 @@
-/* eslint-disable on-unused-vers */
-
+/* eslint-disable no-unused-vars */
 import type { Session, User } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 
@@ -10,6 +9,11 @@ declare module "next-auth/jwt" {
     id: UserId;
   }
 }
+
 declare module "next-auth" {
-  interface Session {}
+  interface Session {
+    user: User & {
+      id: UserId;
+    };
+  }
 }

@@ -11,15 +11,17 @@ import { AiFillGithub } from "react-icons/ai";
 import Courses from "./CoursesMenu";
 import CoursesMobile from "./CoursesMobile";
 import CoursesMenu from "./CoursesMenu";
+import { authOptions } from "@/lib/auth";
 
 interface NavProps {}
 
-const Navbar = ({}) => {
+const Navbar = async ({}) => {
   // const session = await getServerSession(); // Get the user's session based on the request
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMyCourses, setIsOpenMyCourses] = useState(false);
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
+  const session = await getServerSession(authOptions);
   const toggleMenu = (): void => {
     setIsOpen(!isOpen);
   };
@@ -110,7 +112,7 @@ const Navbar = ({}) => {
             Nowości
           </Link>
         </div>
-        {false ? (
+        {session ? (
           <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center lg:gap-x-8">
             <div className="relative">
               <button

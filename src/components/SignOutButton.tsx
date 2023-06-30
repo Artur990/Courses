@@ -19,7 +19,9 @@ const SignOutButton: FC<SignOutButtonProps> = ({}) => {
     try {
       setIsLoading(true);
       await signOut();
+      console.log("Signed out");
     } catch (error) {
+      console.log(error);
       //   toast({
       //     title: "Error signing out",
       //     message: "Please try again later.",
@@ -29,7 +31,7 @@ const SignOutButton: FC<SignOutButtonProps> = ({}) => {
   };
   return (
     <Button onClick={signUserOut} isLoading={isLoading}>
-      Sign out
+      Wyloguj
     </Button>
   );
 };

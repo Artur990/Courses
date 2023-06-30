@@ -18,14 +18,15 @@ const SignInButton: FC<SignInButtonProps> = ({}) => {
 
   const signInWithGoogle = async () => {
     try {
-      // setIsLoading(true);
-      // await signIn("google");
+      setIsLoading(true);
+      await signIn("google");
       toast({
         title: "Error signing in",
         message: "Please try again later.",
         type: "error",
       });
     } catch (error) {
+      console.log(error);
       //   toast({
       //     title: "Error signing in",
       //     message: "Please try again later.",
@@ -36,7 +37,7 @@ const SignInButton: FC<SignInButtonProps> = ({}) => {
 
   return (
     <Button onClick={signInWithGoogle} isLoading={isLoading}>
-      Sign in
+      Zaloguj
     </Button>
   );
 };
