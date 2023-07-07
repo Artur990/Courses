@@ -3,7 +3,7 @@ import Courses from "@/components/Courses";
 // import { menuItem } from "../../../../data/courses";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
-import { menuItems } from "../../../../data/courses";
+import { menuItems } from "../../../data/courses";
 
 const Page = ({ params }: any) => {
   const router = useRouter();

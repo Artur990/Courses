@@ -41,7 +41,14 @@ const Pages = (params: { searchParams: SearchParams }) => {
     const url = `/blog?${urlParams.toString()}`;
     router.push(url);
   };
-
+  const Fun = async () => {
+    const res = await fetch(
+      "http://localhost:3000/api/products/1?category=Bazydanych&sort=priceDesc&page=page"
+    );
+    const data = await res.json();
+    console.log(data);
+  };
+  Fun();
   return (
     <div className="mt-0 bg-[#0e141b]">
       <div className="bg-[#0e141b] py-24 sm:py-32">
@@ -206,3 +213,21 @@ const Pages = (params: { searchParams: SearchParams }) => {
 };
 
 export default Pages;
+
+// export async function getServerSideProps(context: any) {
+//   const { categorySlug } = context.params;
+
+//   // Wywołaj endpoint API, przekazując parametry filtrowania i sortowania
+//   const res = await fetch(
+//     // `/api/products?category=${category}&sort=${sort}&page=${page}`
+//     http://localhost:3000/api/products?category=${buty}&sort=${sort}&page=${page}`
+//   );
+//   const data = await res.json();
+
+//   // Zwróć dane produktów jako props
+//   return {
+//     props: {
+//       products: data,
+//     },
+//   };
+// }

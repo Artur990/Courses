@@ -119,7 +119,7 @@ export const menuItems: MenuItem[] = [
     price: 20,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
   {
@@ -141,7 +141,7 @@ export const menuItems: MenuItem[] = [
     price: 22,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
   {
@@ -180,7 +180,7 @@ export const menuItems: MenuItem[] = [
     price: 23,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
   {
@@ -202,7 +202,7 @@ export const menuItems: MenuItem[] = [
     price: 24,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
   {
@@ -224,7 +224,7 @@ export const menuItems: MenuItem[] = [
     price: 25,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
   {
@@ -246,7 +246,7 @@ export const menuItems: MenuItem[] = [
     price: 26,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
   {
@@ -268,7 +268,7 @@ export const menuItems: MenuItem[] = [
     price: 27,
     review: 92,
     stars: 4,
-    category: "Bazy danych",
+    category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
 ];

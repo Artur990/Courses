@@ -1,5 +1,5 @@
 "use client";
-import { MenuItem, menuItems } from "../../data/courses";
+import { MenuItem, menuItems } from "../data/courses";
 import { tr } from "date-fns/locale";
 import Link from "next/link";
 import { FC } from "react";

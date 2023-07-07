@@ -1,7 +1,8 @@
-import { db } from "@/lib/db";
+// import { db } from "@/lib/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { prisma } from "@/service/db/client";
 
 function getGoogleCredentials(): { clientId: string; clientSecret: string } {
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -17,9 +18,17 @@ function getGoogleCredentials(): { clientId: string; clientSecret: string } {
   return { clientId, clientSecret };
 }
 
+// declare global {
+//   // eslint-disable-next-line no-var, no-unused-vars
+//   var cachedPrisma: PrismaClient;
+// }
+
+// let prisma: PrismaClient;
+// prisma = new PrismaClient();
+
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
   },
@@ -44,7 +53,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user }) {
-      const dbUser = await db.user.findFirst({
+      const dbUser = await prisma.user.findFirst({
         where: {
           email: token.email,
         },

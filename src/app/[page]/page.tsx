@@ -2,13 +2,13 @@
 import React, { use, useEffect } from "react";
 import Paragraph from "@/components/ui/Paragraph";
 import { useState } from "react";
-import { menuItems } from "../../../data/courses";
+import { menuItems } from "../../data/courses";
 import CoursesPage from "@/components/CoursesPage";
 import { buttonVariants } from "@/components/ui/Button";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { AiOutlineCheck } from "react-icons/ai";
 import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
-import { type } from "os";
+import { Input } from "@/components/ui/input";
 
 type Tparams = {
   params: {
@@ -56,7 +56,6 @@ export default function Home(params: Tparams) {
   const uniqueTitles = getUniqueTitles(menuItems);
 
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
-
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
@@ -512,7 +511,7 @@ export default function Home(params: Tparams) {
                         <div className="space-y-6">
                           {uniqueCategories.map((category: any, index: any) => (
                             <div key={index} className="flex items-center">
-                              <input
+                              <Input
                                 id={`filter-category-${index}`}
                                 name="category[]"
                                 value={category}

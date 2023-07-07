@@ -5,7 +5,7 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 
 import { generatePageLinks } from "../../helper/function";
-import { menuItems } from "../../data/courses";
+import { menuItems } from "../data/courses";
 
 import CoursesPage from "@/components/CoursesPage";
 import { buttonVariants } from "@/components/ui/Button";

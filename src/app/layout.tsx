@@ -2,10 +2,11 @@ import React, { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import { Inter } from "next/font/google";
 import Food from "@/components/Food";
-import { MenuItem } from "../../data/courses";
+import { MenuItem } from "../data/courses";
 import Courses from "../components/Courses";
 
 import "./globals.css";
+import Providers from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -22,9 +23,11 @@ export default function RootLayout({
     <html lang="pl">
       <body className={inter.className}>
         {/* <Suspense fallback={null}> */}
-        <Navbar />
-        {children}
-        <Food />
+        <Providers>
+          <Navbar />
+          {children}
+          <Food />
+        </Providers>
         {/* </Suspense> */}
       </body>
     </html>

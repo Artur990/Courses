@@ -12,16 +12,20 @@ import Courses from "./CoursesMenu";
 import CoursesMobile from "./CoursesMobile";
 import CoursesMenu from "./CoursesMenu";
 import { authOptions } from "@/lib/auth";
+import { signIn, useSession } from "next-auth/react";
+// import { authOptions } from "@/lib/auth";
 
 interface NavProps {}
 
-const Navbar = async ({}) => {
-  // const session = await getServerSession(); // Get the user's session based on the request
+const Navbar = async () => {
+  // const session = await getServerSession(authOptions);
+  // const { data: session } = useSession();
+  // console.log(session);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMyCourses, setIsOpenMyCourses] = useState(false);
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
   const toggleMenu = (): void => {
     setIsOpen(!isOpen);
   };
@@ -112,7 +116,7 @@ const Navbar = async ({}) => {
             Nowości
           </Link>
         </div>
-        {session ? (
+        {false ? (
           <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center lg:gap-x-8">
             <div className="relative">
               <button

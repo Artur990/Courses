@@ -1,4 +1,4 @@
-import { MenuItem, menuItems } from "../../data/courses";
+import { MenuItem, menuItems } from "../data/courses";
 import Link from "next/link";
 import { FC } from "react";
 import { AiFillGithub } from "react-icons/ai";

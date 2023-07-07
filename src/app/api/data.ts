@@ -1,4 +1,4 @@
-import { menuItems } from "../../../data/courses"; // Zaimportuj dane menuItems
+import { menuItems } from "../../data/courses"; // Zaimportuj dane menuItems
 
 export default function handler(req: any, res: any) {
   const { sortType, titleFilter, categoryFilter } = req.query;
