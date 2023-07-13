@@ -43,7 +43,8 @@ const Pages = (params: { searchParams: SearchParams }) => {
   };
   const Fun = async () => {
     const res = await fetch(
-      "http://localhost:3000/api/products/1?category=Bazydanych&sort=priceDesc&page=page"
+      "http://localhost:3000/api/products/1?category=Bazydanych&sort=priceDesc&language=SQL"
+      // "http://localhost:3000/api/products/1"
     );
     const data = await res.json();
     console.log(data);

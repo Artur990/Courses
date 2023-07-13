@@ -1,53 +1,31 @@
-// import { menuItems } from "../../data/courses";
+// // import { menuItems } from "../../data/courses";
 import { NextApiRequest, NextApiResponse } from "next";
-// import { produkty } from "../../data/products"; // Załóżmy, że dane produktów znajdują się w osobnym pliku
+// // import { produkty } from "../../data/products"; // Załóżmy, że dane produktów znajdują się w osobnym pliku
 
 import { menuItems } from "@/data/courses";
-// export default function handler(req: NextApiRequest, res: NextApiResponse) {
-//   const { category, sort } = req.query;
-
-//   // Wywołaj funkcję do filtrowania i sortowania produktów
-//   const filteredProducts = filterAndSortProducts(category, sort);
-
-//   // Zwróć wynik jako odpowiedź na zapytanie
-//   res.status(200).json(filteredProducts);
-// }
-
-// // Funkcja do filtrowania i sortowania produktów
-// const filterAndSortProducts = (category: any, sort: any) => {
-//   const filtered = produkty.filter(
-//     (produkt: any) => produkt.kategoria === category
-//   );
-
-//   // Sortowanie po cenie - rosnąco lub malejąco
-//   const sorted = filtered.sort((a: any, b: any) => a.cena - b.cena); // Domyślnie rosnąco
-
-//   if (sort === "price-desc") {
-//     sorted.reverse(); // Sortowanie malejąco
-//   }
-
-//   return sorted;
-// };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { category, sort, page } = req.query;
+  const { category, sort, language } = req.query;
 
-  const filteredItems = filterItems(category, sort);
+  const filteredItems = filterItems(category, sort, language);
 
-  res.status(200).json({ filteredItems });
+  res.status(200).json({ aa: "sa" });
 }
 
 // Funkcja do filtrowania i sortowania produktów
 const filterItems = (
   category: string | string[] | undefined,
-  sort: string | string[] | undefined
+  sort: string | string[] | undefined,
+  language: string | string[] | undefined
 ) => {
   let filteredItems = [...menuItems];
 
   if (category) {
     filteredItems = filteredItems.filter((item) => item.category === category);
   }
-
+  // if (language) {
+  // filteredItems = filteredItems.filter((cat) => cat.title === language);
+  // }
   switch (sort) {
     case "popular":
       filteredItems.sort((a, b) => b.review - a.review);

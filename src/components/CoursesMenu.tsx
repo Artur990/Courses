@@ -24,7 +24,7 @@ const CoursesMenu: FC<CoursesProps> = ({ toggleMenu }: CoursesProps) => {
     return uniqueItems;
   }
   const uniqueItems = getUniqueItems(menuItems);
-
+  console.log(uniqueItems);
   return (
     <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
       <div className="p-4">

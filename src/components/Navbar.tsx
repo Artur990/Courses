@@ -17,7 +17,7 @@ import { signIn, useSession } from "next-auth/react";
 
 interface NavProps {}
 
-const Navbar = async () => {
+const Navbar = () => {
   // const session = await getServerSession(authOptions);
   // const { data: session } = useSession();
   // console.log(session);
@@ -116,7 +116,7 @@ const Navbar = async () => {
             Nowości
           </Link>
         </div>
-        {false ? (
+        {true ? (
           <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center lg:gap-x-8">
             <div className="relative">
               <button
@@ -145,8 +145,8 @@ const Navbar = async () => {
               </button>
               {isOpenMyCourses && (
                 <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-                  <div className="p-4">
-                    <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
+                  <div className="p-0">
+                    <div className="group relative flex items-start flex-col gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
                       <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-300">
                         <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-100 group-hover:bg-white">
                           <AiFillGithub className="h-10 w-10" />
@@ -161,6 +161,23 @@ const Navbar = async () => {
                           <p className="mt-1 text-gray-600">Ukończono 2/10</p>
                         </div>
                       </div>
+
+                      {/* <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-300"> */}
+                      <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-300">
+                        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-100 group-hover:bg-white">
+                          <AiFillGithub className="h-10 w-10" />
+                        </div>
+                        <div className="flex-auto">
+                          <Link
+                            href="github"
+                            className="block font-semibold text-gray-900"
+                          >
+                            GitHub
+                          </Link>
+                          <p className="mt-1 text-gray-600">Ukończono 2/10</p>
+                        </div>
+                      </div>
+                      {/* </div> */}
                     </div>
                   </div>
                 </div>

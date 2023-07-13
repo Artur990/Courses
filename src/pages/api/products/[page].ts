@@ -1,16 +1,16 @@
-// import { menuItems } from "../../data/courses";
+// // import { menuItems } from "../../data/courses";
 import { NextApiRequest, NextApiResponse } from "next";
-// import { produkty } from "../../data/products"; // Załóżmy, że dane produktów znajdują się w osobnym pliku
+// // import { produkty } from "../../data/products"; // Załóżmy, że dane produktów znajdują się w osobnym pliku
 
 import { menuItems } from "@/data/courses";
 // export default function handler(req: NextApiRequest, res: NextApiResponse) {
-//   const { category, sort } = req.query;
+//   // const { category, sort } = req.query;
 
 //   // Wywołaj funkcję do filtrowania i sortowania produktów
-//   const filteredProducts = filterAndSortProducts(category, sort);
+//   // const filteredProducts = filterAndSortProducts(category, sort);
 
 //   // Zwróć wynik jako odpowiedź na zapytanie
-//   res.status(200).json(filteredProducts);
+//   res.status(200).json({ ka: 2 });
 // }
 
 // // Funkcja do filtrowania i sortowania produktów
@@ -30,22 +30,38 @@ import { menuItems } from "@/data/courses";
 // };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { category, sort, page } = req.query;
+  const { category, sort, language, page } = req.query;
 
-  const filteredItems = filterItems(category, sort);
+  const filteredItems = filterItems(category, sort, language);
 
-  res.status(200).json({ filteredItems, page });
+  const productsPerPage = 3; // Ilość produktów na stronę
+  const offset = (parseInt(page as any) - 1) * productsPerPage;
+  const currentPageProducts = filteredItems.slice(
+    offset,
+    offset + productsPerPage
+  );
+
+  res.status(200).json({
+    // asd: "sad", filteredItems, language, sort, category
+    itemsToFilter: menuItems,
+    items: currentPageProducts,
+    pageCount: Math.ceil(filteredItems.length / productsPerPage),
+  });
 }
 
 // Funkcja do filtrowania i sortowania produktów
 const filterItems = (
   category: string | string[] | undefined,
-  sort: string | string[] | undefined
+  sort: string | string[] | undefined,
+  language: string | string[] | undefined
 ) => {
   let filteredItems = [...menuItems];
 
   if (category) {
     filteredItems = filteredItems.filter((item) => item.category === category);
+  }
+  if (language) {
+    filteredItems = filteredItems.filter((cat) => cat.title === language);
   }
 
   switch (sort) {

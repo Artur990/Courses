@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { AiOutlineCheck } from "react-icons/ai";
 import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 
 type Tparams = {
   params: {
@@ -20,25 +20,56 @@ type Tparams = {
     language?: string;
   };
 };
+
 type TselectedOptions = {
   category?: string;
   sort?: string;
   language?: string;
 };
 
+type Titems = {
+  items?: {
+    category: string;
+    dataPremiery: string;
+    description: string;
+    descriptionCourses: string;
+    details: string;
+    feature: string[];
+    icon: string;
+    link: string;
+    name: string;
+    price: number;
+    review: number;
+    stars: number;
+    title: string;
+  }[];
+  itemsToFilter: {
+    category: string;
+    dataPremiery: string;
+    description: string;
+    descriptionCourses: string;
+    details: string;
+    feature: string[];
+    icon: string;
+    link: string;
+    name: string;
+    price: number;
+    review: number;
+    stars: number;
+    title: string;
+  }[];
+  pageCount?: number;
+};
+
 export default function Home(params: Tparams) {
   const router = useRouter();
 
-  const [selectedOptions, setSelectedOptions] = useState<TselectedOptions>(
-    {} as TselectedOptions
-  );
-
+  const [selectedOptions, setSelectedOptions] = useState<TselectedOptions>({});
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  // state sort
-  const [sortedItems, setSortedItems] = useState(menuItems);
+  const [sortedItems, setSortedItems] = useState<Titems>();
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
@@ -51,217 +82,107 @@ export default function Home(params: Tparams) {
   const [currentPage, setCurrentPage] = useState<number>(
     parseInt(params.params.page) || 1
   );
-
-  const uniqueCategories = getUniqueCategories(menuItems);
-  const uniqueTitles = getUniqueTitles(menuItems);
+  // console.log(sortedItems?.items);
 
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
   const toggleGrid = () => setGrid(!grid);
-  // function to get sort values
-  const searchParams = useSearchParams();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const { sort, language, category } = params.searchParams;
     setSelectedOptions({
-      category: category as string,
-      sort: sort as string,
-      language: language as string,
+      category: category || undefined,
+      sort: sort || undefined,
+      language: language || undefined,
     });
     setFilterOptions({
-      categoryFilter: category as string,
-      sortType: sort as string,
-      titleFilter: language as string,
+      categoryFilter: category || "",
+      sortType: sort || "",
+      titleFilter: language || "",
     });
-    setSortType(sort as string);
-    console.log(filterOptions);
-  }, [params, setSelectedOptions]);
+    setSortType(sort || "forYou");
+  }, [params]);
 
-  const handleSort = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSort: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     const sortType = event.currentTarget.name;
-    // console.log(sortType, "handle sort");
-    let sorted = [...menuItems];
     setSortType(sortType);
     handleOptionClick("sort", sortType);
-    setFilterOptions((prevOptions) => ({
-      ...prevOptions,
-      sortType: sortType,
-    }));
-
-    setSortedItems(sorted);
   };
-  // function to get sort values end
-  // useEffect(() => {
-  //   if (filterOptions.categoryFilter) {
-  //     const otherCheckedInputs = Array.from(
-  //       document.querySelectorAll('input[name="title[]"]')
-  //     ) as HTMLInputElement[];
 
-  //     otherCheckedInputs.forEach((input) => {
-  //       input.checked = input.value === filterOptions.categoryFilter;
-  //     });
-  //   }
-  // }, [filterOptions.categoryFilter]);
-
-  // function to get unique values
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     const selectedTitle = event.target.value;
 
-    const otherCheckedInputs = Array.from(
-      document.querySelectorAll('input[name="title[]"]:checked')
-    ) as HTMLInputElement[];
-
-    if (otherCheckedInputs.length > 0) {
-      otherCheckedInputs.forEach((input) => {
-        if (input.value !== selectedTitle) {
-          input.checked = false;
-        }
-      });
-    }
-
     if (isChecked) {
       setCheckedTitle(selectedTitle);
       handleOptionClick("language", selectedTitle);
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        titleFilter: selectedTitle,
-      }));
     } else {
       setCheckedTitle("");
       handleOptionClick("language", "");
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        titleFilter: "",
-      }));
     }
   };
 
   const handleTitleCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // router.back();
     const isChecked = event.target.checked;
     const selectedCategory = event.target.value;
-
-    const otherCheckedInputs = Array.from(
-      document.querySelectorAll('input[name="category[]"]:checked')
-    ) as HTMLInputElement[];
-
-    if (otherCheckedInputs.length > 0) {
-      otherCheckedInputs.forEach((input) => {
-        if (input.value !== selectedCategory) {
-          input.checked = false;
-        }
-      });
-    }
 
     if (isChecked) {
       setCheckedCategory(selectedCategory);
       handleOptionClick("category", selectedCategory);
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        categoryFilter: selectedCategory,
-      }));
     } else {
       setCheckedCategory("");
       handleOptionClick("category", "");
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        categoryFilter: "",
-      }));
     }
   };
 
-  const handleOptionClick = (
-    optionName: string,
-    optionValue: string | undefined
-  ) => {
-    console.log(
-      optionName,
-      optionValue,
-      "to jest przekazywane to funkacji clciked"
-    );
+  const handleOptionClick = (optionName: string, optionValue: string) => {
     setSelectedOptions((prevOptions) => ({
       ...prevOptions,
       [optionName]: optionValue,
     }));
-    const urlParams = new URLSearchParams();
 
-    if (selectedOptions.category) {
-      urlParams.set("category", selectedOptions.category);
-    }
-
-    if (selectedOptions.sort) {
-      urlParams.set("sort", selectedOptions.sort);
-    }
-
-    if (selectedOptions.language) {
-      urlParams.set("language", selectedOptions.language);
-    }
-
-    const url = `/1?${urlParams.toString()}`;
-    console.log(url, "taki link idzie do router.push");
-    router.push(url);
-  };
-  React.useEffect(() => {
-    const urlParams = new URLSearchParams();
-    // console.log("useEfect 1", selectedOptions.category);
-    if (selectedOptions.category) {
-      urlParams.set("category", selectedOptions.category);
-    }
-
-    if (selectedOptions.sort) {
-      urlParams.set("sort", selectedOptions.sort);
-    }
-
-    if (selectedOptions.language) {
-      urlParams.set("language", selectedOptions.language);
-    }
-
+    const urlParams = new URLSearchParams(selectedOptions);
     const url = `/${params.params.page}?${urlParams.toString()}`;
     router.push(url);
-  }, [selectedOptions]);
-  // function to get unique values end
-  React.useEffect(() => {
-    const { sortType, titleFilter, categoryFilter } = filterOptions;
+  };
 
-    let filteredItems = [...menuItems];
+  useEffect(() => {
+    const fetchData = async () => {
+      const { sortType, titleFilter, categoryFilter } = filterOptions;
 
-    if (titleFilter) {
-      filteredItems = filteredItems.filter((cat) => cat.title !== titleFilter);
-    }
+      if (
+        sortType !== undefined ||
+        titleFilter !== undefined ||
+        categoryFilter !== undefined
+      ) {
+        const queryParams = new URLSearchParams();
+        if (sortType) {
+          queryParams.set("sort", sortType);
+        }
+        if (titleFilter) {
+          queryParams.set("language", titleFilter);
+        }
+        if (categoryFilter) {
+          queryParams.set("category", categoryFilter);
+        }
+        const queryString = queryParams.toString();
+        console.log(queryString);
 
-    if (categoryFilter) {
-      filteredItems = filteredItems.filter(
-        (cat) => cat.category === categoryFilter
-      );
-    }
+        const url = `http://localhost:3000/api/products/1${
+          queryString ? `?${queryString}` : ""
+        }`;
 
-    switch (sortType) {
-      case "popular":
-        filteredItems.sort((a, b) => b.review - a.review);
-        break;
-      case "rated":
-        filteredItems.sort((a, b) => b.stars - a.stars);
-        break;
-      case "newest":
-        filteredItems.sort((a, b) => b.dataPremiery - a.dataPremiery);
-        break;
-      case "priceAsc":
-        filteredItems.sort((a, b) => a.price - b.price);
-        break;
-      case "priceDesc":
-        filteredItems.sort((a, b) => b.price - a.price);
-        break;
-      default:
-        filterOptions;
-    }
+        const res = await fetch(url);
+        const data = await res.json();
+        setSortedItems(data);
+      }
+    };
 
-    setSortedItems(filteredItems);
+    fetchData();
   }, [filterOptions]);
 
-  // function cleaer sorts
   const clearFunction = () => {
     setFilterOptions({
       sortType: "",
@@ -273,25 +194,21 @@ export default function Home(params: Tparams) {
     router.push("/1");
   };
 
-  // section pagestation
-  const productsPerPage = 3; // Ilość produktów na stronę
+  const productsPerPage = 3;
+  const offset = (currentPage - 1) * productsPerPage;
+  const currentPageProducts = sortedItems?.items
+    ? sortedItems.items.slice(offset, offset + productsPerPage)
+    : [];
 
-  const pageCount = Math.ceil(sortedItems.length / productsPerPage);
-  const offset = (parseInt(params.params.page) - 1) * productsPerPage;
-  const currentPageProducts = sortedItems.slice(
-    offset,
-    offset + productsPerPage
-  );
-
-  React.useEffect(() => {
-    if (pageCount === 1) {
+  useEffect(() => {
+    if (sortedItems?.pageCount === 1) {
       setCurrentPage(1);
       router.replace("/1");
     }
-  }, [sortedItems, filterOptions, menuItems]);
+  }, [sortedItems]);
 
   const handlePageClickNext = () => {
-    if (currentPage >= pageCount) return;
+    if (currentPage >= 3) return;
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
     router.push(`/${nextPage}`);
@@ -304,28 +221,16 @@ export default function Home(params: Tparams) {
       router.push(`/${previousPage}`);
     }
   };
-  const generatePageLinks = (pageCount: number, router: any) => {
+
+  const generatePageLinks = (pageCount: number) => {
     const links = [];
-    const urlParams = new URLSearchParams();
-
-    if (selectedOptions.category) {
-      urlParams.set("category", selectedOptions.category);
-    }
-
-    if (selectedOptions.sort) {
-      urlParams.set("sort", selectedOptions.sort);
-    }
-
-    if (selectedOptions.language) {
-      urlParams.set("language", selectedOptions.language);
-    }
 
     for (let i = 0; i < pageCount; i++) {
       links.push(
         <button
           key={i}
-          onClick={() => router.push(`/${i + 1}?${urlParams.toString()}`)}
-          className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          onClick={() => router.push(`/${i + 1}`)}
+          className={currentPage === i + 1 ? "active" : ""}
         >
           {i + 1}
         </button>
@@ -334,6 +239,9 @@ export default function Home(params: Tparams) {
 
     return links;
   };
+
+  const uniqueCategories = getUniqueCategories(menuItems);
+  const uniqueTitles = getUniqueTitles(menuItems);
 
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
@@ -426,9 +334,9 @@ export default function Home(params: Tparams) {
                             aria-hidden="true"
                           >
                             <path
-                              fill-rule="evenodd"
+                              fillRule="evenodd"
                               d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             />
                           </svg>
                         </span>
@@ -497,9 +405,9 @@ export default function Home(params: Tparams) {
                             aria-hidden="true"
                           >
                             <path
-                              fill-rule="evenodd"
+                              fillRule="evenodd"
                               d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             />
                           </svg>
                         </span>
@@ -511,7 +419,7 @@ export default function Home(params: Tparams) {
                         <div className="space-y-6">
                           {uniqueCategories.map((category: any, index: any) => (
                             <div key={index} className="flex items-center">
-                              <Input
+                              <input
                                 id={`filter-category-${index}`}
                                 name="category[]"
                                 value={category}
@@ -567,9 +475,9 @@ export default function Home(params: Tparams) {
                       }}
                     >
                       <path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       />
                     </svg>
                   </button>
@@ -670,9 +578,9 @@ export default function Home(params: Tparams) {
                   fill="currentColor"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M4.25 2A2.25 2.25 0 002 4.25v2.5A2.25 2.25 0 004.25 9h2.5A2.25 2.25 0 009 6.75v-2.5A2.25 2.25 0 006.75 2h-2.5zm0 9A2.25 2.25 0 002 13.25v2.5A2.25 2.25 0 004.25 18h2.5A2.25 2.25 0 009 15.75v-2.5A2.25 2.25 0 006.75 11h-2.5zm9-9A2.25 2.25 0 0011 4.25v2.5A2.25 2.25 0 0013.25 9h2.5A2.25 2.25 0 0018 6.75v-2.5A2.25 2.25 0 0015.75 2h-2.5zm0 9A2.25 2.25 0 0011 13.25v2.5A2.25 2.25 0 0013.25 18h2.5A2.25 2.25 0 0018 15.75v-2.5A2.25 2.25 0 0015.75 11h-2.5z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </button>
@@ -689,9 +597,9 @@ export default function Home(params: Tparams) {
                   fill="currentColor"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </button>
@@ -761,9 +669,9 @@ export default function Home(params: Tparams) {
                           aria-hidden="true"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                           />
                         </svg>
                       </span>
@@ -838,9 +746,9 @@ export default function Home(params: Tparams) {
                           aria-hidden="true"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                           />
                         </svg>
                       </span>
@@ -874,7 +782,7 @@ export default function Home(params: Tparams) {
                 </div>
               </aside>
               {/* <!-- Product grid --> */}
-              <CoursesPage menuItems={currentPageProducts} grid={grid} />
+              <CoursesPage menuItems={sortedItems?.items} grid={grid} />
             </div>
           </section>
         </main>
@@ -898,15 +806,15 @@ export default function Home(params: Tparams) {
                   aria-hidden="true"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </button>
 
               {/* Strony */}
-              {generatePageLinks(pageCount, router)}
+              {/* {generatePageLinks(sortedItems.pageCount)} */}
 
               {/* Następne strony */}
               <button
@@ -922,9 +830,9 @@ export default function Home(params: Tparams) {
                   aria-hidden="true"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </button>
