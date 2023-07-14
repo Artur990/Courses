@@ -59,37 +59,35 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  ApiKey        ApiKey[]
-  apiKeyId      String
 }
 
-model ApiKey {
-  id String @id @default(cuid())
-  key String @unique
-  enabled Boolean @default(true)
-  User User @relation(fields: [UserId], references: [id])
-  UserId String
+// model ApiKey {
+//   id String @id @default(cuid())
+//   key String @unique
+//   enabled Boolean @default(true)
+//   User User @relation(fields: [UserId], references: [id])
+//   UserId String
 
-  requests ApiRequest[]
+//   requests ApiRequest[]
 
-  @@unique([UserId, key, enabled])
+//   @@unique([UserId, key, enabled])
 
  
-}
-model ApiRequest {
- id String @id @default(cuid())
-timestamp DateTime @default(now())
-method String
-path String
-status Int
-duration Int
-useApiKey String
+// }
+// model ApiRequest {
+//  id String @id @default(cuid())
+// timestamp DateTime @default(now())
+// method String
+// path String
+// status Int
+// duration Int
+// useApiKey String
 
 
-ApiKey ApiKey @relation(fields: [useApiKey], references: [id])
-apiKeyId String 
- @@index([useApiKey, timestamp])
-}
+// ApiKey ApiKey @relation(fields: [useApiKey], references: [id])
+// apiKeyId String 
+//  @@index([useApiKey, timestamp])
+// }
 model VerificationToken {
   identifier String
   token      String   @unique

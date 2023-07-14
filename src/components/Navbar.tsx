@@ -5,22 +5,20 @@ import { buttonVariants } from "./ui/Button";
 import Link from "next/link";
 import SignOutButton from "./SignOutButton";
 import SingInButton from "./SignInButton";
-import { getServerSession } from "next-auth";
 import { AiFillGithub } from "react-icons/ai";
 // import NavbarMobile from "./NavbarMobile";
-import Courses from "./CoursesMenu";
+// import Courses from "./CoursesMenu";
 import CoursesMobile from "./CoursesMobile";
 import CoursesMenu from "./CoursesMenu";
-import { authOptions } from "@/lib/auth";
-import { signIn, useSession } from "next-auth/react";
-// import { authOptions } from "@/lib/auth";
+import { useSession } from "next-auth/react";
 
 interface NavProps {}
 
 const Navbar = () => {
   // const session = await getServerSession(authOptions);
+  const { data: session } = useSession();
   // const { data: session } = useSession();
-  // console.log(session);
+  console.log(session);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenMyCourses, setIsOpenMyCourses] = useState(false);
   const [isOpenMobile, setIsOpenMobile] = useState(false);
@@ -46,7 +44,7 @@ const Navbar = () => {
             href="/"
             className={buttonVariants({ variant: "link", size: "lg" })}
           >
-            Dev kursy
+            Dev kursy{""} {session && <span> ,witaj {session?.user.name}</span>}
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -116,7 +114,7 @@ const Navbar = () => {
             Nowości
           </Link>
         </div>
-        {true ? (
+        {session ? (
           <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center lg:gap-x-8">
             <div className="relative">
               <button

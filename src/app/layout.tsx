@@ -39,7 +39,9 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import { SessionProvider } from "next-auth/react";
+import type { AppProps } from "next/app";
+import Providers from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -55,8 +57,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        {children}
+        <Providers>
+          {/* @ts-dexpesdct-error Server Componentds */}
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

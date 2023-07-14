@@ -1,8 +1,4 @@
 import { FC } from "react";
-import {
-  CircularProgressbar,
-  CircularProgressbarWithChildren,
-} from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { CircularProgressWithLabel } from "../components/ui/CircularProgress";
 interface NavbarCourseProps {}
