@@ -98,7 +98,7 @@ const Slideshow = (params: any) => {
     <div className="flex mt-0 h-[100vh]">
       <div className="w-3/4 p-10 bg-gray-200">
         {question?.map((item: any, index: number) => (
-          <div key={index} className="w-full h-auto">
+          <div key={index} className="w-full h-auto text-black">
             <div className="flex justify-between">
               <h1 className="text-3xl">
                 {item.nr}. {""} {item.topis}
@@ -146,7 +146,7 @@ const Slideshow = (params: any) => {
             <hr className="mb-2 border-b border-gray-400" />
             <div className="">
               {questions.map(({ title, content }, index) => (
-                <div key={index}>
+                <div className="text-black" key={index}>
                   <button
                     ref={(ref) => (questionRefs.current[index] = ref)}
                     className="flex w-full items-center justify-between text-start font-semibold"
@@ -154,9 +154,7 @@ const Slideshow = (params: any) => {
                   >
                     <div>
                       <span>{`Sekcja ${index + 1}: ${title}`}</span>
-                      <h4 className="text-xs text-gray-400">
-                        1/{content.length}
-                      </h4>
+                      <h4 className="text-xs ">1/{content.length}</h4>
                     </div>
                     <span className="text-3xl">
                       {activeQuestion === index ? "-" : "+"}

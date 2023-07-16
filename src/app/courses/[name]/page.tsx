@@ -3,7 +3,7 @@ import Courses from "@/components/Courses";
 // import { menuItem } from "../../../../data/courses";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
-import { menuItems } from "../../../data/courses";
+import { courses } from "../../../data/courses";
 
 const Page = ({ params }: any) => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const Page = ({ params }: any) => {
   }
   console.log(capitalizeFirstLetter(params.name));
 
-  let menuItem1 = menuItems.find(
+  let menuItem1 = courses.find(
     (item) => item.title === capitalizeFirstLetter(params.name)
   );
   console.log(menuItem1);

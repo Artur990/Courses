@@ -1,126 +1,148 @@
 "use client";
-import React, { use, useEffect } from "react";
-import Paragraph from "@/components/ui/Paragraph";
-import { useState } from "react";
-import { menuItems } from "../../data/courses";
+
+import React, { useEffect, useState } from "react";
+import { AiOutlineCheck } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+
+import { generatePageLinks } from "../../helper/function";
+import { courses } from "../data/courses";
+
 import CoursesPage from "@/components/CoursesPage";
 import { buttonVariants } from "@/components/ui/Button";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { AiOutlineCheck } from "react-icons/ai";
-import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
-// import { Input } from "@/components/ui/input";
-
-type Tparams = {
-  params: {
-    page?: any;
-  };
-  searchParams: {
-    category?: string;
-    sort?: string;
-    language?: string;
-  };
-};
-
-type TselectedOptions = {
+import { ca } from "date-fns/locale";
+import { set } from "date-fns";
+interface SearchParams {
   category?: string;
   sort?: string;
   language?: string;
-};
-
-type Titems = {
-  items?: {
-    category: string;
-    dataPremiery: string;
-    description: string;
-    descriptionCourses: string;
-    details: string;
-    feature: string[];
-    icon: string;
-    link: string;
-    name: string;
-    price: number;
-    review: number;
-    stars: number;
-    title: string;
-  }[];
-  itemsToFilter: {
-    category: string;
-    dataPremiery: string;
-    description: string;
-    descriptionCourses: string;
-    details: string;
-    feature: string[];
-    icon: string;
-    link: string;
-    name: string;
-    price: number;
-    review: number;
-    stars: number;
-    title: string;
-  }[];
-  pageCount?: number;
-};
-
-export default function Home(params: Tparams) {
-  const router = useRouter();
-
-  const [selectedOptions, setSelectedOptions] = useState<TselectedOptions>({});
+}
+export default function Home({ params }: any) {
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [sortedItems, setSortedItems] = useState<Titems>();
+  const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
+  const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
+  const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
+  const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
+  const [selectedOptions, setSelectedOptions] = useState<SearchParams>({});
+
+  const handleOptionClick = (optionName: string, optionValue: string) => {
+    setSelectedOptions((prevOptions) => ({
+      ...prevOptions,
+      [optionName]: optionValue,
+    }));
+    updateUrl();
+  };
+  console.log(params);
+
+  // const updateUrl = () => {
+  //   const urlParams = new URLSearchParams();
+
+  //   if (selectedOptions.category) {
+  //     urlParams.set("category", selectedOptions.category);
+  //   }
+
+  //   if (selectedOptions.sort) {
+  //     urlParams.set("sort", selectedOptions.sort);
+  //   }
+
+  //   if (selectedOptions.language) {
+  //     urlParams.set("language", selectedOptions.language);
+  //   }
+
+  //   const url = `/blog?${urlParams.toString()}`;
+  //   router.push(url);
+  // };
+
+  const [sortedItems, setSortedItems] = useState<any>([]);
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
-  const [grid, setGrid] = useState(true);
   const [filterOptions, setFilterOptions] = useState({
     sortType: "",
     titleFilter: "",
     categoryFilter: "",
   });
-  const [currentPage, setCurrentPage] = useState<number>(
-    parseInt(params.params.page) || 1
-  );
-  // console.log(sortedItems?.items);
 
-  const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
-  const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
-  const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
-  const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
-  const toggleGrid = () => setGrid(!grid);
+  // const fetchFilteredData = async () => {
+  //   const response = await fetch(
+  //     `/api/data?sortType=${sortType}&titleFilter=${checkedTitle}&categoryFilter=${checkedCategory}`
+  //   );
+  //   const data = await response.json();
+  //   setSortedItems(data);
+  // };
+  // useEffect(() => {
+  //   fetchFilteredData();
+  // }, [filterOptions]);
 
-  useEffect(() => {
-    const { sort, language, category } = params.searchParams;
-    setSelectedOptions({
-      category: category || undefined,
-      sort: sort || undefined,
-      language: language || undefined,
-    });
-    setFilterOptions({
-      categoryFilter: category || "",
-      sortType: sort || "",
-      titleFilter: language || "",
-    });
-    setSortType(sort || "forYou");
-  }, [params]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSortOption, setSelectedSortOption] = useState("");
 
-  const handleSort: React.MouseEventHandler<HTMLButtonElement> = (event) => {
-    const sortType = event.currentTarget.name;
-    setSortType(sortType);
-    handleOptionClick("sort", sortType);
+  const handleCategoryClick = (category: any) => {
+    setSelectedCategory(category);
+    updateUrl();
   };
 
+  const handleSortClick = (sortOption: any) => {
+    setSelectedSortOption(sortOption);
+    updateUrl();
+  };
+
+  const updateUrl = () => {
+    let url = "/blog";
+
+    if (selectedCategory) {
+      url += `?category=${selectedCategory}`;
+    }
+
+    if (selectedSortOption) {
+      url += `&sort=${selectedSortOption}`;
+    }
+
+    router.push(url);
+  };
+  // function to get sort values
+  const handleSort = (sortType: string) => {
+    setSortType(sortType);
+    setFilterOptions((prevOptions) => ({
+      ...prevOptions,
+      sortType: sortType,
+    }));
+    // fetchFilteredData();
+    console.log(filterOptions);
+  };
+  // function to get sort values end
+
+  // function to get unique values
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     const selectedTitle = event.target.value;
 
+    const otherCheckedInputs = Array.from(
+      document.querySelectorAll('input[name="title[]"]:checked')
+    ) as HTMLInputElement[];
+
+    if (otherCheckedInputs.length > 0) {
+      otherCheckedInputs.forEach((input) => {
+        if (input.value !== selectedTitle) {
+          input.checked = false;
+        }
+      });
+    }
+
     if (isChecked) {
       setCheckedTitle(selectedTitle);
-      handleOptionClick("language", selectedTitle);
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        titleFilter: selectedTitle,
+      }));
     } else {
       setCheckedTitle("");
-      handleOptionClick("language", "");
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        titleFilter: "",
+      }));
     }
   };
 
@@ -128,61 +150,90 @@ export default function Home(params: Tparams) {
     const isChecked = event.target.checked;
     const selectedCategory = event.target.value;
 
+    const otherCheckedInputs = Array.from(
+      document.querySelectorAll('input[name="category[]"]:checked')
+    ) as HTMLInputElement[];
+
+    if (otherCheckedInputs.length > 0) {
+      otherCheckedInputs.forEach((input) => {
+        if (input.value !== selectedCategory) {
+          input.checked = false;
+        }
+      });
+    }
+
     if (isChecked) {
       setCheckedCategory(selectedCategory);
-      handleOptionClick("category", selectedCategory);
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        categoryFilter: selectedCategory,
+      }));
     } else {
       setCheckedCategory("");
-      handleOptionClick("category", "");
+      setFilterOptions((prevOptions) => ({
+        ...prevOptions,
+        categoryFilter: "",
+      }));
     }
   };
+  // function to get unique values end
+  React.useEffect(() => {
+    const { sortType, titleFilter, categoryFilter } = filterOptions;
 
-  const handleOptionClick = (optionName: string, optionValue: string) => {
-    setSelectedOptions((prevOptions) => ({
-      ...prevOptions,
-      [optionName]: optionValue,
-    }));
+    let filteredItems = [sortedItems];
+    if (categoryFilter) {
+      filteredItems = filteredItems.filter(
+        (cat) => cat.category === categoryFilter
+      );
+    }
+    if (titleFilter) {
+      filteredItems = filteredItems.filter((cat) => cat.title === titleFilter);
+    }
 
-    const urlParams = new URLSearchParams(selectedOptions);
-    const url = `/${params.params.page}?${urlParams.toString()}`;
-    router.push(url);
+    switch (sortType) {
+      case "popular":
+        filteredItems.sort((a, b) => b.review - a.review);
+        break;
+      case "rated":
+        filteredItems.sort((a, b) => b.stars - a.stars);
+        break;
+      case "newest":
+        filteredItems.sort((a, b) => b.dataPremiery - a.dataPremiery);
+        break;
+      case "priceAsc":
+        filteredItems.sort((a, b) => a.price - b.price);
+        break;
+      case "priceDesc":
+        filteredItems.sort((a, b) => b.price - a.price);
+        break;
+      default:
+      // No sorting
+    }
+
+    setSortedItems(filteredItems);
+  }, [filterOptions, courses]);
+
+  // function to get unique values
+  const getUniquatCategories = (menuItems: any[]) => {
+    const uniqueCategories = menuItems.reduce((categories, course) => {
+      if (!categories.includes(course.category)) {
+        categories.push(course.category);
+      }
+      return categories;
+    }, []);
+    return uniqueCategories;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { sortType, titleFilter, categoryFilter } = filterOptions;
-
-      if (
-        sortType !== undefined ||
-        titleFilter !== undefined ||
-        categoryFilter !== undefined
-      ) {
-        const queryParams = new URLSearchParams();
-        if (sortType) {
-          queryParams.set("sort", sortType);
-        }
-        if (titleFilter) {
-          queryParams.set("language", titleFilter);
-        }
-        if (categoryFilter) {
-          queryParams.set("category", categoryFilter);
-        }
-        const queryString = queryParams.toString();
-        console.log(queryString);
-
-        const url = `http://localhost:3000/api/products/1${
-          queryString ? `?${queryString}` : ""
-        }`;
-
-        const res = await fetch(url);
-        const data = await res.json();
-        setSortedItems(data);
+  const getUniqueTitles = (menuItems: any[]) => {
+    const uniqueTitles = menuItems.reduce((titles, course) => {
+      if (!titles.includes(course.title)) {
+        titles.push(course.title);
       }
-    };
-
-    fetchData();
-  }, [filterOptions]);
-
+      return titles;
+    }, []);
+    return uniqueTitles;
+  };
+  // function cleaer sorts
   const clearFunction = () => {
     setFilterOptions({
       sortType: "",
@@ -191,58 +242,53 @@ export default function Home(params: Tparams) {
     });
     setCheckedCategory("");
     setCheckedTitle("");
-    router.push("/1");
   };
 
-  const productsPerPage = 3;
-  const offset = (currentPage - 1) * productsPerPage;
-  const currentPageProducts = sortedItems?.items
-    ? sortedItems.items.slice(offset, offset + productsPerPage)
-    : [];
+  // function to get unique values end
+  // wyświetlanie stron
+  const uniqueCategories = getUniquatCategories(sortedItems);
+  const uniqueTitles = getUniqueTitles(sortedItems);
 
-  useEffect(() => {
-    if (sortedItems?.pageCount === 1) {
-      setCurrentPage(1);
-      router.replace("/1");
-    }
-  }, [sortedItems]);
+  // section pagestation
+  const productsPerPage = 3; // Ilość produktów na stronę
+
+  const pageCount = Math.ceil(sortedItems.length / productsPerPage);
+  const offset =
+    (parseInt(params.page === undefined ? 1 : params.page) - 1) *
+    productsPerPage;
+  const currentPageProducts = sortedItems.slice(
+    offset,
+    offset + productsPerPage
+  );
+  const [currentPage, setCurrentPage] = useState(
+    +params.page === undefined ? 1 : +params.page
+  );
+
+  const router = useRouter();
 
   const handlePageClickNext = () => {
-    if (currentPage >= 3) return;
+    if (currentPage >= pageCount) return;
     const nextPage = currentPage + 1;
+    const newPath = `/${nextPage}`;
     setCurrentPage(nextPage);
-    router.push(`/${nextPage}`);
+    router.replace(newPath);
   };
 
   const handlePageClickPrevious = () => {
     if (currentPage > 1) {
       const previousPage = currentPage - 1;
+      const newPath = `/${previousPage}`;
       setCurrentPage(previousPage);
-      router.push(`/${previousPage}`);
+      router.replace(newPath);
     }
   };
 
-  const generatePageLinks = (pageCount: number) => {
-    const links = [];
-
-    for (let i = 0; i < pageCount; i++) {
-      links.push(
-        <button
-          key={i}
-          onClick={() => router.push(`/${i + 1}`)}
-          className={currentPage === i + 1 ? "active" : ""}
-        >
-          {i + 1}
-        </button>
-      );
-    }
-
-    return links;
-  };
-
-  const uniqueCategories = getUniqueCategories(menuItems);
-  const uniqueTitles = getUniqueTitles(menuItems);
-
+  // React.useEffect(() => {
+  //   if (pageCount === 1) {
+  //     setCurrentPage(1);
+  //     router.replace("/1");
+  //   }
+  // }, [sortedItems, filterOptions]);
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
       <div className="bg-white container">
@@ -306,7 +352,7 @@ export default function Home(params: Tparams) {
                       <button
                         type="button"
                         onClick={toggleIsOpenLanguage}
-                        className="flex w-full itereplacenoems-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
                         aria-controls="filter-section-mobile-0"
                         aria-expanded="false"
                       >
@@ -348,7 +394,11 @@ export default function Home(params: Tparams) {
                         <div className="space-y-6">
                           {uniqueTitles.map((title: any, index: any) => {
                             return (
-                              <div key={index} className="flex items-center">
+                              <div
+                                onClick={() => toggleIsOpenLanguage()}
+                                key={index}
+                                className="flex items-center"
+                              >
                                 <input
                                   id={`filter-mobile-color-${index}`}
                                   name="title[]"
@@ -484,21 +534,18 @@ export default function Home(params: Tparams) {
                 </div>
                 {isOpenSort && (
                   <div
+                    onClick={toggleIsOpenSort}
                     className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
                   >
-                    <div
-                      onClick={toggleIsOpenSort}
-                      className="py-1 bg-gray-200"
-                      role="none"
-                    >
+                    <div className="py-1 bg-gray-200" role="none">
                       <button
-                        name="popular"
+                        // href="#"
                         className="text-gray-500 flex justify-between px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={handleSort}
+                        onClick={() => handleSort("popular")}
                       >
                         <span>Njabradziej Popularne</span>
                         {sortType === "popular" && (
@@ -506,10 +553,10 @@ export default function Home(params: Tparams) {
                         )}
                       </button>
                       <button
-                        name="rated"
+                        // href="#"
                         className=" text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={handleSort}
+                        onClick={() => handleSort("rated")}
                       >
                         <span>Najwyżej Oceniane</span>
                         {sortType === "rated" && (
@@ -517,10 +564,10 @@ export default function Home(params: Tparams) {
                         )}
                       </button>
                       <button
-                        name="newest"
+                        // href="#"
                         className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={handleSort}
+                        onClick={() => handleSort("newest")}
                       >
                         <span>Najnowższe</span>
                         {sortType === "newest" && (
@@ -528,10 +575,10 @@ export default function Home(params: Tparams) {
                         )}
                       </button>
                       <button
-                        name="priceAsc"
+                        // href="#"
                         className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={handleSort}
+                        onClick={() => handleSort("priceAsc")}
                       >
                         <span>Cena: rosnąca</span>
                         {sortType === "priceAsc" && (
@@ -539,10 +586,10 @@ export default function Home(params: Tparams) {
                         )}
                       </button>
                       <button
-                        name="priceDesc"
+                        // href="#"
                         className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={handleSort}
+                        onClick={() => handleSort("priceDesc")}
                       >
                         <span>Cena: malejąca</span>
                         {sortType === "priceDesc" && (
@@ -550,10 +597,10 @@ export default function Home(params: Tparams) {
                         )}
                       </button>
                       <button
-                        name="forYou"
+                        // href="#"
                         className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={handleSort}
+                        onClick={() => handleSort("forYou")}
                       >
                         <span>Wybrane dla Ciebie</span>
                         {sortType === "forYou" && (
@@ -567,7 +614,6 @@ export default function Home(params: Tparams) {
 
               <button
                 type="button"
-                onClick={toggleGrid}
                 className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
               >
                 <span className="sr-only">View grid</span>
@@ -758,6 +804,7 @@ export default function Home(params: Tparams) {
                     <div className="pt-6" id="filter-section-1">
                       <div className="space-y-4">
                         {uniqueCategories.map((category: any, index: any) => (
+                          // {uniqueTitles.map((item: any, index: any) => (
                           <div key={index} className="flex items-center">
                             <input
                               id={`filter-category-${index}`}
@@ -775,14 +822,15 @@ export default function Home(params: Tparams) {
                               {category}
                             </label>
                           </div>
-                        ))}
+                        ))}{" "}
+                        -
                       </div>
                     </div>
                   )}
                 </div>
               </aside>
               {/* <!-- Product grid --> */}
-              <CoursesPage menuItems={sortedItems?.items} grid={grid} />
+              <CoursesPage menuItems={currentPageProducts} />
             </div>
           </section>
         </main>
@@ -814,7 +862,7 @@ export default function Home(params: Tparams) {
               </button>
 
               {/* Strony */}
-              {/* {generatePageLinks(sortedItems.pageCount)} */}
+              {generatePageLinks(pageCount, router)}
 
               {/* Następne strony */}
               <button
@@ -840,6 +888,78 @@ export default function Home(params: Tparams) {
           </div>
         </div>
         {/* Pages end*/}
+      </div>
+      <div className="mt-28">
+        <p>Wybierz kategorię:</p>
+        {/* <h1>{params.searchParams.category}</h1> */}
+        {/* <h1>{params.searchParams.sort}</h1> */}
+        {/* <h1>{params.searchParams.language}</h1> */}
+        <div className="flex flex-col">
+          <button
+            onClick={() => handleOptionClick("category", "rowery")}
+            className={selectedOptions.category === "rowery" ? "active" : ""}
+          >
+            Rowery
+          </button>
+          <button
+            onClick={() => handleOptionClick("category", "wrotki")}
+            className={selectedOptions.category === "wrotki" ? "active" : ""}
+          >
+            Wrotki
+          </button>
+
+          <button
+            onClick={() => handleOptionClick("sort", "popularne")}
+            className={selectedOptions.sort === "popularne" ? "active" : ""}
+          >
+            Najbardziej Popularne
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "oceniane")}
+            className={selectedOptions.sort === "oceniane" ? "active" : ""}
+          >
+            Najwyżej Oceniane
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "najnowsze")}
+            className={selectedOptions.sort === "najnowsze" ? "active" : ""}
+          >
+            Najnowsze
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "cena-rosnaca")}
+            className={selectedOptions.sort === "cena-rosnaca" ? "active" : ""}
+          >
+            Cena: rosnąca
+          </button>
+          <button
+            onClick={() => handleOptionClick("sort", "cena-malejaca")}
+            className={selectedOptions.sort === "cena-malejaca" ? "active" : ""}
+          >
+            Cena: malejąca
+          </button>
+          {/* //  */}
+          <button
+            onClick={() => handleOptionClick("language", "JavaScript")}
+            className={
+              selectedOptions.language === "JavaScript" ? "active" : ""
+            }
+          >
+            JavaScript
+          </button>
+          <button
+            onClick={() => handleOptionClick("language", "React")}
+            className={selectedOptions.language === "React" ? "active" : ""}
+          >
+            React
+          </button>
+          <button
+            onClick={() => handleOptionClick("language", "Git")}
+            className={selectedOptions.language === "Git" ? "active" : ""}
+          >
+            Git
+          </button>
+        </div>
       </div>
     </main>
   );

@@ -1,11 +1,7 @@
 "use client";
-import { MenuItem, menuItems } from "../data/courses";
-import { tr } from "date-fns/locale";
+
 import Link from "next/link";
 import { FC } from "react";
-import { AiFillGithub } from "react-icons/ai";
-import { GrReactjs } from "react-icons/gr";
-import { TbBrandJavascript } from "react-icons/tb";
 import LargeHeading from "./ui/LargeHeading";
 import Paragraph from "./ui/Paragraph";
 import { buttonVariants } from "./ui/Button";

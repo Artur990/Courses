@@ -1,11 +1,7 @@
-import React, { Suspense } from "react";
-import Navbar from "@/components/Navbar";
 import { Inter } from "next/font/google";
-import Food from "@/components/Food";
 import NavbarCourse from "@/components/NavbarCourse";
-// import { MenuItem } from "../../data/courses";
 
-// import "./globals.css";
+import "../../globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {

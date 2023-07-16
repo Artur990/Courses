@@ -1,4 +1,4 @@
-import { menuItems } from "../data/courses";
+import { courses } from "../data/courses";
 import Link from "next/link";
 import { FC } from "react";
 
@@ -7,7 +7,7 @@ interface CoursesMobileProps {}
 const CoursesMobile: FC<CoursesMobileProps> = ({}) => {
   return (
     <div>
-      {menuItems.map((item, index) => (
+      {courses.map((item, index) => (
         <div key={index} className="mt-2 space-y-2" id="disclosure-1">
           <Link
             href={item.link}

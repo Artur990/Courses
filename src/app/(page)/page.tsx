@@ -1,148 +1,131 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { AiOutlineCheck } from "react-icons/ai";
-import { useRouter } from "next/navigation";
-
-import { generatePageLinks } from "../../helper/function";
-import { menuItems } from "../data/courses";
-
+import React, { useEffect } from "react";
+import Paragraph from "@/components/ui/Paragraph";
+import { useState } from "react";
+import { courses } from "../../data/courses";
 import CoursesPage from "@/components/CoursesPage";
 import { buttonVariants } from "@/components/ui/Button";
-import { ca } from "date-fns/locale";
-import { set } from "date-fns";
-interface SearchParams {
-  category?: string;
-  sort?: string;
-  language?: string;
-}
-export default function Home({ params }: any) {
+import { useRouter } from "next/navigation";
+import { AiOutlineCheck } from "react-icons/ai";
+import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
+import { Titems, Tparams, TselectedOptions } from "@/types/types";
+
+export default function Home(params: Tparams) {
+  const router = useRouter();
+
+  const [selectedOptions, setSelectedOptions] = useState<TselectedOptions>({});
   const [isOpenLanguage, setIsOpenLanguage] = useState(false);
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [sortedItems, setSortedItems] = useState<Titems>();
+  const [sortType, setSortType] = useState("forYou");
+  const [checkedTitle, setCheckedTitle] = useState("");
+  const [checkedCategory, setCheckedCategory] = useState("");
+  const [view, setView] = useState("grid");
+
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
-  const [selectedOptions, setSelectedOptions] = useState<SearchParams>({});
-
-  const handleOptionClick = (optionName: string, optionValue: string) => {
-    setSelectedOptions((prevOptions) => ({
-      ...prevOptions,
-      [optionName]: optionValue,
-    }));
-    updateUrl();
+  const toggleGrid = () => {
+    setView(view === "grid" ? "list" : "grid");
+    handleOptionClick("view", view);
   };
-  console.log(params);
 
-  // const updateUrl = () => {
-  //   const urlParams = new URLSearchParams();
-
-  //   if (selectedOptions.category) {
-  //     urlParams.set("category", selectedOptions.category);
-  //   }
-
-  //   if (selectedOptions.sort) {
-  //     urlParams.set("sort", selectedOptions.sort);
-  //   }
-
-  //   if (selectedOptions.language) {
-  //     urlParams.set("language", selectedOptions.language);
-  //   }
-
-  //   const url = `/blog?${urlParams.toString()}`;
-  //   router.push(url);
-  // };
-
-  const [sortedItems, setSortedItems] = useState<any>([]);
-  const [sortType, setSortType] = useState("forYou");
-  const [checkedTitle, setCheckedTitle] = useState("");
-  const [checkedCategory, setCheckedCategory] = useState("");
-  const [filterOptions, setFilterOptions] = useState({
-    sortType: "",
-    titleFilter: "",
-    categoryFilter: "",
-  });
-
-  // const fetchFilteredData = async () => {
-  //   const response = await fetch(
-  //     `/api/data?sortType=${sortType}&titleFilter=${checkedTitle}&categoryFilter=${checkedCategory}`
-  //   );
-  //   const data = await response.json();
-  //   setSortedItems(data);
-  // };
   // useEffect(() => {
-  //   fetchFilteredData();
-  // }, [filterOptions]);
+  // if (view !== "grid")
+  // }, [view]);
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSortOption, setSelectedSortOption] = useState("");
+  // jeżeli parametr się zmieni to niech się
+  useEffect(() => {
+    const { sort, language, category, page } = params.searchParams;
+    setSelectedOptions({
+      category: category || undefined,
+      sort: sort || undefined,
+      language: language || undefined,
+      page: page || undefined,
+      view: view || undefined,
+    });
+    setSortType(sort || "forYou");
 
-  const handleCategoryClick = (category: any) => {
-    setSelectedCategory(category);
-    updateUrl();
-  };
-
-  const handleSortClick = (sortOption: any) => {
-    setSelectedSortOption(sortOption);
-    updateUrl();
-  };
-
-  const updateUrl = () => {
-    let url = "/blog";
-
-    if (selectedCategory) {
-      url += `?category=${selectedCategory}`;
+    // add  checkboxa from URL
+    if (language) {
+      setCheckedTitle(language);
+    } else {
+      setCheckedTitle("");
+    }
+    if (category) {
+      setCheckedCategory(category);
+    } else {
+      setCheckedCategory("");
     }
 
-    if (selectedSortOption) {
-      url += `&sort=${selectedSortOption}`;
+    if (sort) {
+      setSortType(sort);
+    } else {
+      setSortType("forYou");
     }
+  }, [params.params]);
 
-    router.push(url);
+  // useEffect(() => {
+
+  const fetchData = async (
+    sort: string | undefined,
+    language: string | undefined,
+    category: string | undefined,
+    page: string | undefined
+  ) => {
+    const queryParams = new URLSearchParams();
+    if (sort) {
+      queryParams.set("sort", sort);
+    }
+    if (language) {
+      queryParams.set("language", language);
+    }
+    if (category) {
+      queryParams.set("category", category);
+    }
+    if (page) {
+      queryParams.set("page", page);
+    }
+    const queryString = queryParams.toString();
+    // const url = `http://localhost:3000/api/products/${params.params.page}${
+    //   queryString ? `?${queryString}` : ""
+    // }`;
+    const url = `http://localhost:3000/api/products${
+      queryString ? `?${queryString}` : ""
+    }`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(` HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      setSortedItems(data);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
   };
-  // function to get sort values
-  const handleSort = (sortType: string) => {
+
+  // start  input  function
+  const handleSort: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    const sortType = event.currentTarget.name;
     setSortType(sortType);
-    setFilterOptions((prevOptions) => ({
-      ...prevOptions,
-      sortType: sortType,
-    }));
-    // fetchFilteredData();
-    console.log(filterOptions);
+    handleOptionClick("sort", sortType);
   };
-  // function to get sort values end
 
-  // function to get unique values
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     const selectedTitle = event.target.value;
 
-    const otherCheckedInputs = Array.from(
-      document.querySelectorAll('input[name="title[]"]:checked')
-    ) as HTMLInputElement[];
-
-    if (otherCheckedInputs.length > 0) {
-      otherCheckedInputs.forEach((input) => {
-        if (input.value !== selectedTitle) {
-          input.checked = false;
-        }
-      });
-    }
-
     if (isChecked) {
       setCheckedTitle(selectedTitle);
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        titleFilter: selectedTitle,
-      }));
+      handleOptionClick("language", selectedTitle);
     } else {
       setCheckedTitle("");
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        titleFilter: "",
-      }));
+      handleOptionClick("language", "");
     }
   };
 
@@ -150,144 +133,128 @@ export default function Home({ params }: any) {
     const isChecked = event.target.checked;
     const selectedCategory = event.target.value;
 
-    const otherCheckedInputs = Array.from(
-      document.querySelectorAll('input[name="category[]"]:checked')
-    ) as HTMLInputElement[];
-
-    if (otherCheckedInputs.length > 0) {
-      otherCheckedInputs.forEach((input) => {
-        if (input.value !== selectedCategory) {
-          input.checked = false;
-        }
-      });
-    }
-
     if (isChecked) {
       setCheckedCategory(selectedCategory);
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        categoryFilter: selectedCategory,
-      }));
+      handleOptionClick("category", selectedCategory);
     } else {
       setCheckedCategory("");
-      setFilterOptions((prevOptions) => ({
-        ...prevOptions,
-        categoryFilter: "",
-      }));
+      handleOptionClick("category", "");
     }
   };
-  // function to get unique values end
-  React.useEffect(() => {
-    const { sortType, titleFilter, categoryFilter } = filterOptions;
+  // end  input  function
 
-    let filteredItems = [sortedItems];
-    if (categoryFilter) {
-      filteredItems = filteredItems.filter(
-        (cat) => cat.category === categoryFilter
-      );
-    }
-    if (titleFilter) {
-      filteredItems = filteredItems.filter((cat) => cat.title === titleFilter);
-    }
+  // funkacja która ustawai stan selectOpction
+  const handleOptionClick = (
+    optionName: string,
+    optionValue: string | number
+  ) => {
+    setSelectedOptions((prevOptions) => {
+      const newOptions = { ...prevOptions, [optionName]: optionValue };
 
-    switch (sortType) {
-      case "popular":
-        filteredItems.sort((a, b) => b.review - a.review);
-        break;
-      case "rated":
-        filteredItems.sort((a, b) => b.stars - a.stars);
-        break;
-      case "newest":
-        filteredItems.sort((a, b) => b.dataPremiery - a.dataPremiery);
-        break;
-      case "priceAsc":
-        filteredItems.sort((a, b) => a.price - b.price);
-        break;
-      case "priceDesc":
-        filteredItems.sort((a, b) => b.price - a.price);
-        break;
-      default:
-      // No sorting
-    }
-
-    setSortedItems(filteredItems);
-  }, [filterOptions, menuItems]);
-
-  // function to get unique values
-  const getUniquatCategories = (menuItems: any[]) => {
-    const uniqueCategories = menuItems.reduce((categories, course) => {
-      if (!categories.includes(course.category)) {
-        categories.push(course.category);
-      }
-      return categories;
-    }, []);
-    return uniqueCategories;
-  };
-
-  const getUniqueTitles = (menuItems: any[]) => {
-    const uniqueTitles = menuItems.reduce((titles, course) => {
-      if (!titles.includes(course.title)) {
-        titles.push(course.title);
-      }
-      return titles;
-    }, []);
-    return uniqueTitles;
-  };
-  // function cleaer sorts
-  const clearFunction = () => {
-    setFilterOptions({
-      sortType: "",
-      titleFilter: "",
-      categoryFilter: "",
+      return newOptions;
     });
+  };
+
+  // jeżeli w selectOpction jest jakaś wartośc to automatycznie ustawia się url w tym parametrem
+  useEffect(() => {
+    const urlParams = new URLSearchParams();
+    Object.entries(selectedOptions).forEach(([key, value]) => {
+      if (value) {
+        urlParams.set(key, value);
+      }
+    });
+    const url = `?${urlParams.toString()}`;
+    router.push(url);
+    const { sort, language, category, page } = selectedOptions;
+
+    fetchData(sort, language, category, page);
+  }, [selectedOptions]);
+
+  const clearFunction = () => {
     setCheckedCategory("");
     setCheckedTitle("");
+    router.push("/");
   };
 
-  // function to get unique values end
-  // wyświetlanie stron
-  const uniqueCategories = getUniquatCategories(sortedItems);
-  const uniqueTitles = getUniqueTitles(sortedItems);
-
-  // section pagestation
-  const productsPerPage = 3; // Ilość produktów na stronę
-
-  const pageCount = Math.ceil(sortedItems.length / productsPerPage);
-  const offset =
-    (parseInt(params.page === undefined ? 1 : params.page) - 1) *
-    productsPerPage;
-  const currentPageProducts = sortedItems.slice(
-    offset,
-    offset + productsPerPage
-  );
-  const [currentPage, setCurrentPage] = useState(
-    +params.page === undefined ? 1 : +params.page
-  );
-
-  const router = useRouter();
-  React.useEffect(() => {
-    if (pageCount === 1) {
-      setCurrentPage(1);
-      router.replace("/1");
-    }
-  }, [sortedItems, filterOptions]);
-
   const handlePageClickNext = () => {
-    if (currentPage >= pageCount) return;
-    const nextPage = currentPage + 1;
-    const newPath = `/${nextPage}`;
-    setCurrentPage(nextPage);
-    router.replace(newPath);
+    if (selectedOptions.page === undefined || selectedOptions.page === "0") {
+      handleOptionClick("page", "2");
+    }
+
+    if (selectedOptions.page) {
+      handleOptionClick("page", (Number(selectedOptions.page) + 1).toString());
+    }
+    if (selectedOptions.page === sortedItems?.pageCount) {
+      if (selectedOptions.page) handleOptionClick("page", selectedOptions.page);
+    }
+    const urlParams = new URLSearchParams();
+    Object.entries(selectedOptions).forEach(([key, value]) => {
+      if (value) {
+        urlParams.set(key, value);
+      }
+    });
+    const url = `?${urlParams.toString()}`;
+
+    router.push(url);
   };
 
   const handlePageClickPrevious = () => {
-    if (currentPage > 1) {
-      const previousPage = currentPage - 1;
-      const newPath = `/${previousPage}`;
-      setCurrentPage(previousPage);
-      router.replace(newPath);
+    if (selectedOptions.page === "1") {
+      handleOptionClick("page", 1);
     }
+    if (selectedOptions.page) {
+      if (typeof selectedOptions.page === "number") {
+        handleOptionClick("page", selectedOptions.page - 1);
+      }
+    }
+    const urlParams = new URLSearchParams();
+    Object.entries(selectedOptions).forEach(([key, value]) => {
+      if (value) {
+        urlParams.set(key, value);
+      }
+    });
+    const url = `?${urlParams.toString()}`;
+
+    router.push(url);
   };
+
+  const generatePageLinks = (pageCount: number) => {
+    const urlParams = new URLSearchParams();
+    Object.entries(selectedOptions).forEach(([key, value]) => {
+      if (value) {
+        urlParams.set(key, value);
+      }
+    });
+    const links = [];
+    for (let i = 0; i < pageCount; i++) {
+      links.push(
+        <button
+          key={i}
+          onClick={() => {
+            // urlParams.set("page", (i + 1).toString());
+            handleOptionClick("page", (i + 1).toString());
+            router.push(`/?${urlParams.toString()}`);
+          }}
+          className={`relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-300
+       hover:bg-gray-50 focus:z-20 focus:outline-offset-0  ${
+         Number(selectedOptions.page) === i + 1 ||
+         (i === 0 && !selectedOptions.page)
+           ? " text-gray-900 font-extrabold bg-gray-200 "
+           : ""
+       }`}
+        >
+          {i + 1}
+        </button>
+      );
+    }
+
+    return links;
+  };
+
+  // page end
+
+  const uniqueCategories = getUniqueCategories(courses);
+  const uniqueTitles = getUniqueTitles(courses);
 
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
@@ -352,7 +319,7 @@ export default function Home({ params }: any) {
                       <button
                         type="button"
                         onClick={toggleIsOpenLanguage}
-                        className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
+                        className="flex w-full itereplacenoems-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500"
                         aria-controls="filter-section-mobile-0"
                         aria-expanded="false"
                       >
@@ -360,7 +327,7 @@ export default function Home({ params }: any) {
                           <span className="font-medium text-gray-900 text-start">
                             Języki Programowania
                           </span>
-                          <span className="text-start">{checkedTitle}</span>
+                          {/* <span className="text-start">{checkedTitle}</span> */}
                         </div>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
@@ -394,11 +361,7 @@ export default function Home({ params }: any) {
                         <div className="space-y-6">
                           {uniqueTitles.map((title: any, index: any) => {
                             return (
-                              <div
-                                onClick={() => toggleIsOpenLanguage()}
-                                key={index}
-                                className="flex items-center"
-                              >
+                              <div key={index} className="flex items-center">
                                 <input
                                   id={`filter-mobile-color-${index}`}
                                   name="title[]"
@@ -435,7 +398,7 @@ export default function Home({ params }: any) {
                           <span className="font-medium text-gray-900 text-start">
                             Kategorie
                           </span>
-                          <span className="text-start">{checkedCategory}</span>
+                          {/* <span className="text-start">{checkedCategory}</span> */}
                         </div>
                         <span className="ml-6 flex items-center">
                           {/* <!-- Expand icon, show/hide based on section open state. --> */}
@@ -534,18 +497,21 @@ export default function Home({ params }: any) {
                 </div>
                 {isOpenSort && (
                   <div
-                    onClick={toggleIsOpenSort}
                     className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"
                   >
-                    <div className="py-1 bg-gray-200" role="none">
+                    <div
+                      onClick={toggleIsOpenSort}
+                      className="py-1 bg-gray-200"
+                      role="none"
+                    >
                       <button
-                        // href="#"
+                        name="popular"
                         className="text-gray-500 flex justify-between px-4 py-2 w-full text-start text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("popular")}
+                        onClick={handleSort}
                       >
                         <span>Njabradziej Popularne</span>
                         {sortType === "popular" && (
@@ -553,10 +519,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="rated"
                         className=" text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("rated")}
+                        onClick={handleSort}
                       >
                         <span>Najwyżej Oceniane</span>
                         {sortType === "rated" && (
@@ -564,10 +530,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="newest"
                         className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("newest")}
+                        onClick={handleSort}
                       >
                         <span>Najnowższe</span>
                         {sortType === "newest" && (
@@ -575,10 +541,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="priceAsc"
                         className="text-gray-500 flex justify-between px-4 w-full text-start py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("priceAsc")}
+                        onClick={handleSort}
                       >
                         <span>Cena: rosnąca</span>
                         {sortType === "priceAsc" && (
@@ -586,10 +552,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="priceDesc"
                         className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("priceDesc")}
+                        onClick={handleSort}
                       >
                         <span>Cena: malejąca</span>
                         {sortType === "priceDesc" && (
@@ -597,10 +563,10 @@ export default function Home({ params }: any) {
                         )}
                       </button>
                       <button
-                        // href="#"
+                        name="forYou"
                         className="text-gray-500 w-full text-start  flex justify-between px-4 py-2 text-sm hover:bg-slate-300 hover:text-gray-900"
                         role="menuitem"
-                        onClick={() => handleSort("forYou")}
+                        onClick={handleSort}
                       >
                         <span>Wybrane dla Ciebie</span>
                         {sortType === "forYou" && (
@@ -614,6 +580,7 @@ export default function Home({ params }: any) {
 
               <button
                 type="button"
+                onClick={toggleGrid}
                 className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
               >
                 <span className="sr-only">View grid</span>
@@ -693,9 +660,9 @@ export default function Home({ params }: any) {
                     >
                       <div className="flex flex-col">
                         <span className="font-medium text-gray-900 text-start">
-                          Języki Programowania
+                          Języki Programowania1
                         </span>
-                        <span className="text-start">{checkedTitle}</span>
+                        {/* <span className="text-start">{checkedTitle}</span> */}
                       </div>
                       <span className="ml-6 flex items-center">
                         {/* <!-- Expand icon, show/hide based on section open state. --> */}
@@ -769,9 +736,7 @@ export default function Home({ params }: any) {
                           <span className="font-medium text-gray-900 text-start">
                             Kategorie
                           </span>
-                          <span className="text-start text-gray-400">
-                            {checkedCategory}
-                          </span>
+                          {/* <span className="text-start text-gray-400">{checkedCategory}</span> */}
                         </div>
                       </span>
                       <span className="ml-6 flex items-center">
@@ -804,7 +769,6 @@ export default function Home({ params }: any) {
                     <div className="pt-6" id="filter-section-1">
                       <div className="space-y-4">
                         {uniqueCategories.map((category: any, index: any) => (
-                          // {uniqueTitles.map((item: any, index: any) => (
                           <div key={index} className="flex items-center">
                             <input
                               id={`filter-category-${index}`}
@@ -822,15 +786,14 @@ export default function Home({ params }: any) {
                               {category}
                             </label>
                           </div>
-                        ))}{" "}
-                        -
+                        ))}
                       </div>
                     </div>
                   )}
                 </div>
               </aside>
               {/* <!-- Product grid --> */}
-              <CoursesPage menuItems={currentPageProducts} />
+              <CoursesPage menuItems={sortedItems?.items} view={view} />
             </div>
           </section>
         </main>
@@ -838,7 +801,7 @@ export default function Home({ params }: any) {
           {/* Pages */}
           <div>
             <nav
-              className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+              className="isolate inline-flex -space-x-px rounded-md shadow-sm text-black border-black"
               aria-label="Pagination"
             >
               {/* Poprzednie strony */}
@@ -862,7 +825,9 @@ export default function Home({ params }: any) {
               </button>
 
               {/* Strony */}
-              {generatePageLinks(pageCount, router)}
+              {generatePageLinks(
+                sortedItems?.pageCount ? sortedItems.pageCount : 1
+              )}
 
               {/* Następne strony */}
               <button
@@ -888,78 +853,6 @@ export default function Home({ params }: any) {
           </div>
         </div>
         {/* Pages end*/}
-      </div>
-      <div className="mt-28">
-        <p>Wybierz kategorię:</p>
-        {/* <h1>{params.searchParams.category}</h1> */}
-        {/* <h1>{params.searchParams.sort}</h1> */}
-        {/* <h1>{params.searchParams.language}</h1> */}
-        <div className="flex flex-col">
-          <button
-            onClick={() => handleOptionClick("category", "rowery")}
-            className={selectedOptions.category === "rowery" ? "active" : ""}
-          >
-            Rowery
-          </button>
-          <button
-            onClick={() => handleOptionClick("category", "wrotki")}
-            className={selectedOptions.category === "wrotki" ? "active" : ""}
-          >
-            Wrotki
-          </button>
-
-          <button
-            onClick={() => handleOptionClick("sort", "popularne")}
-            className={selectedOptions.sort === "popularne" ? "active" : ""}
-          >
-            Najbardziej Popularne
-          </button>
-          <button
-            onClick={() => handleOptionClick("sort", "oceniane")}
-            className={selectedOptions.sort === "oceniane" ? "active" : ""}
-          >
-            Najwyżej Oceniane
-          </button>
-          <button
-            onClick={() => handleOptionClick("sort", "najnowsze")}
-            className={selectedOptions.sort === "najnowsze" ? "active" : ""}
-          >
-            Najnowsze
-          </button>
-          <button
-            onClick={() => handleOptionClick("sort", "cena-rosnaca")}
-            className={selectedOptions.sort === "cena-rosnaca" ? "active" : ""}
-          >
-            Cena: rosnąca
-          </button>
-          <button
-            onClick={() => handleOptionClick("sort", "cena-malejaca")}
-            className={selectedOptions.sort === "cena-malejaca" ? "active" : ""}
-          >
-            Cena: malejąca
-          </button>
-          {/* //  */}
-          <button
-            onClick={() => handleOptionClick("language", "JavaScript")}
-            className={
-              selectedOptions.language === "JavaScript" ? "active" : ""
-            }
-          >
-            JavaScript
-          </button>
-          <button
-            onClick={() => handleOptionClick("language", "React")}
-            className={selectedOptions.language === "React" ? "active" : ""}
-          >
-            React
-          </button>
-          <button
-            onClick={() => handleOptionClick("language", "Git")}
-            className={selectedOptions.language === "Git" ? "active" : ""}
-          >
-            Git
-          </button>
-        </div>
       </div>
     </main>
   );

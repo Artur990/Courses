@@ -1,4 +1,4 @@
-import { MenuItem, menuItems } from "../data/courses";
+import { courses, TCourses } from "../data/courses";
 import Link from "next/link";
 import { FC } from "react";
 
@@ -7,7 +7,7 @@ type CoursesProps = {
 };
 
 const CoursesMenu: FC<CoursesProps> = ({ toggleMenu }: CoursesProps) => {
-  function getUniqueItems(menuItems: MenuItem[]) {
+  function getUniqueItems(menuItems: TCourses[]) {
     const uniqueItems = [];
     const titles = new Set();
 
@@ -20,7 +20,7 @@ const CoursesMenu: FC<CoursesProps> = ({ toggleMenu }: CoursesProps) => {
 
     return uniqueItems;
   }
-  const uniqueItems = getUniqueItems(menuItems);
+  const uniqueItems = getUniqueItems(courses);
   return (
     <div className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
       <div className="p-4">

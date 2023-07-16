@@ -1,13 +1,12 @@
+import { TCourses } from "@/types/types";
 import Link from "next/link";
-import { MenuItem, menuItems } from "../data/courses";
-import { FC } from "react";
 
 type CoursesPageProps = {
-  menuItems: MenuItem[] | undefined;
-  grid?: boolean;
+  menuItems: TCourses[] | undefined;
+  view?: string;
 };
 
-const CoursesPage = ({ menuItems, grid }: CoursesPageProps) => {
+const CoursesPage = ({ menuItems, view }: CoursesPageProps) => {
   return (
     <div className="lg:col-span-3">
       <div className="container ">
@@ -15,7 +14,7 @@ const CoursesPage = ({ menuItems, grid }: CoursesPageProps) => {
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Dostępne kursy:
           </h2>
-          {grid ? (
+          {view === "grid" ? (
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
               {menuItems?.map((course: any, index: any) => (
                 <div key={index} className="group relative">

@@ -1,23 +1,6 @@
-import { AiFillGithub } from "react-icons/ai";
-import { GrReactjs } from "react-icons/gr";
-import { TbBrandJavascript } from "react-icons/tb";
-export interface MenuItem {
-  icon: string;
-  title: string;
-  name: string;
-  feature: string[];
-  link: string;
-  description: string;
-  descriptionCourses?: string;
-  details: string;
-  price: number;
-  review: number;
-  stars: number;
-  category: string;
-  dataPremiery: any;
-}
+import { TCourses } from "@/types/types";
 
-export const menuItems: MenuItem[] = [
+export const courses: TCourses[] = [
   {
     icon: "Git",
     title: "GitHub",
@@ -123,28 +106,6 @@ export const menuItems: MenuItem[] = [
     dataPremiery: new Date(2022, 4, 10),
   },
   {
-    icon: "SQL",
-    title: "SQL",
-    name: "SQL - Podstawy baz danych",
-    feature: [
-      "Tworzenie i zarządzanie tabelami",
-      "Zapytania SELECT, INSERT, UPDATE, DELETE",
-      "Relacje między tabelami",
-      "Indeksy, widoki i procedury składowane",
-    ],
-    link: "SQL",
-    description: "Język zapytań do baz danych",
-    descriptionCourses:
-      "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
-    details:
-      "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 22,
-    review: 92,
-    stars: 4,
-    category: "Bazydanych",
-    dataPremiery: new Date(2022, 4, 10),
-  },
-  {
     icon: "Git",
     title: "GitHub",
     name: "Git - System kontroli wersji",
@@ -183,97 +144,9 @@ export const menuItems: MenuItem[] = [
     category: "Bazydanych",
     dataPremiery: new Date(2022, 4, 10),
   },
-  {
-    icon: "SQL",
-    title: "SQL",
-    name: "SQL - Podstawy baz danych",
-    feature: [
-      "Tworzenie i zarządzanie tabelami",
-      "Zapytania SELECT, INSERT, UPDATE, DELETE",
-      "Relacje między tabelami",
-      "Indeksy, widoki i procedury składowane",
-    ],
-    link: "SQL",
-    description: "Język zapytań do baz danych",
-    descriptionCourses:
-      "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
-    details:
-      "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 24,
-    review: 92,
-    stars: 4,
-    category: "Bazydanych",
-    dataPremiery: new Date(2022, 4, 10),
-  },
-  {
-    icon: "SQL",
-    title: "SQL",
-    name: "SQL - Podstawy baz danych",
-    feature: [
-      "Tworzenie i zarządzanie tabelami",
-      "Zapytania SELECT, INSERT, UPDATE, DELETE",
-      "Relacje między tabelami",
-      "Indeksy, widoki i procedury składowane",
-    ],
-    link: "SQL",
-    description: "Język zapytań do baz danych",
-    descriptionCourses:
-      "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
-    details:
-      "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 25,
-    review: 92,
-    stars: 4,
-    category: "Bazydanych",
-    dataPremiery: new Date(2022, 4, 10),
-  },
-  {
-    icon: "SQL",
-    title: "SQL",
-    name: "SQL - Podstawy baz danych",
-    feature: [
-      "Tworzenie i zarządzanie tabelami",
-      "Zapytania SELECT, INSERT, UPDATE, DELETE",
-      "Relacje między tabelami",
-      "Indeksy, widoki i procedury składowane",
-    ],
-    link: "SQL",
-    description: "Język zapytań do baz danych",
-    descriptionCourses:
-      "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
-    details:
-      "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 26,
-    review: 92,
-    stars: 4,
-    category: "Bazydanych",
-    dataPremiery: new Date(2022, 4, 10),
-  },
-  {
-    icon: "SQL",
-    title: "SQL",
-    name: "SQL - Podstawy baz danych",
-    feature: [
-      "Tworzenie i zarządzanie tabelami",
-      "Zapytania SELECT, INSERT, UPDATE, DELETE",
-      "Relacje między tabelami",
-      "Indeksy, widoki i procedury składowane",
-    ],
-    link: "SQL",
-    description: "Język zapytań do baz danych",
-    descriptionCourses:
-      "Kurs SQL wprowadza w świat relacyjnych baz danych i uczy podstawowych operacji manipulacji danymi.",
-    details:
-      "SQL (Structured Query Language) jest językiem zapytań używanym do komunikacji z relacyjnymi bazami danych. Pozwala na tworzenie, modyfikację i zapytanie danych przechowywanych w tabelach. Znajomość SQL jest niezbędna dla programistów i administratorów baz danych.",
-    price: 27,
-    review: 92,
-    stars: 4,
-    category: "Bazydanych",
-    dataPremiery: new Date(2022, 4, 10),
-  },
 ];
 
-const courses = [
+const courses1 = [
   {
     // icon: (
     // <AiFillGithub className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
