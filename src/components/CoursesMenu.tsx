@@ -1,4 +1,5 @@
-import { courses, TCourses } from "../data/courses";
+import { TCourses } from "@/types/types";
+import { courses } from "../data/courses";
 import Link from "next/link";
 import { FC } from "react";
 

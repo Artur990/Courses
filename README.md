@@ -1,34 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Overview
 
-## Getting Started
+> **The application is still under development.**
+> Personal course platform and my portfolio
+> "Programming Courses" is an interactive educational application, written in Polish, that offers users the opportunity to acquire programming skills through a variety of diverse courses. The application includes features to track the progress of course completion and to issue a PDF certificate upon the course completion. The application's structure is inspired by the Udemy platform, providing sections and slides organized in a logical manner, facilitating the learning process.
 
-First, run the development server:
+## Purpose of the Application
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+The primary goal of this application is to enable users to independently learn programming in a variety of languages and technologies. Each user's progress is tracked based on the completion of sections and slides, helping to maintain motivation and define the progress clearly. Upon completion of a course, the user receives a certificate of completion, confirming their skills and efforts.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technology Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The application is built using the following technologies:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- React
+- TypeScript
+- Next.js
+- Prisma
+- NextAuth
+- Material-UI
+- Tailwind CSS
 
-## Learn More
+## Project Status
 
-To learn more about Next.js, take a look at the following resources:
+The project is currently under development. Below is a status checklist of the various components:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [x] User Authorization
+- :x: Course Progress Management
+- :x: Issuance of Completion Certificates
+- :x: Database Integration
+- [x] Handling Course Sections and Slides
+- :x: User Interface for Courses
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The README.md file is regularly updated to reflect the progress of the project.

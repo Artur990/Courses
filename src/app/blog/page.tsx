@@ -1,55 +1,4 @@
-"use client";
-import { FC, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ro } from "date-fns/locale";
-
-interface pagesProps {}
-
-interface SearchParams {
-  category?: string;
-  sort?: string;
-  language?: string;
-}
-
-const Pages = (params: { searchParams: SearchParams }) => {
-  const router = useRouter();
-  const [selectedOptions, setSelectedOptions] = useState<SearchParams>({});
-
-  const handleOptionClick = (optionName: string, optionValue: string) => {
-    setSelectedOptions((prevOptions) => ({
-      ...prevOptions,
-      [optionName]: optionValue,
-    }));
-    updateUrl();
-  };
-
-  const updateUrl = () => {
-    const urlParams = new URLSearchParams();
-
-    if (selectedOptions.category) {
-      urlParams.set("category", selectedOptions.category);
-    }
-
-    if (selectedOptions.sort) {
-      urlParams.set("sort", selectedOptions.sort);
-    }
-
-    if (selectedOptions.language) {
-      urlParams.set("language", selectedOptions.language);
-    }
-
-    const url = `/blog?${urlParams.toString()}`;
-    router.push(url);
-  };
-  const Fun = async () => {
-    const res = await fetch(
-      "http://localhost:3000/api/products/1?category=Bazydanych&sort=priceDesc&language=SQL"
-      // "http://localhost:3000/api/products/1"
-    );
-    const data = await res.json();
-    console.log(data);
-  };
-  Fun();
+const Pages = () => {
   return (
     <div className="mt-0 bg-[#0e141b]">
       <div className="bg-[#0e141b] py-24 sm:py-32">
@@ -214,21 +163,3 @@ const Pages = (params: { searchParams: SearchParams }) => {
 };
 
 export default Pages;
-
-// export async function getServerSideProps(context: any) {
-//   const { categorySlug } = context.params;
-
-//   // Wywołaj endpoint API, przekazując parametry filtrowania i sortowania
-//   const res = await fetch(
-//     // `/api/products?category=${category}&sort=${sort}&page=${page}`
-//     http://localhost:3000/api/products?category=${buty}&sort=${sort}&page=${page}`
-//   );
-//   const data = await res.json();
-
-//   // Zwróć dane produktów jako props
-//   return {
-//     props: {
-//       products: data,
-//     },
-//   };
-// }

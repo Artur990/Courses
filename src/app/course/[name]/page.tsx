@@ -1,51 +1,15 @@
 "use client";
-import React, { FC, useState } from "react";
+
+import React, { useState } from "react";
 import { useRef } from "react";
-import { materials } from "../../../../data/course";
-import { set } from "date-fns";
 import { MdSlideshow } from "react-icons/md";
-import { get } from "http";
-import { useRouter } from "next/navigation";
-const Slideshow = (params: any) => {
-  const router = useRouter();
-  const [selectedOptions, setSelectedOptions] = useState<any>({});
 
-  // const handleOptionClick = (optionName: string, optionValue: string) => {
-  //   setSelectedOptions((prevOptions: any) => ({
-  //     ...prevOptions,
-  //     [optionName]: optionValue,
-  //   }));
-  //   updateUrl();
-  // };
-
-  // const updateUrl = () => {
-  //   const urlParams = new URLSearchParams();
-
-  //   if (selectedOptions.category) {
-  //     urlParams.set("category", selectedOptions.category);
-  //   }
-
-  //   if (selectedOptions.sort) {
-  //     urlParams.set("sort", selectedOptions.sort);
-  //   }
-
-  //   if (selectedOptions.language) {
-  //     urlParams.set("language", selectedOptions.language);
-  //   }
-
-  //   const url = `/course/Java/?${urlParams.toString()}`;
-  //   router.push(url);
-  // };
-
-  const [selectedSection, setSelectedSection] = useState(null);
+const Slideshow = () => {
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
   const questionRefs = useRef<any[]>([]);
   const [question, setQuestions] = useState<any>();
   const [page, setPage] = useState<number>(0);
 
-  const handleSectionClick = (section: any) => {
-    setSelectedSection(section === selectedSection ? null : section);
-  };
   const [current, setCurrent] = useState<number>(1);
 
   const handleClick = (index: number) => {
@@ -64,13 +28,6 @@ const Slideshow = (params: any) => {
       }
     }
   };
-  // const handlerPassDate = (topic: string) => () => {
-  //   console.log(topic);
-  //   let date = questions;
-  //   console.log(questions);
-  //   // date =
-  //   console.log(date.filter((item) => item.title === topic));
-  // };
   const getContentByTopic = (numer: number, index?: number) => {
     for (let i = 0; i < questions.length; i++) {
       const section = questions[i];
@@ -91,7 +48,6 @@ const Slideshow = (params: any) => {
   };
   React.useEffect(() => {
     getContentByTopic(1);
-    // handleClick(2);
   }, []);
 
   return (

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { buttonVariants } from "./ui/Button";
 import Link from "next/link";
-import SignOutButton from "./SignOutButton";
-import SingInButton from "./SignInButton";
+import SignOutButton from "./ui/SignOutButton";
+import SingInButton from "./ui/SignInButton";
 import { AiFillGithub } from "react-icons/ai";
 // import NavbarMobile from "./NavbarMobile";
 // import Courses from "./CoursesMenu";

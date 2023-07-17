@@ -8,8 +8,13 @@ import CoursesPage from "@/components/CoursesPage";
 import { buttonVariants } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { AiOutlineCheck } from "react-icons/ai";
-import { getUniqueCategories, getUniqueTitles } from "@/helper/helpers";
+import {
+  createAndPushUrl,
+  getUniqueCategories,
+  getUniqueTitles,
+} from "@/helper/helpers";
 import { Titems, Tparams, TselectedOptions } from "@/types/types";
+import { Checkbox } from "@/components/ui/Checkbox";
 
 export default function Home(params: Tparams) {
   const router = useRouter();
@@ -23,7 +28,7 @@ export default function Home(params: Tparams) {
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState("");
 
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
@@ -33,14 +38,10 @@ export default function Home(params: Tparams) {
     setView(view === "grid" ? "list" : "grid");
     handleOptionClick("view", view);
   };
-
-  // useEffect(() => {
-  // if (view !== "grid")
-  // }, [view]);
-
-  // jeżeli parametr się zmieni to niech się
+  // parameters from the url will be updated to the state
   useEffect(() => {
-    const { sort, language, category, page } = params.searchParams;
+    const { sort, language, category, page, view } =
+      params.searchParams as TselectedOptions;
     setSelectedOptions({
       category: category || undefined,
       sort: sort || undefined,
@@ -53,11 +54,13 @@ export default function Home(params: Tparams) {
     // add  checkboxa from URL
     if (language) {
       setCheckedTitle(language);
+      toggleIsOpenLanguage();
     } else {
       setCheckedTitle("");
     }
     if (category) {
       setCheckedCategory(category);
+      toggleIsOpenCategory();
     } else {
       setCheckedCategory("");
     }
@@ -67,9 +70,25 @@ export default function Home(params: Tparams) {
     } else {
       setSortType("forYou");
     }
-  }, [params.params]);
+    if (view) {
+      toggleGrid();
+    }
+  }, []);
 
-  // useEffect(() => {
+  //  if in selectOption it changes value then url with this parameter is set
+  useEffect(() => {
+    const urlParams = new URLSearchParams();
+    Object.entries(selectedOptions).forEach(([key, value]) => {
+      if (value) {
+        urlParams.set(key, value);
+      }
+    });
+    const url = `?${urlParams.toString()}`;
+    router.replace(url);
+    const { sort, language, category, page } = selectedOptions;
+
+    fetchData(sort, language, category, page);
+  }, [selectedOptions]);
 
   const fetchData = async (
     sort: string | undefined,
@@ -91,9 +110,6 @@ export default function Home(params: Tparams) {
       queryParams.set("page", page);
     }
     const queryString = queryParams.toString();
-    // const url = `http://localhost:3000/api/products/${params.params.page}${
-    //   queryString ? `?${queryString}` : ""
-    // }`;
     const url = `http://localhost:3000/api/products${
       queryString ? `?${queryString}` : ""
     }`;
@@ -115,7 +131,24 @@ export default function Home(params: Tparams) {
     setSortType(sortType);
     handleOptionClick("sort", sortType);
   };
+  const handleFilter = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checkedValue: string,
+    setChecked: Function,
+    handleOptionClick: Function,
+    optionName: string
+  ) => {
+    const isChecked = event.target.checked;
+    const selectedValue = event.target.value;
 
+    if (isChecked) {
+      setChecked(selectedValue);
+      handleOptionClick(optionName, selectedValue);
+    } else {
+      setChecked("");
+      handleOptionClick(optionName, "");
+    }
+  };
   const handleTitleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     const selectedTitle = event.target.value;
@@ -155,27 +188,13 @@ export default function Home(params: Tparams) {
     });
   };
 
-  // jeżeli w selectOpction jest jakaś wartośc to automatycznie ustawia się url w tym parametrem
-  useEffect(() => {
-    const urlParams = new URLSearchParams();
-    Object.entries(selectedOptions).forEach(([key, value]) => {
-      if (value) {
-        urlParams.set(key, value);
-      }
-    });
-    const url = `?${urlParams.toString()}`;
-    router.push(url);
-    const { sort, language, category, page } = selectedOptions;
-
-    fetchData(sort, language, category, page);
-  }, [selectedOptions]);
-
   const clearFunction = () => {
     setCheckedCategory("");
     setCheckedTitle("");
     router.push("/");
   };
 
+  // start  nev page
   const handlePageClickNext = () => {
     if (selectedOptions.page === undefined || selectedOptions.page === "0") {
       handleOptionClick("page", "2");
@@ -187,15 +206,7 @@ export default function Home(params: Tparams) {
     if (selectedOptions.page === sortedItems?.pageCount) {
       if (selectedOptions.page) handleOptionClick("page", selectedOptions.page);
     }
-    const urlParams = new URLSearchParams();
-    Object.entries(selectedOptions).forEach(([key, value]) => {
-      if (value) {
-        urlParams.set(key, value);
-      }
-    });
-    const url = `?${urlParams.toString()}`;
-
-    router.push(url);
+    createAndPushUrl(selectedOptions, router);
   };
 
   const handlePageClickPrevious = () => {
@@ -207,15 +218,7 @@ export default function Home(params: Tparams) {
         handleOptionClick("page", selectedOptions.page - 1);
       }
     }
-    const urlParams = new URLSearchParams();
-    Object.entries(selectedOptions).forEach(([key, value]) => {
-      if (value) {
-        urlParams.set(key, value);
-      }
-    });
-    const url = `?${urlParams.toString()}`;
-
-    router.push(url);
+    createAndPushUrl(selectedOptions, router);
   };
 
   const generatePageLinks = (pageCount: number) => {
@@ -231,7 +234,6 @@ export default function Home(params: Tparams) {
         <button
           key={i}
           onClick={() => {
-            // urlParams.set("page", (i + 1).toString());
             handleOptionClick("page", (i + 1).toString());
             router.push(`/?${urlParams.toString()}`);
           }}
@@ -251,7 +253,7 @@ export default function Home(params: Tparams) {
     return links;
   };
 
-  // page end
+  // end nav page
 
   const uniqueCategories = getUniqueCategories(courses);
   const uniqueTitles = getUniqueTitles(courses);
@@ -259,7 +261,7 @@ export default function Home(params: Tparams) {
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
       <div className="bg-white container">
-        {/* <!--Mobile filter dialog */}
+        {/* Mobile filter dialog */}
         <div
           className="relative z-40 top-10  mt-1 right-3   lg:hidden"
           role="dialog"
@@ -315,7 +317,6 @@ export default function Home(params: Tparams) {
 
                   <div className="border-t border-gray-200 px-4 py-6">
                     <h3 className="-mx-2 -my-3 flow-root">
-                      {/* <!-- Expand/collapse section button --> */}
                       <button
                         type="button"
                         onClick={toggleIsOpenLanguage}
@@ -327,10 +328,8 @@ export default function Home(params: Tparams) {
                           <span className="font-medium text-gray-900 text-start">
                             Języki Programowania
                           </span>
-                          {/* <span className="text-start">{checkedTitle}</span> */}
                         </div>
                         <span className="ml-6 flex items-center">
-                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -339,7 +338,6 @@ export default function Home(params: Tparams) {
                           >
                             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                           </svg>
-                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -355,7 +353,7 @@ export default function Home(params: Tparams) {
                         </span>
                       </button>
                     </h3>
-                    {/* <!-- Filter section, show/hide based on section state. -->  */}
+                    {/* Filter section, show/hide based on section language   */}
                     {isOpenLanguage && (
                       <div className="pt-6" id="filter-section-mobile-0">
                         <div className="space-y-6">
@@ -386,7 +384,6 @@ export default function Home(params: Tparams) {
                   </div>
                   <div className="border-t border-gray-200 px-4 py-6">
                     <h3 className="-mx-2 -my-3 flow-root">
-                      {/* <!-- Expand/collapse section button --> */}
                       <button
                         type="button"
                         onClick={toggleIsOpenCategory}
@@ -398,10 +395,8 @@ export default function Home(params: Tparams) {
                           <span className="font-medium text-gray-900 text-start">
                             Kategorie
                           </span>
-                          {/* <span className="text-start">{checkedCategory}</span> */}
                         </div>
                         <span className="ml-6 flex items-center">
-                          {/* <!-- Expand icon, show/hide based on section open state. --> */}
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -410,7 +405,6 @@ export default function Home(params: Tparams) {
                           >
                             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                           </svg>
-                          {/* <!-- Collapse icon, show/hide based on section open state. --> */}
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -426,7 +420,7 @@ export default function Home(params: Tparams) {
                         </span>
                       </button>
                     </h3>
-                    {/* <!-- Filter section, show/hide based on section state. -->  */}
+                    {/*  Filter section, show/hide based on section category */}
                     {isOpenCategory && (
                       <div className="pt-6" id="filter-section-mobile-0">
                         <div className="space-y-6">
@@ -459,7 +453,7 @@ export default function Home(params: Tparams) {
           </div>
         </div>
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* panel sort start  */}
+          {/* sorting panel */}
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 mt-24">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               Nowe kursy
@@ -618,7 +612,7 @@ export default function Home(params: Tparams) {
               </button>
             </div>
           </div>
-          {/* sort end */}
+          {/* end sorting panel*/}
 
           {/* paneel */}
           <section aria-labelledby="products-heading" className="pb-24 pt-6">
@@ -627,10 +621,8 @@ export default function Home(params: Tparams) {
             </h2>
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-              {/* <!-- Filters  deskopt--> */}
               <aside className="hidden lg:block">
-                <h3 className="sr-only">Categories</h3>
-                {/* <h2>Twoje Filtry:</h2> */}
+                <h3 className="sr-only">kategorie</h3>
                 <ul
                   role="list"
                   className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
@@ -647,10 +639,9 @@ export default function Home(params: Tparams) {
                     </button>
                   </li>
                 </ul>
-                {/* Start Opinions */}
+                {/* Start languages */}
                 <div className="border-b border-gray-200 py-6">
                   <h3 className="-my-3 flow-root">
-                    {/* <!-- Expand/collapse section button --> */}
                     <button
                       onClick={toggleIsOpenLanguage}
                       type="button"
@@ -660,12 +651,10 @@ export default function Home(params: Tparams) {
                     >
                       <div className="flex flex-col">
                         <span className="font-medium text-gray-900 text-start">
-                          Języki Programowania1
+                          Języki Programowania
                         </span>
-                        {/* <span className="text-start">{checkedTitle}</span> */}
                       </div>
                       <span className="ml-6 flex items-center">
-                        {/* <!-- Expand icon, show/hide based on section open state. --> */}
                         <svg
                           className="h-5 w-5"
                           viewBox="0 0 20 20"
@@ -674,7 +663,6 @@ export default function Home(params: Tparams) {
                         >
                           <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                         </svg>
-                        {/* <!-- Collapse icon, show/hide based on section open state. --> */}
                         <svg
                           className="h-5 w-5"
                           viewBox="0 0 20 20"
@@ -690,7 +678,7 @@ export default function Home(params: Tparams) {
                       </span>
                     </button>
                   </h3>
-                  {/* <!-- Filter section, show/hide based on section state. --> */}
+                  {/* Filter section, show/hide based on section language   */}
                   {isOpenLanguage && (
                     <div className="pt-6" id="filter-section-mobile-0">
                       <div className="space-y-6">
@@ -703,7 +691,15 @@ export default function Home(params: Tparams) {
                                 value={title}
                                 type="checkbox"
                                 checked={title === checkedTitle}
-                                onChange={handleTitleFilter}
+                                onChange={(event) =>
+                                  handleFilter(
+                                    event,
+                                    checkedTitle,
+                                    setCheckedTitle,
+                                    handleOptionClick,
+                                    "language"
+                                  )
+                                }
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                               />
                               <label
@@ -723,7 +719,6 @@ export default function Home(params: Tparams) {
                 {/* Start Category  */}
                 <div className="border-b border-gray-200 py-6">
                   <h3 className="-my-3 flow-root">
-                    {/* <!-- Expand/collapse section button --> */}
                     <button
                       type="button"
                       onClick={toggleIsOpenCategory}
@@ -736,11 +731,9 @@ export default function Home(params: Tparams) {
                           <span className="font-medium text-gray-900 text-start">
                             Kategorie
                           </span>
-                          {/* <span className="text-start text-gray-400">{checkedCategory}</span> */}
                         </div>
                       </span>
                       <span className="ml-6 flex items-center">
-                        {/* <!-- Expand icon, show/hide based on section open state. --> */}
                         <svg
                           className="h-5 w-5"
                           viewBox="0 0 20 20"
@@ -749,7 +742,6 @@ export default function Home(params: Tparams) {
                         >
                           <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                         </svg>
-                        {/* <!-- Collapse icon, show/hide based on section open state. --> */}
                         <svg
                           className="h-5 w-5"
                           viewBox="0 0 20 20"
@@ -765,6 +757,7 @@ export default function Home(params: Tparams) {
                       </span>
                     </button>
                   </h3>
+                  {/*  Filter section, show/hide based on section category */}
                   {isOpenCategory && (
                     <div className="pt-6" id="filter-section-1">
                       <div className="space-y-4">
@@ -776,8 +769,16 @@ export default function Home(params: Tparams) {
                               value={category}
                               type="checkbox"
                               checked={category === checkedCategory}
+                              onChange={(event) =>
+                                handleFilter(
+                                  event,
+                                  checkedCategory,
+                                  setCheckedCategory,
+                                  handleOptionClick,
+                                  "category"
+                                )
+                              }
                               className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              onChange={handleTitleCategory}
                             />
                             <label
                               htmlFor={`filter-category-${index}`}
@@ -792,24 +793,24 @@ export default function Home(params: Tparams) {
                   )}
                 </div>
               </aside>
-              {/* <!-- Product grid --> */}
+              {/* display products  */}
               <CoursesPage menuItems={sortedItems?.items} view={view} />
             </div>
           </section>
         </main>
         <div className="flex items-center justify-center border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-          {/* Pages */}
+          {/* nav page */}
           <div>
             <nav
               className="isolate inline-flex -space-x-px rounded-md shadow-sm text-black border-black"
               aria-label="Pagination"
             >
-              {/* Poprzednie strony */}
+              {/* Previous page */}
               <button
                 onClick={handlePageClickPrevious}
                 className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600"
               >
-                <span className="sr-only">Previous</span>
+                <span className="sr-only">poprzednia</span>
                 <svg
                   className="h-5 w-5"
                   viewBox="0 0 20 20"
@@ -824,14 +825,13 @@ export default function Home(params: Tparams) {
                 </svg>
               </button>
 
-              {/* Strony */}
+              {/* page number button */}
               {generatePageLinks(
                 sortedItems?.pageCount ? sortedItems.pageCount : 1
               )}
 
-              {/* Następne strony */}
+              {/* next page */}
               <button
-                // href={`/${params.pagt} + 1`}
                 onClick={handlePageClickNext}
                 className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
@@ -852,7 +852,6 @@ export default function Home(params: Tparams) {
             </nav>
           </div>
         </div>
-        {/* Pages end*/}
       </div>
     </main>
   );

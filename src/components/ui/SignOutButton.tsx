@@ -2,8 +2,8 @@
 
 import { signOut } from "next-auth/react";
 import { FC, useState } from "react";
-import { Button } from "./ui/Button";
-// import { toast } from "./toast";
+import { Button } from "./Button";
+import { toast } from "./toast";
 
 /**
  * NextJS does not allow to pass function from server -> client components,
@@ -19,14 +19,12 @@ const SignOutButton: FC<SignOutButtonProps> = ({}) => {
     try {
       setIsLoading(true);
       await signOut();
-      console.log("Signed out");
     } catch (error) {
-      console.log(error);
-      //   toast({
-      //     title: "Error signing out",
-      //     message: "Please try again later.",
-      //     type: "error",
-      //   });
+      toast({
+        title: "Error signing out",
+        message: "Please try again later.",
+        type: "error",
+      });
     }
   };
   return (

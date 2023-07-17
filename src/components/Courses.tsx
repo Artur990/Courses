@@ -30,8 +30,6 @@ const Courses: FC<any> = ({
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-0 px-2 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {/* {category.map((item) => {
-              return ( */}
             <li>
               <div className="flex items-center">
                 <Link href="#" className={buttonVariants({ variant: "link" })}>
@@ -49,8 +47,6 @@ const Courses: FC<any> = ({
                 </svg>
               </div>
             </li>
-            {/* ); */}
-            {/* })} */}
             <li>
               <div className="flex items-center">
                 <Link
@@ -90,7 +86,6 @@ const Courses: FC<any> = ({
                 {icon}
               </h1>
             </div>
-            {/* // ???? */}
             <Paragraph size="xl" className="text-start tracking-tight ">
               {price} zł
             </Paragraph>
@@ -137,7 +132,6 @@ const Courses: FC<any> = ({
                   variant: "outline",
                   size: "full",
                 })}
-                // onClick={() => route.push(`/course/${title}`)}
               >
                 Przejdz do kursu
               </Link>
@@ -162,13 +156,9 @@ const Courses: FC<any> = ({
 
               <div className="mt-4">
                 <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {/* {feature.map((item: any) => { */}
-                  {/* return ( */}
                   <li className="text-gray-400">
                     <Paragraph className="text-start">{feature}</Paragraph>
                   </li>
-                  {/* ); */}
-                  {/* })} */}
                 </ul>
               </div>
             </div>
