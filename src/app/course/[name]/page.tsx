@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRef } from "react";
+
 import { MdSlideshow } from "react-icons/md";
 
 const Slideshow = () => {
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
-  const questionRefs = useRef<any[]>([]);
+  const questionRefs = React.useRef<any[]>([]);
   const [question, setQuestions] = useState<any>();
   const [page, setPage] = useState<number>(0);
 

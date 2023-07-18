@@ -14,6 +14,9 @@ const CoursesPage = ({ menuItems, view }: CoursesPageProps) => {
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Dostępne kursy:
           </h2>
+          {menuItems?.length === 0 && (
+            <p className="text-black">Nie znaleziono to czego szukasz.. :(</p>
+          )}
           {view === "grid" ? (
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
               {menuItems?.map((course: any, index: any) => (

@@ -15,7 +15,7 @@ import {
 } from "@/helper/helpers";
 import { Titems, Tparams, TselectedOptions } from "@/types/types";
 import { Checkbox } from "@/components/ui/Checkbox";
-
+import { useCourses } from "@/hooks/hooks";
 export default function Home(params: Tparams) {
   const router = useRouter();
 
@@ -24,24 +24,24 @@ export default function Home(params: Tparams) {
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [sortedItems, setSortedItems] = useState<Titems>();
+  // const [sortedItems, setSortedItems] = useState<Titems>();
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
-  const [view, setView] = useState("");
+  const [vieww, setView] = useState("");
 
   const toggleIsOpenMenu = () => setIsOpenMenu(!isOpenMenu);
   const toggleIsOpenLanguage = () => setIsOpenLanguage(!isOpenLanguage);
   const toggleIsOpenCategory = () => setIsOpenCategory(!isOpenCategory);
   const toggleIsOpenSort = () => setIsOpenSort(!isOpenSort);
   const toggleGrid = () => {
-    setView(view === "grid" ? "list" : "grid");
-    handleOptionClick("view", view);
+    setView(vieww === "grid" ? "list" : "grid");
+    handleOptionClick("view", vieww);
   };
   // parameters from the url will be updated to the state
+  const { sort, language, category, page, view } =
+    params.searchParams as TselectedOptions;
   useEffect(() => {
-    const { sort, language, category, page, view } =
-      params.searchParams as TselectedOptions;
     setSelectedOptions({
       category: category || undefined,
       sort: sort || undefined,
@@ -85,46 +85,19 @@ export default function Home(params: Tparams) {
     });
     const url = `?${urlParams.toString()}`;
     router.replace(url);
-    const { sort, language, category, page } = selectedOptions;
+    // const { sort, language, category, page } = selectedOptions;
 
-    fetchData(sort, language, category, page);
+    // fetchData(sort, language, category, page);
   }, [selectedOptions]);
 
-  const fetchData = async (
-    sort: string | undefined,
-    language: string | undefined,
-    category: string | undefined,
-    page: string | undefined
-  ) => {
-    const queryParams = new URLSearchParams();
-    if (sort) {
-      queryParams.set("sort", sort);
-    }
-    if (language) {
-      queryParams.set("language", language);
-    }
-    if (category) {
-      queryParams.set("category", category);
-    }
-    if (page) {
-      queryParams.set("page", page);
-    }
-    const queryString = queryParams.toString();
-    const url = `http://localhost:3000/api/products${
-      queryString ? `?${queryString}` : ""
-    }`;
-    try {
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(` HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
-      setSortedItems(data);
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
-
+  const { data, isLoading, isError, error } = useCourses(
+    sort,
+    language,
+    category,
+    page
+  );
+  console.log(data);
+  // setSortedItems(data);
   // start  input  function
   const handleSort: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     const sortType = event.currentTarget.name;
@@ -203,7 +176,7 @@ export default function Home(params: Tparams) {
     if (selectedOptions.page) {
       handleOptionClick("page", (Number(selectedOptions.page) + 1).toString());
     }
-    if (selectedOptions.page === sortedItems?.pageCount) {
+    if (selectedOptions.page === data?.pageCount) {
       if (selectedOptions.page) handleOptionClick("page", selectedOptions.page);
     }
     createAndPushUrl(selectedOptions, router);
@@ -794,7 +767,9 @@ export default function Home(params: Tparams) {
                 </div>
               </aside>
               {/* display products  */}
-              <CoursesPage menuItems={sortedItems?.items} view={view} />
+              <CoursesPage menuItems={data?.items} view={view} />
+              {isLoading && <p>Ładowanie...</p>}
+              {isError && <p>Nie znaleziono to czego szukasz.. :(</p>}
             </div>
           </section>
         </main>
@@ -826,9 +801,7 @@ export default function Home(params: Tparams) {
               </button>
 
               {/* page number button */}
-              {generatePageLinks(
-                sortedItems?.pageCount ? sortedItems.pageCount : 1
-              )}
+              {generatePageLinks(data?.pageCount ? data.pageCount : 1)}
 
               {/* next page */}
               <button
