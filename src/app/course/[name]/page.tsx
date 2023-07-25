@@ -1,14 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import { questions } from "@/data/course";
+import { questions2 } from "@/data/course2";
+import { calculateReadingTime } from "@/helper/helpers";
+import React, { useEffect, useState } from "react";
 
-import { MdSlideshow } from "react-icons/md";
+import { RiPagesLine } from "react-icons/ri";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+const hendlerCompletions = (nr: number) => {};
 const Slideshow = () => {
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
   const questionRefs = React.useRef<any[]>([]);
   const [question, setQuestions] = useState<any>();
   const [page, setPage] = useState<number>(0);
+
+  const [completions, setCompletions] = useState({});
+  let aa = 22;
+  useEffect(() => {
+    const fetchCompletions = async () => {
+      const response = await fetch("/api/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(aa),
+      });
+      const data = await response.json();
+      setCompletions(data);
+      console.log(data);
+    };
+
+    fetchCompletions();
+  }, []);
 
   const [current, setCurrent] = useState<number>(1);
 
@@ -29,8 +54,8 @@ const Slideshow = () => {
     }
   };
   const getContentByTopic = (numer: number, index?: number) => {
-    for (let i = 0; i < questions.length; i++) {
-      const section = questions[i];
+    for (let i = 0; i < questions2.length; i++) {
+      const section = questions2[i];
       for (let j = 0; j < section.content.length; j++) {
         const question = section.content[j];
         if (question.nr === numer) {
@@ -51,46 +76,73 @@ const Slideshow = () => {
   }, []);
 
   return (
-    <div className="flex mt-0 h-[100vh]">
-      <div className="w-3/4 p-10 bg-gray-200">
+    <div className="flex mt-0 min-h-screen">
+      <div className="w-3/4 p-5 bg-stone-900">
         {question?.map((item: any, index: number) => (
-          <div key={index} className="w-full h-auto text-black">
-            <div className="flex justify-between">
-              <h1 className="text-3xl">
-                {item.nr}. {""} {item.topis}
-              </h1>
-              <h2>
-                ilosć slajdów: {page + 1}/{item.content.length}
-              </h2>
-            </div>
-            <p className="pt-10 ">{item.content[page]}</p>
+          <div key={index} className="w-full  h-auto text-white  ">
+            {item.content.map((contentItem: any, contentIndex: number) => {
+              switch (contentItem.type) {
+                case "title":
+                  return (
+                    <h2 className="text-xl font-bold" key={contentIndex}>
+                      {contentItem.text}
+                    </h2>
+                  );
+                case "block":
+                  return (
+                    <p
+                      key={contentIndex}
+                      className="text-lg font-medium my-3 mx-1 "
+                    >
+                      {contentItem.text}
+                    </p>
+                  );
+                case "ul":
+                  return (
+                    <ul
+                      className="text-lg font-medium m-3 mx-5"
+                      key={contentIndex}
+                    >
+                      <li className="list-disc">{contentItem.text}</li>
+                    </ul>
+                  );
+                case "code":
+                  return (
+                    <SyntaxHighlighter
+                      language="javascript"
+                      style={solarizedlight}
+                    >
+                      {contentItem.text}
+                      {/* {`if (true) {var x = 5;}console.log(x); // x is 5`} */}
+                    </SyntaxHighlighter>
+                  );
+                default:
+                  return null;
+              }
+            })}
+            {/* <SyntaxHighlighter language="javascript" style={solarizedlight}>
+              {`if (true) {var x = 5;}console.log(x); // x is 5`}
+            </SyntaxHighlighter> */}
             <h2>{item.con}</h2>
+
             <div className="mt-32 flex justify-center items-center relative bottom-0 left-50">
               <button
                 className="m-2 w-32 p-2 bg-slate-500 rounded-md hover:opacity-90"
-                onClick={() =>
-                  setPage((prev: any) => {
-                    const newPage =
-                      prev === 0 ? getContentByTopic(item.nr - 1) : prev - 1;
-                    return newPage !== null ? newPage : prev;
-                  })
-                }
+                onClick={() => getContentByTopic(item.nr - 1)}
               >
                 Poprzednie
               </button>
               <button
                 className="m-2 p-2 w-32 bg-slate-500 rounded-md hover:opacity-90"
-                onClick={() =>
-                  setPage((prev) => {
-                    const nextPage =
-                      prev === item.content.length - 1
-                        ? getContentByTopic(item.nr + 1, item.index)
-                        : prev + 1;
-                    return typeof nextPage === "number" ? nextPage : prev;
-                  })
-                }
+                onClick={() => getContentByTopic(item.nr + 1)}
               >
                 Kolejne
+              </button>
+              <button
+                className="m-2 p-2 w-32 bg-green-600 rounded-md hover:opacity-90"
+                onClick={() => hendlerCompletions(item.nr)}
+              >
+                Przeczytany
               </button>
             </div>
           </div>
@@ -101,7 +153,7 @@ const Slideshow = () => {
           <div className="mx-1 w-full max-w-5xl bg-white px-0 py-0 pl-1 sm:px-1">
             <hr className="mb-2 border-b border-gray-400" />
             <div className="">
-              {questions.map(({ title, content }, index) => (
+              {questions2.map(({ title, content }, index) => (
                 <div className="text-black" key={index}>
                   <button
                     ref={(ref) => (questionRefs.current[index] = ref)}
@@ -138,8 +190,12 @@ const Slideshow = () => {
                             <div className="flex flex-col">
                               <span>{`${item.nr}. ${item?.topic}`} </span>
                               <span className="text-xs flex items-center">
-                                <MdSlideshow /> {item.content[0].content.length}{" "}
-                                slajdy
+                                <RiPagesLine className="mr-1" />
+                                {calculateReadingTime(
+                                  item.content[0].content.length
+                                )}
+                                min czyt.
+                                {}
                               </span>
                             </div>
                           </button>
@@ -161,334 +217,3 @@ const Slideshow = () => {
 };
 
 export default Slideshow;
-
-const questions = [
-  {
-    title: "Wstęp",
-    index: 0,
-    content: [
-      {
-        nr: 1,
-        index: 0,
-        topic: "Wprowadzenie",
-        content: [
-          {
-            topis: "Wprowadzenie",
-            nr: 1,
-            index: 0,
-            content: [
-              "Kurs jest przeznaczony dla osób, które chcą rozpocząć swoją przygodę z programowaniem w języku JavaScript.",
-              "Kurs opiera się na: Omówienei głównych zasad jeżyka js oraz wszystkie podstawy potrzebne dorozpoczęcia pracy z tym językiem.",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 2,
-        index: 0,
-        topic: "Jak ułożony jest ten kurs ?",
-        content: [
-          {
-            nr: 2,
-            index: 0,
-
-            topis: "Jak ułożony jest ten kurs ? ",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 3,
-        index: 0,
-        topic: "Jak korzystać z kursu?",
-        content: [
-          {
-            nr: 3,
-            index: 0,
-            topis: "Jak korzystać z kursu?",
-            content: [
-              "Z kurs można korzystać na 2 sposoby: 1. Przeglądając materiały 2. Rozwiązując zadania",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania Z kurs można korzystać na 2 sposoby: 1. Przeglądając materiały 2. Rozwiązując zadania",
-            ],
-          },
-        ],
-      },
-    ],
-  },
-
-  {
-    title: "Wprowadzenie do JavaScript",
-    index: 1,
-    content: [
-      {
-        nr: 4,
-        index: 1,
-        topic: "Jak uczyć się JS? ",
-        content: [
-          {
-            nr: 4,
-            index: 1,
-            topis: "Jak uczyć się JS? ",
-            content: [
-              "Kurs ułożony jdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-              "Kurs ułożony jest chronologasdjhkdnajklsdhbnasdhakjsdnakjsdhbakjdhsjahdkhqwiuhediuoqwdhakjl;sdhna.sjkdnqwdehjkashdjkasbdnkajshdkj;huq;wddasjdasklj;icznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiałydsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2. Zadania",
-              "Kurs jest podzielony na 2 części: 1. Materiałydsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2. Zadania Kurs jest podzielony na 2 części: 1. Materiałydsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 5,
-        index: 1,
-        topic: "Gdzie umieszczać JavaScript?",
-        content: [
-          {
-            nr: 5,
-            index: 1,
-            topis: "Gdzie umieszczać JavaScript?",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 6,
-        index: 1,
-        topic: "Komentarze w JS",
-        content: [
-          {
-            nr: 6,
-            index: 1,
-            topis: "Komentarze w JS",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 7,
-        index: 1,
-        topic: "Console.log i konsola",
-        content: [
-          {
-            nr: 7,
-            index: 1,
-            topis: "Console.log i konsola",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 8,
-        index: 1,
-        topic: "Błędy / ostrzeżenia w konsoli",
-        content: [
-          {
-            nr: 8,
-            index: 1,
-            topis: "Błędy / ostrzeżenia w konsoli",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 9,
-        index: 1,
-        topic: "const & let",
-        content: [
-          {
-            nr: 9,
-            index: 1,
-            topis: "const & let",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 10,
-        index: 1,
-        topic: "Jak poprawnie nazywać zmienne?",
-        content: [
-          {
-            nr: 10,
-            index: 1,
-            topis: "Jak poprawnie nazywać zmienne?",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 11,
-        index: 1,
-        topic: "Template string",
-        content: [
-          {
-            nr: 11,
-            index: 1,
-            topis: "Template string",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Typy danych",
-    index: 2,
-
-    content: [
-      {
-        nr: 12,
-        index: 2,
-        topic: "String cz. 1",
-        content: [
-          {
-            nr: 12,
-            index: 2,
-            topis: "String cz. 1",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 13,
-        index: 2,
-        topic: "String cz. 2",
-        content: [
-          {
-            nr: 13,
-            index: 2,
-            topis: "String cz. 2",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 14,
-        index: 2,
-        topic: "Wprowadzenie do zadania ze stringami",
-        content: [
-          {
-            nr: 14,
-            index: 2,
-            topis: "Wprowadzenie do zadania ze stringami",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 15,
-        index: 2,
-        topic: "Rozwiązanie zadania ze stringami",
-        content: [
-          {
-            nr: 15,
-            index: 2,
-            topis: "Rozwiązanie zadania ze stringami",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 16,
-        index: 2,
-        topic: "Number",
-        content: [
-          {
-            nr: 16,
-            index: 2,
-            topis: "Number",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 17,
-        index: 2,
-        topic: "Boolean",
-        content: [
-          {
-            nr: 17,
-            index: 2,
-            topis: "Boolean",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 18,
-        index: 2,
-        topic: "Null & undefined",
-        content: [
-          {
-            nr: 18,
-            index: 2,
-            topis: "Null & undefined",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-      {
-        nr: 19,
-        index: 2,
-        topic: "Typy złożone",
-        content: [
-          {
-            nr: 19,
-            index: 2,
-            topis: "Typy złożone",
-            content: [
-              "Kurs ułożony jest chronologicznie według kolejności ",
-              "Kurs jest podzielony na 2 części: 1. Materiały 2. Zadania",
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];

@@ -51,7 +51,7 @@ export type Titems = {
   }[];
   pageCount?: number;
 };
-export interface TCourses {
+export type TCourses = {
   icon: string;
   title: string;
   name: string;
@@ -65,4 +65,23 @@ export interface TCourses {
   stars: number;
   category: string;
   dataPremiery: any;
-}
+};
+export type Content = {
+  topis: string; // zmienione z 'topic' na 'topis'
+  nr: number;
+  index: number;
+  content: string;
+};
+
+export type Topic = {
+  nr: number;
+  index: number;
+  topic: string;
+  content: Content[];
+};
+
+export type Question = {
+  title: string;
+  index: number;
+  content: Topic[];
+};

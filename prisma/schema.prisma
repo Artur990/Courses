@@ -17,13 +17,6 @@ model Post {
   title     String  
   content   String?  @db.Text
 }
-// model Post {
-//   id        Int     @id @default(autoincrement())
-//   title     String
-//   content   String?
-//   published Boolean @default(false)
-//   author    String?
-// }
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -56,38 +49,13 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  jobTitle String
   image         String?
   accounts      Account[]
   sessions      Session[]
+  // courseProgress   UserCourseProgress[]
 }
 
-// model ApiKey {
-//   id String @id @default(cuid())
-//   key String @unique
-//   enabled Boolean @default(true)
-//   User User @relation(fields: [UserId], references: [id])
-//   UserId String
-
-//   requests ApiRequest[]
-
-//   @@unique([UserId, key, enabled])
-
- 
-// }
-// model ApiRequest {
-//  id String @id @default(cuid())
-// timestamp DateTime @default(now())
-// method String
-// path String
-// status Int
-// duration Int
-// useApiKey String
-
-
-// ApiKey ApiKey @relation(fields: [useApiKey], references: [id])
-// apiKeyId String 
-//  @@index([useApiKey, timestamp])
-// }
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -95,3 +63,83 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+
+model Course {
+  id                Int      @id @default(autoincrement())
+  icon              String
+  title             String
+  name              String
+  feature           String
+  link              String
+  description       String
+  descriptionCourses String
+  details           String
+  price             Int
+  review            Int
+  stars             Int
+  category          String
+  // releaseDate       DateTime @map("data_premiery")
+}
+
+// model Course {
+//   id                Int                  @id @default(autoincrement())
+//   icon              String
+//   title             String
+//   name              String
+//   features          Feature[]
+//   link              String
+//   description       String
+//   descriptionCourses String
+//   details           String
+//   price             Int
+//   review            Int
+//   stars             Int
+//   category          String
+//   dataPremiery      DateTime
+//   userProgress      UserCourseProgress[]
+//   slides            Json
+//   questions         Json // nowe pole
+// }
+// model Feature {
+//   id      Int    @id @default(autoincrement())
+//   feature String
+//   course  Course @relation(fields: [courseId], references: [id])
+//   courseId Int
+// }
+// model UserCourseProgress {
+//   id           Int     @id @default(autoincrement())
+//   userId       String
+//   courseId     Int
+//   progress     Float
+//   completed    Boolean
+//   slides       Json
+//   user         User    @relation(fields: [userId], references: [id])
+//   course       Course  @relation(fields: [courseId], references: [id])
+// }
+// model Question {
+//   id       Int       @id @default(autoincrement())
+//   title    String
+//   index    Int
+//   contents Content[]
+// }
+
+// model Content {
+//   id         Int         @id @default(autoincrement())
+//   nr         Int
+//   index      Int
+//   topic      String
+//   questionId Int
+//   question   Question    @relation(fields: [questionId], references: [id])
+//   subContents SubContent[]
+// }
+
+// model SubContent {
+//   id       Int     @id @default(autoincrement())
+//   nr       Int
+//   index    Int
+//   topic    String
+//   text     String
+//   contentId Int
+//   content  Content @relation(fields: [contentId], references: [id])
+// }

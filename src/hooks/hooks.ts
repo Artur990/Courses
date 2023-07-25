@@ -1,11 +1,5 @@
 import { CoursesServices } from "@/services/cursesService";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-const regex = /(\d+)\/$/;
-export const getUrlID = (link: string) => {
-  const match = link.match(regex);
-  return match && match[1];
-};
+import { useQuery } from "@tanstack/react-query";
 
 export const useCourses = (
   sort?: string,

@@ -1,4 +1,4 @@
-import { TCourses, Titems } from "@/types/types";
+import { Titems } from "@/types/types";
 import { apiCourses } from "../configs/axios";
 
 export const getCourses = async (

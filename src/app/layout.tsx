@@ -1,13 +1,7 @@
-/**
- * @client
- */
-"use client";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
-import type { AppProps } from "next/app";
 import Providers from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });

@@ -69,3 +69,8 @@ export const fetchData = async (
     console.error("Fetch error:", error);
   }
 };
+export const calculateReadingTime = (text: any) => {
+  const wordsPerMinute = 200;
+  const readingTime = text / wordsPerMinute;
+  return Math.ceil(readingTime);
+};

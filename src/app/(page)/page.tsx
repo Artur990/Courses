@@ -16,6 +16,8 @@ import {
 import { Titems, Tparams, TselectedOptions } from "@/types/types";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useCourses } from "@/hooks/hooks";
+import { CheckedState } from "@radix-ui/react-checkbox";
+
 export default function Home(params: Tparams) {
   const router = useRouter();
 
@@ -24,7 +26,6 @@ export default function Home(params: Tparams) {
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [isOpenSort, setIsOpenSort] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  // const [sortedItems, setSortedItems] = useState<Titems>();
   const [sortType, setSortType] = useState("forYou");
   const [checkedTitle, setCheckedTitle] = useState("");
   const [checkedCategory, setCheckedCategory] = useState("");
@@ -85,20 +86,15 @@ export default function Home(params: Tparams) {
     });
     const url = `?${urlParams.toString()}`;
     router.replace(url);
-    // const { sort, language, category, page } = selectedOptions;
-
-    // fetchData(sort, language, category, page);
   }, [selectedOptions]);
 
-  const { data, isLoading, isError, error } = useCourses(
+  const { data, isLoading, isError } = useCourses(
     sort,
     language,
     category,
     page
   );
-  console.log(data);
-  // setSortedItems(data);
-  // start  input  function
+
   const handleSort: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     const sortType = event.currentTarget.name;
     setSortType(sortType);
@@ -231,6 +227,11 @@ export default function Home(params: Tparams) {
   const uniqueCategories = getUniqueCategories(courses);
   const uniqueTitles = getUniqueTitles(courses);
 
+  const [checkboxState, setCheckboxState] = React.useState<any>("unchecked");
+  console.log(checkboxState);
+  const handleChange = (event: any) => {
+    console.log(event.target.checked);
+  };
   return (
     <main className="flex flex-col min-h-screen mt-2 items-center justify-between p-2  ">
       <div className="bg-white container">
@@ -250,7 +251,7 @@ export default function Home(params: Tparams) {
                     onClick={toggleIsOpenMenu}
                     className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
                   >
-                    <span className="sr-only">Close menu</span>
+                    <span className="sr-only">Zamknij menu </span>
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -354,6 +355,10 @@ export default function Home(params: Tparams) {
                         </div>
                       </div>
                     )}
+                    <Checkbox
+                      checked={checkboxState}
+                      onCheckedChange={setCheckboxState}
+                    />
                   </div>
                   <div className="border-t border-gray-200 px-4 py-6">
                     <h3 className="-mx-2 -my-3 flow-root">
